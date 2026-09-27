@@ -10,6 +10,7 @@
   const menu=document.createElement('div'); menu.className='user-menu';
   menu.innerHTML='<button data-account>▣　Minha conta</button><button onclick="location.href=\'configuracoes.html\'">♟　Usuários</button><button onclick="alert(\'Compartilhe o Piremaxx Gestor e ganhe benefícios!\')">⚑　Indique e ganhe!</button><button onclick="location.href=\'configuracoes.html\'">⚙　Configurações</button><button onclick="location.href=\'login.html\'">⏻　Sair</button>';
   host.appendChild(menu);
+  const companyButton=document.createElement('button'); companyButton.textContent='▣　Empresas'; companyButton.onclick=()=>location.href='empresas.html'; menu.insertBefore(companyButton,menu.children[1]);
   const trigger=host.querySelector('.avatar')||host; trigger.style.cursor='pointer';
   trigger.addEventListener('click',e=>{e.stopPropagation();menu.classList.toggle('show')});
   document.addEventListener('click',()=>menu.classList.remove('show'));
