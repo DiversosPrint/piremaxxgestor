@@ -6,6 +6,27 @@ body.contact-editor-mode main.editor{max-width:none!important;margin:0!important
 .pire-shell{display:block}.pire-shell main.page,.pire-shell main.config,.pire-shell main.report{max-width:none;margin:30px 15px;padding:0}
 .pire-shell>header.bar{height:65px;padding:0 15px;align-items:center;margin:0}
 
+/* Tablets: keep the workspace usable without squeezing the forms beside the menu. */
+@media (max-width: 1000px){
+  body.pire-shell{padding-left:0!important;padding-top:48px!important;overflow-x:hidden}
+  body.pire-shell .pire-mobile-bar{position:fixed;z-index:1002;display:flex;left:0;right:0;top:0;height:48px;background:#fff;color:#536878;align-items:center;padding:0 12px;gap:8px;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+  body.pire-shell .pire-mobile-bar button{font-size:25px;width:34px;height:40px;padding:0;border:0;background:transparent;color:#536878}
+  body.pire-shell .pire-mobile-bar img{width:92px;height:36px;object-fit:contain}
+  body.pire-shell .pire-mobile-bar span{font:bold 13px Arial;margin-left:auto}
+  body.pire-shell .pire-sidebar{top:48px!important;width:250px!important;transform:translateX(-100%);visibility:hidden;transition:transform .2s ease,visibility .2s ease}
+  body.pire-shell.mobile-nav-open .pire-sidebar{transform:translateX(0)!important;visibility:visible!important;display:block!important}
+  body.pire-shell .pire-nav-backdrop{display:none;position:fixed;z-index:1000;inset:48px 0 0;background:rgba(0,0,0,.35)}
+  body.pire-shell.mobile-nav-open .pire-nav-backdrop{display:block!important}
+  body.pire-shell .app-head{display:none!important}
+  body.pire-shell .page-head{height:62px;padding:0 14px}
+  body.pire-shell .page-head h1{font-size:19px}
+  body.pire-shell .content,body.pire-shell main.page,body.pire-shell main.config,body.pire-shell main.report{margin:16px 10px;max-width:none;width:auto}
+  body.pire-shell .filterbar{flex-wrap:wrap;gap:10px}
+  body.pire-shell .left-actions,body.pire-shell .right-actions{flex-wrap:wrap}
+  body.pire-shell .editor{padding-left:10px;padding-right:10px}
+  body.pire-shell .editor-mode .pire-sidebar{display:block}
+}
+
 @media(max-width:700px){
   body.pire-shell.mobile-nav-open .pire-sidebar{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;transform:translate3d(0,0,0)!important;background:#354a54!important}
   body.pire-shell.mobile-nav-open .pire-nav-backdrop{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
