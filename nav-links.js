@@ -1,0 +1,1 @@
+const moduleLinks={customers:'contatos.html',products:'produtos.html',sales:'vendas.html',finance:'financeiro.html',reports:'relatorios.html',restore:'backup.html'};document.querySelectorAll('[data-page]').forEach(b=>{const p=b.dataset.page;if(moduleLinks[p])b.onclick=()=>location.href=moduleLinks[p]});

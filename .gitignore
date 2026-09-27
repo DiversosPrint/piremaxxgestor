@@ -1,0 +1,8 @@
+piremaxx-data.json
+tmp/
+output/
+node_modules/
+*.log
+.env
+.env.*
+!.env.example

@@ -1,0 +1,47 @@
+{
+  "name": "Piremaxx Gestor",
+  "short_name": "Piremaxx",
+  "description": "Gestão comercial e financeira da Piremaxx.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#354a54",
+  "background_color": "#eef0f4",
+  "icons": [
+    {
+      "src": "/icons/icon%20192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon%20512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Financeiro",
+      "short_name": "Financeiro",
+      "url": "/financeiro.html",
+      "icons": [{ "src": "/icons/icon%20192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Vendas",
+      "short_name": "Vendas",
+      "url": "/vendas.html",
+      "icons": [{ "src": "/icons/icon%20192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Produtos",
+      "short_name": "Produtos",
+      "url": "/produtos.html",
+      "icons": [{ "src": "/icons/icon%20192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
