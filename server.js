@@ -1,6 +1,6 @@
 const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto');
 const root=__dirname, storePath=path.join(root,'piremaxx-data.json'), externalDataPath='D:\\Piremaxx\\Diego\\dados';
-const seed={users:[{id:1,name:'Administrador',email:process.env.PIREMAXX_ADMIN_EMAIL||'admin@example.invalid',password:process.env.PIREMAXX_ADMIN_PASSWORD||''}],clients:[],products:[],sales:[],purchases:[],finance:[],settings:{company:'Piremaxx Pneus Premium'}};
+const seed={users:process.env.PIREMAXX_ADMIN_EMAIL&&process.env.PIREMAXX_ADMIN_PASSWORD?[{id:1,name:'Administrador',email:process.env.PIREMAXX_ADMIN_EMAIL,password:process.env.PIREMAXX_ADMIN_PASSWORD}]:[],clients:[],products:[],sales:[],purchases:[],finance:[],settings:{company:'Piremaxx Pneus Premium'}};
 let db=fs.existsSync(storePath)?JSON.parse(fs.readFileSync(storePath,'utf8')):seed;
 db={...seed,...db,clients:db.clients||[],products:db.products||[],sales:db.sales||[],purchases:db.purchases||[],finance:db.finance||[]};
 if(!db.products.length){const seedFile=path.join(root,'products-seed.json');if(fs.existsSync(seedFile)){try{db.products=JSON.parse(fs.readFileSync(seedFile,'utf8'))}catch{db.products=[]}}}
