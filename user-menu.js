@@ -1,0 +1,26 @@
+(()=>{
+  const host=document.querySelector('.identity')||document.querySelector('.user');
+  if(!host||host.dataset.userMenu)return;
+  host.dataset.userMenu='1'; host.style.position='relative';
+  const key='piremaxx.profile.avatar';
+  const get=()=>{try{return localStorage.getItem(key)||''}catch{return ''}};
+  const markup=src=>src?`<img src="${src}" alt="Foto do perfil">`:'◕';
+  const apply=src=>document.querySelectorAll('.avatar').forEach(a=>{a.innerHTML=markup(src);a.classList.toggle('has-photo',!!src)});
+  apply(get());
+  const menu=document.createElement('div'); menu.className='user-menu';
+  menu.innerHTML='<button data-account>▣　Minha conta</button><button onclick="location.href=\'configuracoes.html\'">♟　Usuários</button><button onclick="alert(\'Compartilhe o Piremaxx Gestor e ganhe benefícios!\')">⚑　Indique e ganhe!</button><button onclick="location.href=\'configuracoes.html\'">⚙　Configurações</button><button onclick="location.href=\'login.html\'">⏻　Sair</button>';
+  host.appendChild(menu);
+  const trigger=host.querySelector('.avatar')||host; trigger.style.cursor='pointer';
+  trigger.addEventListener('click',e=>{e.stopPropagation();menu.classList.toggle('show')});
+  document.addEventListener('click',()=>menu.classList.remove('show'));
+  menu.querySelector('[data-account]').onclick=e=>{
+    e.stopPropagation();menu.classList.remove('show'); document.querySelector('#accountModal')?.remove();
+    const current=get(), modal=document.createElement('div'); modal.id='accountModal';
+    modal.innerHTML='<div class="account-card"><div class="account-head">Configurações da minha conta <button>×</button></div><div class="account-body"><div class="account-avatar">'+markup(current)+'</div><label>Minha foto<input id="profilePhotoInput" type="file" accept="image/*"></label><div class="account-fields"><label>Login usuário<input value=""></label><label>Senha atual<input type="password" value=""></label><label>Nova senha<input type="password"></label><label>Repita a nova senha<input type="password"></label></div><label class="contrast"><input type="checkbox"> Habilitar modo Alto Contraste</label></div><div class="account-actions"><button class="save-account">Salvar</button><button class="close-account">Fechar</button></div></div>';
+    document.body.appendChild(modal); let selected=current; const preview=modal.querySelector('.account-avatar');
+    modal.querySelector('#profilePhotoInput').onchange=e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith('image/')){alert('Selecione uma imagem válida.');return}const r=new FileReader();r.onload=()=>{selected=String(r.result);preview.innerHTML=markup(selected)};r.readAsDataURL(f)};
+    const close=()=>modal.remove(); modal.querySelector('.account-head button').onclick=close; modal.querySelector('.close-account').onclick=close;
+    modal.querySelector('.save-account').onclick=()=>{try{selected?localStorage.setItem(key,selected):localStorage.removeItem(key)}catch(e){console.warn('Falha ao salvar foto',e)}apply(selected);alert('Configurações salvas.');close()};
+  };
+  const s=document.createElement('style'); s.textContent='.avatar{width:42px!important;height:42px!important;min-width:42px;max-width:42px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center}.avatar img{width:42px!important;height:42px!important;max-width:42px;max-height:42px;object-fit:cover;display:block}.user-menu{display:none;position:absolute;right:0;top:58px;z-index:1000;width:158px;background:#354a54;box-shadow:0 3px 8px #0005;text-align:left}.user-menu.show{display:block}.user-menu button{display:block;width:100%;border:0;border-bottom:1px solid #52656e;background:transparent;color:#fff;text-align:left;padding:11px 14px;cursor:pointer}.user-menu button:hover{background:#263a43}#accountModal{position:fixed;z-index:2000;inset:0;background:#0006;display:flex;align-items:center;justify-content:center}.account-card{width:min(540px,94vw);background:#fff;border-radius:4px;box-shadow:0 8px 30px #0006}.account-head{background:#5abd5c;color:#fff;font-weight:bold;padding:14px}.account-head button{float:right;background:transparent;border:0;color:#fff;font-size:20px}.account-body{padding:24px 50px}.account-avatar{text-align:center;font-size:48px;color:#777;margin:10px;height:70px;display:flex;align-items:center;justify-content:center}.account-avatar img{width:70px!important;height:70px!important;max-width:70px;max-height:70px;border-radius:50%;object-fit:cover}.account-body label{display:block;color:#647784;margin:8px 0}.account-body input{display:block;width:100%;height:32px;border:1px solid #ccd4dc;padding:6px;margin-top:4px}.account-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#eee;padding:12px}.contrast{margin-top:18px!important}.contrast input{display:inline;width:auto;height:auto}.account-actions{display:flex;justify-content:flex-end;gap:6px;border-top:1px solid #ddd;padding:14px}.account-actions button{padding:9px 16px;border:0;border-radius:4px}.save-account{background:#35a85a;color:#fff}.close-account{background:#eee;color:#666}@media(max-width:600px){.account-body{padding:20px}.account-fields{grid-template-columns:1fr}}'; document.head.appendChild(s);
+})();
