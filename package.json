@@ -1,0 +1,12 @@
+{
+  "name": "piremaxxgestor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Clone local do Piremaxx Gestor",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
