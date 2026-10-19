@@ -94,8 +94,33 @@ html body .client-tabs button{height:38px!important;min-height:38px!important;bo
 .brand-mini{background-size:auto 32px!important;background-position:center center!important}
 .sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
 html body .products-page{padding-top:98px!important}
-html body .products-page .products-content{padding-top:48px!important}
+html body .products-page .products-content{padding-top:24px!important}
 html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
+html body .products-page>.products-topbar{position:fixed!important;z-index:40!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
+html body .products-page .products-content{padding-top:24px!important}
+/* Ajuste final da composição da página de Produtos: barra superior, título e abas. */
+html body .products-page>.products-topbar{
+  position:fixed!important;
+  z-index:40!important;
+  left:143px!important;
+  top:0!important;
+  width:calc(100% - 143px)!important;
+  height:49px!important;
+  min-height:49px!important;
+}
+html body .products-page{padding-top:98px!important}
+html body .products-page .products-content{padding-top:24px!important}
+html body .products-page .product-tabs{
+  position:relative!important;
+  z-index:60!important;
+  overflow:visible!important;
+}
+/* Mantém o espaçamento padrão entre a barra da página e as abas. */
+html body .products-page .products-content{padding-top:24px!important}
+html body .products-page>.products-topbar{position:fixed!important;z-index:40!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
+html body .products-page .products-content{padding-top:24px!important}
+html body .products-page>.products-topbar{position:fixed!important;z-index:40!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
+html body .products-page .products-content{padding-top:24px!important}
 
 /* Mantém as duas logos no mesmo cabeçalho em todas as páginas */
 body:has(.purchase-content) .sidebar,
@@ -131,7 +156,7 @@ html body:has(.products-topbar) main{margin-left:143px!important;width:calc(100%
 html body:has(.purchase-content) main>.topbar,
 html body:has(.sales-content) main>.topbar,
 html body:has(.finance-page) main>.topbar,
-html body:has(.products-topbar) main>.products-topbar{position:relative!important;left:auto!important;top:auto!important;width:100%!important;height:49px!important;min-height:49px!important}
+html body:has(.products-topbar) main>.products-topbar{position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
 html body:has(.purchase-content) .sidebar,
 html body:has(.sales-content) .sidebar,
 html body:has(.finance-page) .sidebar,
@@ -145,7 +170,7 @@ html body.finance-page .topbar .brand-mini{width:133px!important;height:49px!imp
 html body:has(.products-topbar) main.products-page{padding-top:98px!important}
 .products-page{padding-top:98px!important}
 html body .products-page{padding-top:98px!important}
-html body .products-page .products-content{padding-top:48px!important}
+html body .products-page .products-content{padding-top:24px!important}
 html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
 .sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
 .sidebar>.brand{background-size:133px auto!important}
@@ -162,5 +187,5 @@ body:has(.dashboard) .brand-mini{width:133px!important;background-size:contain!i
 .brand-mini{background-size:auto 32px!important;background-position:center center!important}
 .sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
 html body .products-page{padding-top:98px!important}
-html body .products-page .products-content{padding-top:48px!important}
+html body .products-page .products-content{padding-top:24px!important}
 html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}

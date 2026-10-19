@@ -31,23 +31,6 @@
   document.addEventListener('DOMContentLoaded',render);
 })();
 
-// Mantém Nova coleta funcional mesmo quando o toolbar é reconstruído por outro script.
-(function(){
-  document.addEventListener('click',function(event){
-    var button=event.target.closest('.collections-new');
-    if(!button||!document.getElementById('collections-panel')||document.querySelector('.collection-modal'))return;
-    var modal=document.createElement('section');
-    modal.className='collection-modal';
-    modal.innerHTML='<div class="collection-dialog"><header><b>Nova coleta</b><button type="button" class="collection-close">×</button></header><div class="collection-form"><div class="collection-form-grid"><label>Cliente / fornecedor<select id="fallback-client"><option value="">Selecione...</option></select></label><label>Responsável<input id="fallback-responsible"></label><label>Data<input id="fallback-date" type="date"></label><label>Atividade<select id="fallback-activity"><option>Coleta/compra de carcaças</option><option>Coleta</option><option>Compra</option></select></label><label>Situação<select id="fallback-status"><option>Em preparação</option><option>Em campo</option><option>Concluída</option></select></label><label class="cf-wide">Observações<textarea id="fallback-notes"></textarea></label></div></div><footer><button type="button" class="collection-cancel">Cancelar</button><button type="button" class="collection-save">Salvar coleta</button></footer></div>';
-    document.body.appendChild(modal);
-    modal.querySelector('#fallback-date').value=new Date().toISOString().slice(0,10);
-    try{var clients=JSON.parse(localStorage.getItem('piremaxx_clientes')||'[]');var select=modal.querySelector('#fallback-client');clients.forEach(function(client){var option=document.createElement('option');option.textContent=client.nome||client.name||'';option.value=option.textContent;if(option.value)select.appendChild(option)})}catch(error){}
-    var close=function(){modal.remove()};
-    modal.querySelector('.collection-close').onclick=modal.querySelector('.collection-cancel').onclick=close;
-    modal.querySelector('.collection-save').onclick=function(){var client=modal.querySelector('#fallback-client').value;if(!client){alert('Selecione o cliente ou fornecedor.');return}var list=[];try{list=JSON.parse(localStorage.getItem('piremaxx_coletas')||'[]')}catch(error){}list.unshift({code:String(Date.now()).slice(-6),client:client,responsible:modal.querySelector('#fallback-responsible').value,date:modal.querySelector('#fallback-date').value,activity:modal.querySelector('#fallback-activity').value,status:modal.querySelector('#fallback-status').value,notes:modal.querySelector('#fallback-notes').value,total:0,items:[]});localStorage.setItem('piremaxx_coletas',JSON.stringify(list));close();location.reload()};
-  });
-})();
-
 // Reproduz a transição curta do original ao trocar abas: o enquadramento fica
 // parado, o conteúdo mostra um carregamento breve e então a nova lista aparece.
 (function(){

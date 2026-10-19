@@ -172,6 +172,15 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(initCollections,0)});else setTimeout(initCollections,0)
 })();
 </script>
+<script>
+/* Garante o acionamento do formulário completo mesmo após a reconstrução da barra. */
+document.addEventListener('click',function(event){
+  var button=event.target.closest&&event.target.closest('#collections-panel .collections-new');
+  if(!button||document.querySelector('.collection-modal'))return;
+  var panel=document.getElementById('collections-panel');
+  if(panel&&panel.dataset.ready&&typeof window.openCollectionForm==='function')window.openCollectionForm();
+});
+</script>
 <style id="compras-brand-final">html body .sidebar.shared-sidebar .brand{display:block!important;visibility:visible!important;height:49px!important;min-height:49px!important;background:#eee!important;color:#68717a!important}html body .sidebar.shared-sidebar{top:0!important}</style>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
@@ -204,3 +213,19 @@ document.addEventListener('DOMContentLoaded',function(){
 })();
 </script>
 <script>(function(){function fix(){var link=[].slice.call(document.querySelectorAll('.sidebar nav a')).find(function(a){return a.textContent.indexOf('Financeiro')>=0});if(link)link.href='financeiro.html'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix);else fix()})();</script>
+<script>
+/* Fallback do formulário completo para barras reconstruídas dinamicamente. */
+(function(){
+  function fallback(){
+    if(document.querySelector('.collection-modal'))return;
+    var modal=document.createElement('section');modal.className='collection-modal';
+    modal.innerHTML='<div class="collection-dialog"><header><b>Nova coleta</b><button type="button" class="collection-close">×</button></header><div class="collection-form"><div class="collection-form-grid"><label>Cliente / fornecedor<select id="cf-client"><option value="">Selecione...</option></select></label><label>Responsável<input id="cf-responsible" placeholder="Examinador ou vendedor"></label><label>Data<input id="cf-date" type="date"></label><label>Voucher / identificador<input id="cf-voucher"></label><label>Atividade<select id="cf-activity"><option>1º Exame</option><option>2º Exame</option><option selected>Coleta/compra de carcaças</option><option>Compras Remold</option><option>Entrada de pneus usados</option><option>Exame de pneus trocados</option><option>Finalização</option></select></label><label>Situação<select id="cf-status"><option>Em preparação</option><option>Pendente de envio</option><option>Em campo</option><option>Retornada de campo</option><option>Aprovada</option><option>Reprovada</option><option>Comprada</option><option>Finalizada</option></select></label><label class="cf-wide">Observações<textarea id="cf-notes"></textarea></label></div><div class="collection-items"><h3>Carcaças e pneus</h3><div class="collection-item-head"><span>Medida</span><span>Quantidade</span><span>Valor unitário</span><span>Grupo</span><span>Resultado</span><span></span></div><div id="cf-items"></div><button type="button" id="cf-add-item">+ Adicionar item</button><div class="collection-total">Total: <strong id="cf-total">R$ 0,00</strong></div></div></div><footer><button type="button" class="collection-cancel">Cancelar</button><button type="button" class="collection-save">Salvar coleta</button></footer></div>';
+    document.body.appendChild(modal);var q=function(s){return modal.querySelector(s)},items=q('#cf-items');q('#cf-date').value=new Date().toISOString().slice(0,10);
+    try{JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').forEach(function(x){var n=x.nome||x.name||'';if(n){var o=document.createElement('option');o.value=n;o.textContent=n;q('#cf-client').appendChild(o)}})}catch(e){}
+    function add(){var row=document.createElement('div');row.className='collection-item-row';row.innerHTML='<input class="ci-measure" placeholder="Medida"><input class="ci-qty" type="number" min="1" value="1"><input class="ci-unit" placeholder="Valor unitário"><select class="ci-group"><option>Pneu de 1º</option><option>Pneu venda B</option><option>A6</option><option>Refugo</option></select><select class="ci-result"><option>Aguardando</option><option>Aprovada</option><option>Reprovada</option></select><button type="button" class="ci-remove">×</button>';row.querySelector('.ci-remove').onclick=function(){row.remove();total()};items.appendChild(row)}
+    function total(){var n=0;items.querySelectorAll('.collection-item-row').forEach(function(r){n+=(Number((r.querySelector('.ci-unit').value||'').replace(',','.'))||0)*(Number(r.querySelector('.ci-qty').value)||0)});q('#cf-total').textContent=n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});return n}
+    add();items.addEventListener('input',total);q('#cf-add-item').onclick=function(){add()};q('.collection-close').onclick=q('.collection-cancel').onclick=function(){modal.remove()};q('.collection-save').onclick=function(){var client=q('#cf-client').value;if(!client){alert('Selecione o cliente ou fornecedor.');return}var list=[];try{list=JSON.parse(localStorage.getItem('piremaxx_coletas')||'[]')}catch(e){}list.unshift({code:String(Date.now()).slice(-6),client:client,responsible:q('#cf-responsible').value,date:q('#cf-date').value,voucher:q('#cf-voucher').value,activity:q('#cf-activity').value,status:q('#cf-status').value,notes:q('#cf-notes').value,total:total(),items:[]});localStorage.setItem('piremaxx_coletas',JSON.stringify(list));modal.remove();location.reload()};
+  }
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#collections-panel .collections-new');if(b&&!document.querySelector('.collection-modal'))setTimeout(fallback,0)});
+})();
+</script>
