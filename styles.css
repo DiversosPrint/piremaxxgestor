@@ -93,6 +93,9 @@ html body .client-tabs button{height:38px!important;min-height:38px!important;bo
 .sidebar>.brand{background-image:url('public/logo.webp')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important}
 .brand-mini{background-size:auto 32px!important;background-position:center center!important}
 .sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
+html body .products-page{padding-top:98px!important}
+html body .products-page .products-content{padding-top:48px!important}
+html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
 
 /* Mantém as duas logos no mesmo cabeçalho em todas as páginas */
 body:has(.purchase-content) .sidebar,
@@ -139,6 +142,11 @@ html body:has(.finance-page) .brand-mini,
 html body:has(.products-topbar) .brand-mini{width:133px!important;height:49px!important;min-height:49px!important;background-size:auto 26px!important;background-position:center 48%!important;background-repeat:no-repeat!important}
 html body:has(.clients) .brand-mini{width:133px!important;height:49px!important;min-height:49px!important;background-size:auto 26px!important;background-position:center 48%!important;background-repeat:no-repeat!important}
 html body.finance-page .topbar .brand-mini{width:133px!important;height:49px!important;min-height:49px!important;background-size:auto 26px!important;background-position:center 48%!important;background-repeat:no-repeat!important}
+html body:has(.products-topbar) main.products-page{padding-top:98px!important}
+.products-page{padding-top:98px!important}
+html body .products-page{padding-top:98px!important}
+html body .products-page .products-content{padding-top:48px!important}
+html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
 .sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
 .sidebar>.brand{background-size:133px auto!important}
 .sidebar>.brand{background-size:auto 26px!important}
@@ -153,3 +161,6 @@ body:has(.dashboard) .brand-mini{width:133px!important;background-size:contain!i
 .sidebar>.brand{background-image:url('public/logo.webp')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important}
 .brand-mini{background-size:auto 32px!important;background-position:center center!important}
 .sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
+html body .products-page{padding-top:98px!important}
+html body .products-page .products-content{padding-top:48px!important}
+html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
