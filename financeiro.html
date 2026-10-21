@@ -147,6 +147,18 @@
   setTimeout(applyFinanceTabIcons,100);
 })();
 </script>
+<script id="finance-dashboard-sync">
+(function(){
+  function read(key){try{var v=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}}
+  function num(value){var s=String(value==null?'':value).replace(/R\$|\s/g,'');if(s.indexOf(',')>=0)s=s.replace(/\./g,'').replace(',','.');return Number(s.replace(/[^0-9.-]/g,''))||0}
+  function harvest(){
+    var table=document.querySelector('#finance-receivables .finance-table');if(table){var rows=[].slice.call(table.querySelectorAll('tbody tr')).filter(function(row){return row.querySelectorAll('td').length>=8});var current=read('piremaxx_contas_receber'),byId={};current.forEach(function(x){byId[String(x.id||x.code)]=x});rows.forEach(function(row){var c=row.querySelectorAll('td'),id=(c[1].textContent||'').trim();byId[id]={id:id,description:(c[2].textContent||'').trim(),contact:(c[3].textContent||'').trim(),account:(c[4].textContent||'').trim(),date:(c[5].textContent||'').trim(),status:(c[6].textContent||'').trim(),value:num(c[7].textContent)} });localStorage.setItem('piremaxx_contas_receber',JSON.stringify(Object.keys(byId).map(function(k){return byId[k]})))}
+    var payTable=document.querySelector('#finance-payables .finance-table');if(payTable){var pays=[].slice.call(payTable.querySelectorAll('tbody tr')).filter(function(row){return row.querySelectorAll('td').length>=8}).map(function(row){var c=row.querySelectorAll('td');return {id:(c[1].textContent||'').trim(),description:(c[2].textContent||'').trim(),contact:(c[3].textContent||'').trim(),account:(c[4].textContent||'').trim(),date:(c[5].textContent||'').trim(),status:(c[6].textContent||'').trim(),value:num(c[7].textContent)}});if(pays.length)localStorage.setItem('piremaxx_contas_pagar',JSON.stringify(pays))}
+  }
+  function watchNewAccount(){var overlay=document.getElementById('finance-receivable-form'),save=overlay&&overlay.querySelector('.finance-form-actions .save');if(!save||save.dataset.dashboardSync)return;save.dataset.dashboardSync='1';save.addEventListener('click',function(){setTimeout(function(){var fields=[].slice.call(overlay.querySelectorAll('.finance-form-field')),get=function(label){var f=fields.find(function(x){return (x.textContent||'').indexOf(label)>=0});return f&&f.querySelector('input,select')?.value||''},payment=overlay.classList.contains('payment-mode'),entry={id:'local-'+Date.now(),description:get('Descrição'),value:num((overlay.querySelector('.finance-form-inline input')||{}).value),date:get('Data de vencimento'),contact:get(payment?'Pago a':'Recebido de'),status:get(payment?'Pagar agora':'Receber agora')==='Sim'?(payment?'Pago':'Recebida'):(payment?'A pagar':'A receber')};if(!entry.description&&!entry.value)return;var key=payment?'piremaxx_contas_pagar':'piremaxx_contas_receber',list=read(key);list.unshift(entry);localStorage.setItem(key,JSON.stringify(list))},50)})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){harvest();watchNewAccount()});else{harvest();watchNewAccount()}
+})();
+</script>
 <style>
 .finance-tabs{align-items:stretch}
 .finance-tabs button{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap;line-height:1!important}

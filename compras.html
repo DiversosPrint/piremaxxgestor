@@ -26,6 +26,198 @@
   setTimeout(applyPurchaseTabIcons,120);
 })();
 </script>
+<script>
+(function(){
+  function catalog(){var local=[],imported=[];try{local=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}try{imported=window.cloneData&&window.cloneData.products||window.importedProducts||[]}catch(e){}return local.concat(imported).filter(function(item){var type=String(item.type||'Produto').toLowerCase();return type!=='serviço'&&type!=='servico'});}
+  function price(item){return Number(item.price??item.salePrice??item.precoVenda??item.preco??item.valor??0)||0}
+  function setup(input){if(!input||input.dataset.catalogReady)return;input.dataset.catalogReady='1';var parent=input.parentElement,list=parent.querySelector('.purchase-product-list');if(!list){list=document.createElement('div');list.className='purchase-product-list';parent.appendChild(list)}
+    function draw(){var query=input.value.toLowerCase().trim(),items=catalog().filter(function(x){return !query||String(x.name||'').toLowerCase().includes(query)||String(x.code||'').toLowerCase().includes(query)});list.textContent='';if(!items.length){var empty=document.createElement('div');empty.textContent='Nenhum produto cadastrado';empty.className='purchase-product-empty';list.appendChild(empty)}else items.slice(0,20).forEach(function(item){var button=document.createElement('button');button.type='button';button.textContent=String(item.name||'Produto')+' | R$ '+price(item).toFixed(2).replace('.',',');button.onclick=function(event){event.preventDefault();event.stopPropagation();input.value=String(item.name||'');var fields=input.closest('.purchase-product').querySelectorAll('input');if(fields[1])fields[1].value=price(item).toFixed(2).replace('.',',');list.classList.remove('show');if(window.calculatePurchaseTotal)window.calculatePurchaseTotal(input.closest('#newPurchase'))};list.appendChild(button)});list.classList.add('show')}
+    input.onfocus=draw;input.oninput=draw;
+  }
+  function scan(){document.querySelectorAll('#newPurchase .purchase-product input:first-of-type').forEach(setup)}
+  document.addEventListener('click',function(event){var option=event.target.closest&&event.target.closest('.purchase-product-list button');if(option){var row=option.closest('.purchase-product'),input=row&&row.querySelector('input:first-of-type'),fields=row&&row.querySelectorAll('input'),name=option.textContent.split('|')[0].trim(),item=catalog().find(function(x){return String(x.name||'').trim()===name});if(input){event.preventDefault();event.stopImmediatePropagation();input.value=name;if(item&&fields[1])fields[1].value=price(item).toFixed(2).replace('.',',');option.parentElement.classList.remove('show');if(window.calculatePurchaseTotal)window.calculatePurchaseTotal(option.closest('#newPurchase'));return}}if(!event.target.closest('.purchase-product'))document.querySelectorAll('.purchase-product-list.show').forEach(function(list){list.classList.remove('show')})},true);
+  var observer=new MutationObserver(scan);observer.observe(document.body,{childList:true,subtree:true});document.addEventListener('DOMContentLoaded',scan);setInterval(scan,300);
+})();
+</script>
+<style>.purchase-product-empty{padding:8px;color:#6f8088;font-size:11px;background:#fff}.purchase-product-list{max-height:260px;overflow:auto}</style>
+<script>
+(function(){
+  function number(value){var text=String(value==null?'':value).trim().replace(/\s/g,'');if(!text)return 0;if(text.indexOf(',')>=0)return Number(text.replace(/\./g,'').replace(',','.'))||0;return Number(text)||0}
+  function money(value){return Number(value||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+  function calculate(modal){
+    if(!modal)return 0;var total=0;
+    modal.querySelectorAll('.purchase-product').forEach(function(row){
+      var fields=row.querySelectorAll('input'),unit=number(fields[1]?.value),qty=number(fields[2]?.value),discount=number(fields[3]?.value),other=number(fields[4]?.value),external=number(fields[5]?.value),ipi=number(fields[6]?.value),tax=number(fields[7]?.value);
+      var rowTotal=Math.max(0,(unit*qty)-discount+other+external+ipi+tax);total+=rowTotal;var output=row.querySelector('strong');if(output)output.textContent=money(rowTotal);
+    });
+    modal.querySelectorAll('.external-values input').forEach(function(input){total+=number(input.value)});
+    var totalOutput=modal.querySelector('.purchase-product-total b');if(totalOutput)totalOutput.textContent=money(total);
+    var financeOutput=modal.querySelector('.finance-total-purchase strong');if(financeOutput)financeOutput.textContent=money(total);
+    var financeRows=modal.querySelectorAll('.finance-row-purchase');if(financeRows.length===1){var amount=financeRows[0].querySelector('input');if(amount&&!amount.dataset.edited)amount.value=total.toFixed(2).replace('.',',')}
+    return total;
+  }
+  window.calculatePurchaseTotal=calculate;
+  function attach(modal){if(!modal||modal.dataset.calculationReady)return;modal.dataset.calculationReady='1';modal.addEventListener('input',function(event){if(event.target.closest('.purchase-product,.external-values'))calculate(modal)});modal.addEventListener('change',function(event){if(event.target.closest('.purchase-product,.external-values'))calculate(modal)});calculate(modal)}
+  var observer=new MutationObserver(function(){var modal=document.querySelector('#newPurchase');if(modal)attach(modal)});observer.observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',function(){var modal=document.querySelector('#newPurchase');if(modal)attach(modal)});
+  setInterval(function(){var modal=document.querySelector('#newPurchase');if(modal){attach(modal);calculate(modal)}},250);
+})();
+</script>
+<style id="purchase-list-interactions">
+#purchases-panel .purchase-table tbody tr[data-purchase-code]{cursor:pointer;transition:background-color .15s,box-shadow .15s}
+#purchases-panel .purchase-table tbody tr[data-purchase-code]:hover{background:#e8f6f5!important;box-shadow:inset 3px 0 #209c99}
+#purchases-panel .purchase-table input[type="checkbox"]{cursor:pointer}
+#purchases-panel .purchase-toolbar button[title]{cursor:pointer;transition:filter .15s,transform .1s}
+#purchases-panel .purchase-toolbar button[title]:hover{filter:brightness(.94);transform:translateY(-1px)}
+</style>
+<style id="purchase-product-field-label">
+.purchase-product input:first-of-type{padding-left:8px!important;font-size:12px!important;min-width:0}
+.purchase-product input:first-of-type::placeholder{font-size:12px;white-space:nowrap}
+</style>
+<script>
+(function(){
+  function selectedPurchases(){return Array.from(document.querySelectorAll('#purchases-panel .purchase-select:checked')).map(function(box){var row=box.closest('tr'),code=row&&row.dataset.purchaseCode;var list=[];try{list=JSON.parse(localStorage.getItem('piremaxx_compras')||'[]')}catch(e){}return list.find(function(item){return String(item.code)===String(code)})}).filter(Boolean)}
+  function read(){try{return JSON.parse(localStorage.getItem('piremaxx_compras')||'[]')}catch(e){return []}}
+  function save(list){localStorage.setItem('piremaxx_compras',JSON.stringify(list));window.installPurchaseCheckboxes&&window.installPurchaseCheckboxes()}
+  function message(text){if(typeof window.appMessage==='function')window.appMessage(text);else alert(text)}
+  function printPurchases(items){var rows=items.map(function(item){return '<tr><td>'+item.code+'</td><td>'+String(item.supplier||'')+'</td><td>'+String(item.buyer||'')+'</td><td>'+String(item.note||'')+'</td><td>'+String(item.date||'')+'</td><td>R$ '+String(item.total||'0,00')+'</td></tr>'}).join('');var w=window.open('','_blank','width=900,height=700');if(!w){message('Permita a abertura de pop-ups para imprimir a compra.');return}w.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Compras selecionadas</title><style>body{font:13px Arial;color:#405967;padding:24px}h1{color:#209c99;border-bottom:3px solid #209c99;padding-bottom:10px}table{width:100%;border-collapse:collapse}th{background:#209c99;color:#fff;text-align:left}td,th{padding:9px;border-bottom:1px solid #ddd}</style></head><body><h1>Gestão Piremaxx</h1><h2>Compras selecionadas</h2><table><thead><tr><th>Cód.</th><th>Fornecedor</th><th>Comprador</th><th>Nota</th><th>Data</th><th>Total</th></tr></thead><tbody>'+rows+'</tbody></table><p><b>Quantidade:</b> '+items.length+'</p></body></html>');w.document.close();w.focus();w.print()}
+  function wire(){var toolbar=document.querySelector('#purchases-panel .purchase-toolbar');if(!toolbar||toolbar.dataset.actionsReady)return;toolbar.dataset.actionsReady='1';var clone=toolbar.querySelector('button[title="Clonar"]'),remove=toolbar.querySelector('button[title="Excluir"]'),print=toolbar.querySelector('button[title="Imprimir"]');if(clone)clone.onclick=function(){var items=selectedPurchases();if(items.length!==1){message('Selecione uma única compra para clonar.');return}var list=read(),copy=JSON.parse(JSON.stringify(items[0]));copy.code=String(Date.now()).slice(-6);list.unshift(copy);save(list);location.reload()};if(remove)remove.onclick=function(){var items=selectedPurchases();if(!items.length){message('Selecione ao menos uma compra para excluir.');return}if(!window.confirm('Excluir '+items.length+' compra(s) selecionada(s)?'))return;var codes=new Set(items.map(function(x){return String(x.code)}));save(read().filter(function(x){return !codes.has(String(x.code))}));location.reload()};if(print)print.onclick=function(){var items=selectedPurchases();if(!items.length){message('Selecione ao menos uma compra para imprimir.');return}printPurchases(items)}}
+  document.addEventListener('DOMContentLoaded',wire);setTimeout(wire,200);
+})();
+</script>
+<style id="purchase-selection-checkboxes">
+#purchases-panel .purchase-table th:first-child,#purchases-panel .purchase-table td:first-child{width:42px;text-align:center;vertical-align:middle}
+#purchases-panel .purchase-table input.purchase-select,#purchases-panel .purchase-table input.purchases-select-all{width:16px;height:16px;margin:0;accent-color:#209c99;cursor:pointer;vertical-align:middle}
+#purchases-panel .purchase-table tbody tr.purchase-row-selected{background:#e6f7f5!important;box-shadow:inset 3px 0 #209c99}
+</style>
+<script>
+(function(){
+  function installPurchaseCheckboxes(){
+    var panel=document.getElementById('purchases-panel'),table=panel&&panel.querySelector('.purchase-table'),head=table&&table.querySelector('thead tr'),body=table&&table.querySelector('tbody');
+    if(!panel||!table||!head||!body)return;
+    var cell=head.cells[0],master=cell&&cell.querySelector('.purchases-select-all');
+    if(cell&&!master){
+      cell.textContent='';master=document.createElement('input');master.type='checkbox';master.className='purchases-select-all';master.id='purchasesSelectAll';master.title='Selecionar todas as compras visíveis';master.setAttribute('aria-label','Selecionar todas as compras visíveis');cell.appendChild(master);
+      master.addEventListener('change',function(){body.querySelectorAll('tr:not([hidden]):not(.hidden) .purchase-select').forEach(function(box){box.checked=master.checked;box.closest('tr').classList.toggle('purchase-row-selected',box.checked)});master.indeterminate=false});
+    }
+    body.querySelectorAll('tr').forEach(function(row){
+      var first=row.cells[0];if(!first||row.cells.length<7||row.textContent.indexOf('Nenhuma compra encontrada')>=0)return;
+      var box=first.querySelector('.purchase-select');if(!box){first.textContent='';box=document.createElement('input');box.type='checkbox';box.className='purchase-select';box.setAttribute('aria-label','Selecionar compra '+(row.cells[1]?.textContent.trim()||''));first.appendChild(box)}
+      box.onchange=function(){row.classList.toggle('purchase-row-selected',box.checked);var visible=[].slice.call(body.querySelectorAll('tr:not([hidden]):not(.hidden) .purchase-select')),checked=visible.filter(function(x){return x.checked});if(master){master.checked=visible.length>0&&checked.length===visible.length;master.indeterminate=checked.length>0&&checked.length<visible.length}};
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){installPurchaseCheckboxes();var body=document.querySelector('#purchases-panel .purchase-table tbody');if(body)new MutationObserver(installPurchaseCheckboxes).observe(body,{childList:true});setTimeout(installPurchaseCheckboxes,120)});
+  window.installPurchaseCheckboxes=installPurchaseCheckboxes;
+})();
+</script>
+<script>
+// Complementa o salvamento legado com as linhas de produtos e restaura os
+// itens ao reabrir uma compra já registrada.
+document.addEventListener('DOMContentLoaded',function(){
+  document.addEventListener('mousedown',function(event){
+    var button=event.target.closest&&event.target.closest('#newPurchase .purchase-save');
+    if(!button)return;
+    var modal=button.closest('#newPurchase'), rows=[].slice.call(modal.querySelectorAll('.purchase-product'));
+    window.__pendingPurchaseCode=window.__editingPurchase&&window.__editingPurchase.code;
+    window.__pendingPurchaseItems=rows.map(function(row){
+      var fields=[].slice.call(row.querySelectorAll('input'));
+      return {product:fields[0]?.value||'',unit:fields[1]?.value||'0',quantity:fields[2]?.value||'0',discount:fields[3]?.value||'0',otherCosts:fields[4]?.value||'0',externalCosts:fields[5]?.value||'0',ipi:fields[6]?.value||'0',substitution:fields[7]?.value||'0'};
+    }).filter(function(item){return item.product||Number(item.quantity)||Number(item.unit)});
+    setTimeout(function(){
+      var items=window.__pendingPurchaseItems||[];if(!items.length)return;
+      var list=[];try{list=JSON.parse(localStorage.getItem('piremaxx_compras')||'[]')}catch(error){list=[]}
+      var target=window.__pendingPurchaseCode&&list.find(function(item){return String(item.code)===String(window.__pendingPurchaseCode)});
+      if(!target)target=list[0];
+      if(target){target.items=items;localStorage.setItem('piremaxx_compras',JSON.stringify(list))}
+      window.__pendingPurchaseItems=null;
+      window.__pendingPurchaseCode=null;
+    },300);
+  },true);
+  document.addEventListener('click',function(event){
+    if(!event.target.closest||!event.target.closest('.purchase-new'))return;
+    setTimeout(function(){
+      var item=window.__editingPurchase,modal=document.querySelector('#newPurchase');
+      if(!item||!modal||!Array.isArray(item.items)||!item.items.length)return;
+      var rows=[].slice.call(modal.querySelectorAll('.purchase-product'));
+      item.items.forEach(function(data,index){
+        var row=rows[index];
+        if(!row){var add=modal.querySelector('.add-purchase-product');if(add)add.click();row=modal.querySelectorAll('.purchase-product')[index]}
+        if(!row)return;
+        var fields=[].slice.call(row.querySelectorAll('input'));
+        [data.product,data.unit,data.quantity,data.discount,data.otherCosts,data.externalCosts,data.ipi,data.substitution].forEach(function(value,fieldIndex){if(fields[fieldIndex])fields[fieldIndex].value=value||''});
+      });
+    },140);
+  });
+});
+</script>
+<script>
+// O fornecedor da compra deve ser selecionado entre os contatos cadastrados.
+document.addEventListener('DOMContentLoaded',function(){
+  document.addEventListener('click',function(event){
+    if(!event.target.closest||!event.target.closest('.purchase-new'))return;
+    setTimeout(function(){
+      var input=document.querySelector('#newPurchase #purchaseSupplier');
+      if(!input)return;
+      var select=input;
+      if(input.tagName!=='SELECT'){
+        select=document.createElement('select');
+        select.id='purchaseSupplier';
+        input.replaceWith(select);
+      }
+      var records=[];
+      try{records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(error){records=[]}
+      var dedicated=[];
+      try{dedicated=JSON.parse(localStorage.getItem('piremaxx_fornecedores')||'[]')}catch(error){dedicated=[]}
+      records=records.concat(dedicated).filter(function(item){
+        var types=Array.isArray(item.tipos)?item.tipos:[];
+        var type=String(item.tipo||item.categoria||'').toLowerCase();
+        return types.includes('fornecedor')||types.includes('fornecedors')||type==='fornecedor';
+      });
+      var seen={};records=records.filter(function(item){var name=String(item.nome||item.name||'').trim();if(!name||seen[name])return false;seen[name]=true;return true});
+      select.innerHTML='<option value="">Selecione o fornecedor...</option>'+records.map(function(item){var name=String(item.nome||item.name||'');return '<option value="'+name.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})+'">'+name.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})+'</option>'}).join('');
+      if(!records.length)select.innerHTML+='<option disabled>Nenhum fornecedor cadastrado</option>';
+    },60);
+  });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  function readPurchases(){try{return JSON.parse(localStorage.getItem('piremaxx_compras')||'[]')}catch(e){return []}}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function render(){const body=document.querySelector('#purchases-panel .purchase-table tbody');if(!body)return;const list=readPurchases();body.innerHTML=list.length?list.map(function(item){return '<tr data-purchase-code="'+esc(item.code)+'"><td>□</td><td>'+esc(item.code)+'</td><td>'+esc(item.supplier||'')+(item.buyer?'<br><small>Comprador: '+esc(item.buyer)+'</small>':'')+'</td><td>'+esc(item.note||'')+'</td><td>'+esc(item.date||'')+'</td><td>'+esc(item.status||'Em aberto')+'</td><td>R$ '+esc(item.total||'0,00')+'</td></tr>'}).join(''):'<tr><td colspan="7">Nenhuma compra encontrada. <a href="#">Veja no mês anterior</a></td></tr>';const total=document.querySelector('#purchases-panel .purchase-total');if(total)total.innerHTML='<span>TOTAL LISTADO ('+list.length+' itens)</span><span>R$ '+(list.reduce(function(sum,item){return sum+(Number(String(item.total||'0').replace('.','').replace(',','.'))||0)},0)).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</span>'}
+  render();
+  document.addEventListener('click',function(event){if(event.target.closest&&event.target.closest('#purchases-panel input[type="checkbox"]'))return;const row=event.target.closest&&event.target.closest('#purchases-panel tr[data-purchase-code]');if(row){const item=readPurchases().find(function(x){return String(x.code)===String(row.dataset.purchaseCode)});if(item){window.__editingPurchase=item;document.querySelector('.purchase-new')?.click();setTimeout(function(){const modal=document.querySelector('#newPurchase');if(!modal)return;const set=function(selector,value){const field=modal.querySelector(selector);if(field)field.value=value||''};set('#purchaseSupplier',item.supplier);set('#purchaseBuyer',item.buyer);set('input[type="date"]',item.date);set('input[placeholder="Palavra-chave"]',item.note);if(window.calculatePurchaseTotal)window.calculatePurchaseTotal(modal)},80)}return}
+    const button=event.target.closest&&event.target.closest('.purchase-save');if(!button)return;const modal=button.closest('#newPurchase');if(!modal)return;event.preventDefault();event.stopImmediatePropagation();const value=function(selector){return modal.querySelector(selector)?.value||''},products=[...modal.querySelectorAll('.purchase-product input')],price=products[1]?.value||'0',qty=products[2]?.value||'0',total=window.calculatePurchaseTotal?window.calculatePurchaseTotal(modal):(Number(String(price).replace('.','').replace(',','.'))||0)*(Number(qty)||0),list=readPurchases(),editing=window.__editingPurchase,record={code:editing?editing.code:String(Date.now()).slice(-6),supplier:value('#purchaseSupplier'),buyer:value('#purchaseBuyer'),date:value('input[type="date"]')||new Date().toISOString().slice(0,10),note:value('input[placeholder="Palavra-chave"]'),status:editing?.status||'Em aberto',total:total.toLocaleString('pt-BR',{minimumFractionDigits:2})};const index=list.findIndex(function(x){return String(x.code)===String(record.code)});if(index>=0)list[index]=record;else list.unshift(record);localStorage.setItem('piremaxx_compras',JSON.stringify(list));window.__editingPurchase=null;modal.remove();render();},true);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  function injectBuyer(){
+    const modal=document.querySelector('#newPurchase');if(!modal||modal.querySelector('#purchaseBuyer'))return;
+    const form=modal.querySelector('.purchase-form')||modal, field=document.createElement('label');field.id='purchase-buyer-field';field.textContent='Comprador';
+    const select=document.createElement('select');select.id='purchaseBuyer';
+    let records=[];try{records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(x){return Array.isArray(x.tipos)&&x.tipos.includes('comprador')})}catch(e){}
+    select.innerHTML='<option value="">Selecione o comprador...</option>'+records.map(function(x){return '<option>'+String(x.nome).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</option>'}).join('');field.appendChild(select);
+    const supplier=modal.querySelector('#purchaseSupplier');if(supplier&&supplier.closest('label'))supplier.closest('label').insertAdjacentElement('afterend',field);else form.insertBefore(field,form.firstChild);
+  }
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.purchase-new'))setTimeout(injectBuyer,50)});
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  const observer=new MutationObserver(function(){
+    const form=document.querySelector('.new-purchase .purchase-form, #newPurchase .purchase-form');
+    if(!form||form.querySelector('#purchaseBuyer'))return;
+    const contacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(item){return Array.isArray(item.tipos)&&item.tipos.includes('comprador')});
+    const registered=JSON.parse(localStorage.getItem('piremaxx_compradores')||'[]');
+    const names=[...contacts.map(function(item){return item.nome}),...registered.map(function(item){return item.nome})].filter(Boolean).filter(function(name,index,list){return list.indexOf(name)===index});
+    const label=document.createElement('label');label.id='purchase-buyer-field';label.textContent='Comprador';
+    const select=document.createElement('select');select.id='purchaseBuyer';select.innerHTML='<option value="">Selecione o comprador...</option>'+(names.length?names.map(function(name){return '<option>'+name.replace(/[&<>"\']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})+'</option>').join(''):'<option disabled>Nenhum comprador cadastrado</option>');
+    label.appendChild(select);const supplier=form.querySelector('#purchaseSupplier')?.closest('label');if(supplier)supplier.insertAdjacentElement('afterend',label);else form.insertBefore(label,form.firstChild);
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
+});
+</script>
 <style>
 .collections-toolbar{display:flex!important;align-items:center;gap:7px;padding:17px 0!important;border-bottom:1px solid #ddd}
 .collections-toolbar button,.collections-toolbar select,.collections-toolbar input{height:38px;box-sizing:border-box;border:1px solid #cbd4d8;border-radius:4px;background:#fff;color:#587383;font-size:14px}
@@ -229,3 +421,5 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#collections-panel .collections-new');if(b&&!document.querySelector('.collection-modal'))setTimeout(fallback,0)});
 })();
 </script>
+<style id="purchase-window-position-fix">.new-purchase{inset:49px 0 0 143px!important}</style>
+<style id="purchase-window-position-fix-specific">html body:has(.purchase-content) .new-purchase{inset:49px 0 0 143px!important}</style>

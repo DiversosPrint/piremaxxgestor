@@ -9,6 +9,7 @@ const types = {
   '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
@@ -33,6 +34,21 @@ const server = http.createServer((req, res) => {
     if (error || !stats.isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('Not found');
+      return;
+    }
+
+    if (path.extname(file).toLowerCase() === '.html') {
+      fs.readFile(file, 'utf8', (readError, html) => {
+        if (readError) {
+          res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+          res.end('Unable to read page');
+          return;
+        }
+        const pwaTags = '<link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/mobile.css"><meta name="theme-color" content="#5e7d89"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><script src="/pwa.js" defer></script>';
+        const body = html.includes('/pwa.js') ? html : html.replace('</head>', `${pwaTags}</head>`);
+        res.writeHead(200, { 'Content-Type': types['.html'], 'Cache-Control': 'no-cache' });
+        res.end(body);
+      });
       return;
     }
 

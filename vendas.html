@@ -29,3 +29,53 @@
   setTimeout(applySalesTabIcons,120);
 })();
 </script>
+<style id="sales-selection-checkboxes">
+.sales-table th:first-child,.sales-table td:first-child{width:42px;text-align:center;vertical-align:middle}
+.sales-table input.sale-select,.sales-table input.sales-select-all{width:16px;height:16px;margin:0;accent-color:#209b98;cursor:pointer;vertical-align:middle}
+.sales-table tbody tr.sales-row-selected{background:#e6f7f5!important;box-shadow:inset 3px 0 #209b98}
+</style>
+<script>
+(function(){
+  function installSalesCheckboxes(){
+    var table=document.querySelector('.sales-table'),head=table&&table.querySelector('thead tr'),body=document.getElementById('saleRows');
+    if(!table||!head||!body||table.dataset.returnsView==='1')return;
+    var cell=head.cells[0];
+    if(cell){
+      var master=cell.querySelector('.sales-select-all');
+      if(!master){
+        cell.textContent='';
+        master=document.createElement('input');
+        master.type='checkbox';master.className='sales-select-all';master.id='salesSelectAll';
+        master.title='Selecionar todas as vendas visíveis';master.setAttribute('aria-label','Selecionar todas as vendas visíveis');
+        cell.appendChild(master);
+        master.addEventListener('change',function(){
+          body.querySelectorAll('tr:not([hidden]):not(.hidden) .sale-select').forEach(function(box){box.checked=master.checked;box.closest('tr').classList.toggle('sales-row-selected',box.checked)});
+          master.indeterminate=false;
+        });
+      }
+    }
+    body.querySelectorAll('tr').forEach(function(row){
+      var first=row.cells[0];
+      if(!first||row.id==='returnsEmptyRow'||row.cells.length<7)return;
+      var box=first.querySelector('.sale-select');
+      if(!box){
+        first.textContent='';box=document.createElement('input');box.type='checkbox';box.className='sale-select';
+        box.setAttribute('aria-label','Selecionar venda '+(row.cells[1]?.textContent.trim()||''));first.appendChild(box);
+      }
+      box.onchange=function(){
+        row.classList.toggle('sales-row-selected',box.checked);
+        var visible=[].slice.call(body.querySelectorAll('tr:not([hidden]):not(.hidden) .sale-select'));
+        var checked=visible.filter(function(item){return item.checked});
+        if(master){master.checked=visible.length>0&&checked.length===visible.length;master.indeterminate=checked.length>0&&checked.length<visible.length}
+      };
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    installSalesCheckboxes();
+    var body=document.getElementById('saleRows');
+    if(body)new MutationObserver(installSalesCheckboxes).observe(body,{childList:true});
+    setTimeout(installSalesCheckboxes,120);
+  });
+  window.installSalesCheckboxes=installSalesCheckboxes;
+})();
+</script>

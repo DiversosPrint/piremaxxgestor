@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gestão Piremaxx - Novo comprador</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body{background:#f2f3f4}.buyer-page{min-height:100vh}.buyer-head{height:49px;background:#b17828;color:#fff;padding:15px 18px;font-size:16px;font-weight:bold}.buyer-form{max-width:1180px;margin:0 auto;padding:22px 30px}.buyer-tabs{display:flex;gap:2px;margin-bottom:14px}.buyer-tabs button{border:0;background:#687f88;color:#fff;padding:11px 18px;font-size:12px;font-weight:bold}.buyer-tabs button.active{background:#b17828}.buyer-panel{background:#eee;border:1px solid #ddd;border-radius:4px;padding:18px 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px}.buyer-panel h3{grid-column:1/-1;color:#6a5330;font-size:14px;margin:0}.buyer-step{grid-column:1/-1;display:flex;align-items:center;gap:9px;border-bottom:1px solid #b17828;color:#6a5330;font-size:15px;padding:0 0 7px;margin:0 0 2px}.buyer-step-number{width:25px;height:25px;border-radius:50%;background:#6955a7;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:bold}.buyer-section-title{grid-column:1/-1;border-bottom:1px solid #cfcfcf;color:#6a5330;font-size:13px;font-weight:bold;padding:8px 0 5px;margin-top:8px}.buyer-profile{display:grid;grid-template-columns:92px 1fr;gap:16px;grid-column:1/-1;align-items:start}.buyer-image{height:78px;border:1px solid #6c5bc0;border-radius:3px;background:#f8f8f8;color:#8e9295;display:flex;align-items:center;justify-content:center;font-size:36px}.buyer-image small{font-size:10px}.buyer-status{display:flex;align-items:center;gap:7px;color:#587083;font-size:11px;margin-top:2px}.buyer-status input{width:auto;height:auto}.buyer-field{display:flex;flex-direction:column;gap:5px;color:#68747a;font-size:11px}.buyer-field.wide{grid-column:1/-1}.buyer-field input,.buyer-field select,.buyer-field textarea{height:30px;border:1px solid #6b5fc0;border-radius:3px;background:#fff;padding:5px 8px;color:#587083;box-sizing:border-box}.buyer-field textarea{height:72px;resize:vertical}.buyer-actions{border-top:1px solid #ddd;padding:17px 30px;display:flex;justify-content:flex-start;gap:6px}.buyer-actions button{border:0;border-radius:3px;padding:9px 17px;font-weight:bold;cursor:pointer}.buyer-save{background:#b17828;color:#fff}.buyer-back{background:#ddd;color:#666}.buyer-message{display:none;color:#a34c18;font-size:11px;grid-column:1/-1}.buyer-message.show{display:block}@media(max-width:700px){.buyer-head{height:53px;padding:17px 13px}.buyer-form{padding:18px 12px}.buyer-panel{grid-template-columns:1fr;padding:16px}.buyer-profile{grid-template-columns:78px 1fr}.buyer-field.wide,.buyer-section-title,.buyer-step{grid-column:1}.buyer-actions{padding:16px 12px;justify-content:stretch}.buyer-actions button{flex:1}.buyer-tabs{overflow-x:auto}.buyer-tabs button{white-space:nowrap}}
+    .buyer-panel.hidden{display:none}
+    .buyer-data-reference{background:#fff;border:0;border-radius:0;padding:0;display:block}
+    .buyer-data-reference .buyer-step{color:#40556a;border-bottom:1px solid #4c4ca5;margin-bottom:20px}
+    .buyer-data-reference .buyer-profile{grid-template-columns:82px 1fr;max-width:100%;margin-bottom:8px}
+    .buyer-data-reference .buyer-image{width:78px;height:78px}
+    .buyer-inline-fields{display:grid;grid-template-columns:1.2fr 1.2fr 1.2fr 1.2fr;gap:7px;margin:0 0 24px}
+    .buyer-inline-fields .buyer-field input,.buyer-inline-fields .buyer-field select{height:26px;padding:2px 5px}
+    .buyer-linked{margin-top:20px}.buyer-linked .buyer-step{color:#40556a;border-bottom:1px solid #4c4ca5}
+    .buyer-linked-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .buyer-list-box{border:1px solid #5252a8;background:#fff}.buyer-list-title{height:25px;background:#4a4a4a;color:#fff;font-size:11px;font-weight:bold;padding:6px;box-sizing:border-box}.buyer-list{height:180px;overflow:auto;padding:4px}.buyer-list-row{height:28px;background:linear-gradient(#fff,#e6e6e6);border:1px solid #d4d4d4;color:#587083;font-size:11px;padding:7px;box-sizing:border-box;margin-bottom:2px}.buyer-list-row button{float:right;border:0;background:transparent;color:#4caf50;font-weight:bold}.buyer-list-actions{border:1px solid #5252a8;border-top:0;padding:7px;background:#f5f5f5}.buyer-list-actions button{border:1px solid #bbb;background:#f8f8f8;color:#587083;padding:6px;font-size:10px}
+    .buyer-reference-actions{border-top:1px solid #ddd;background:#f2f2f2;padding:10px 6px;margin:18px 0 0}
+    @media(max-width:800px){.buyer-inline-fields{grid-template-columns:1fr 1fr}.buyer-linked-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <aside class="sidebar"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav></nav></aside>
+  <main class="buyer-page">
+    <header class="topbar"><div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="search">em:compradores <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS</small></div></header>
+    <div class="buyer-head">Novo comprador</div>
+    <section class="buyer-form">
+      <div id="buyer-data" class="buyer-panel buyer-data-reference">
+        <div class="buyer-step"><span class="buyer-step-number">1</span> Defina as informações gerais sobre este comprador</div>
+        <div class="buyer-profile">
+          <div><div class="buyer-image" aria-label="Imagem do comprador" id="buyer-image-preview">▣</div><input id="buyer-image-file" type="file" accept="image/*" hidden><input id="buyer-camera-file" type="file" accept="image/*" capture="environment" hidden><div class="buyer-image-actions"><button type="button" id="buyer-upload-image">Carregar imagem</button><button type="button" id="buyer-camera-image">Abrir câmera</button></div></div>
+          <div><label class="buyer-status"><input id="buyer-active" type="checkbox" checked> Ativo</label><p style="font-size:11px;color:#888;margin-top:20px">Imagem do comprador</p></div>
+        </div>
+        <div class="buyer-inline-fields">
+          <label class="buyer-field">Descrição *<input id="buyer-name" required></label>
+          <label class="buyer-field">Código de integração<input id="buyer-code"></label>
+          <label class="buyer-field">Comprador responsável<select id="buyer-owner"><option value="">Selecione...</option><option>Administrativo</option><option>Vendas</option><option>Compras</option></select></label>
+          <label class="buyer-field">Tipo de comprador<select id="buyer-type"><option value="">Selecione...</option><option>Interno</option><option>Externo</option><option>Terceirizado</option></select></label>
+        </div>
+        <div class="buyer-linked">
+          <div class="buyer-step"><span class="buyer-step-number">2</span> Compradores vinculados ao cadastro</div>
+          <div class="buyer-linked-grid">
+            <div><div class="buyer-list-box"><div class="buyer-list-title">Compradores selecionados (0) - Esta lista é limitada a 100 itens</div><div class="buyer-list selected-list"><div class="buyer-list-row empty-buyer">Nenhum comprador selecionado</div></div></div><div class="buyer-list-actions"><button type="button">Remover todos os compradores listados</button></div></div>
+            <div><div class="buyer-list-box"><div class="buyer-list-title">Compradores disponíveis - Esta lista é limitada a 100 itens</div><div class="buyer-list available-list"><div class="buyer-list-row">Administrativo <button type="button" aria-label="Adicionar">⊕</button></div><div class="buyer-list-row">Compras <button type="button" aria-label="Adicionar">⊕</button></div><div class="buyer-list-row">Vendas <button type="button" aria-label="Adicionar">⊕</button></div></div></div><div class="buyer-list-actions"><button type="button">Adicionar todos os compradores listados</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div id="buyer-address" class="buyer-panel hidden">
+        <div class="buyer-step"><span class="buyer-step-number">2</span> Informe o endereço do comprador</div>
+        <h3>Endereço do comprador</h3>
+        <label class="buyer-field">CEP<input id="buyer-cep"></label>
+        <label class="buyer-field">Estado<select id="buyer-state"><option></option><option>Rio de Janeiro</option><option>São Paulo</option></select></label>
+        <label class="buyer-field">Cidade<input id="buyer-city"></label>
+        <label class="buyer-field wide">Endereço<input id="buyer-address-line"></label>
+        <label class="buyer-field">Número<input id="buyer-number"></label>
+        <label class="buyer-field">Complemento<input id="buyer-complement"></label>
+        <label class="buyer-field">Bairro<input id="buyer-neighborhood"></label>
+      </div>
+      <div id="buyer-extra" class="buyer-panel hidden">
+        <div class="buyer-step"><span class="buyer-step-number">3</span> Complete as informações adicionais</div>
+        <h3>Informações adicionais</h3>
+        <label class="buyer-field">Indicador de IE<select><option>Não contribuinte</option><option>Contribuinte ICMS</option></select></label>
+        <label class="buyer-field">Inscrição Estadual<input></label>
+        <label class="buyer-field">Inscrição Municipal<input></label>
+        <label class="buyer-field">Palavras-chave<input></label>
+        <label class="buyer-field wide">Observações<textarea></textarea></label>
+      </div>
+    </section>
+    <div class="buyer-actions buyer-reference-actions"><button class="buyer-save" type="button">● Salvar</button><button class="buyer-back" type="button">✖ Cancelar</button></div>
+  </main>
+  <script src="menu-lateral.js?v=buyer-form-1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      const tabs=[...document.querySelectorAll('.buyer-tabs button')],panels=[document.querySelector('#buyer-data'),document.querySelector('#buyer-address'),document.querySelector('#buyer-extra')];
+      tabs.forEach(function(tab,index){tab.onclick=function(){tabs.forEach(function(item){item.classList.remove('active')});tab.classList.add('active');panels.forEach(function(panel,panelIndex){panel.classList.toggle('hidden',panelIndex!==index)})}});
+      const name=document.querySelector('#buyer-name'),save=document.querySelector('.buyer-save');
+      document.querySelector('.buyer-back').onclick=function(){location.href='clientes.html#compradores'};
+      const selected=document.querySelector('.selected-list'),available=document.querySelector('.available-list');
+      function updateCount(){const title=document.querySelector('.buyer-list-title');if(title)title.textContent='Compradores selecionados ('+selected.querySelectorAll('.buyer-list-row:not(.empty-buyer)').length+') - Esta lista é limitada a 100 itens'}
+      function addRow(row){if(row.classList.contains('empty-buyer'))row.remove();const copy=row.cloneNode(true);copy.querySelector('button')?.remove();copy.innerHTML=copy.textContent+' <button type="button" aria-label="Remover">✖</button>';selected.appendChild(copy);row.remove();updateCount()}
+      available?.querySelectorAll('.buyer-list-row').forEach(function(row){row.querySelector('button')?.addEventListener('click',function(){addRow(row)})});
+      selected?.addEventListener('click',function(event){if(!event.target.matches('button'))return;const row=event.target.closest('.buyer-list-row');if(!row)return;row.remove();if(!selected.querySelector('.buyer-list-row'))selected.innerHTML='<div class="buyer-list-row empty-buyer">Nenhum comprador selecionado</div>';updateCount()});
+      document.querySelector('.buyer-list-actions button')?.addEventListener('click',function(){selected.innerHTML='<div class="buyer-list-row empty-buyer">Nenhum comprador selecionado</div>';updateCount()});
+      document.querySelectorAll('.buyer-list-actions button')[1]?.addEventListener('click',function(){[...available.querySelectorAll('.buyer-list-row')].forEach(addRow)});
+      save.onclick=function(){
+        if(!name.value.trim()){name.focus();alert('Informe o nome ou razão social do comprador.');return}
+        const records=JSON.parse(localStorage.getItem('piremaxx_compradores')||'[]');
+        const record={id:Date.now(),nome:name.value.trim(),codigo:document.querySelector('#buyer-code').value,telefone:'',email:'',ativo:document.querySelector('#buyer-active').checked,tipo:'comprador'};
+        records.push(record);
+        localStorage.setItem('piremaxx_compradores',JSON.stringify(records));
+        const contacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]');
+        contacts.push({id:record.id,nome:record.nome,tipos:['comprador'],telefone:record.telefone,dados:{'Nome / Razão Social':record.nome,'Código de integração':record.codigo},endereco:{},adicionais:{}});
+        localStorage.setItem('piremaxx_contatos',JSON.stringify(contacts));
+        location.href='clientes.html#compradores';
+      };
+    });
+  </script>
+</body>
+</html>
+<style>.buyer-image-actions{display:flex;gap:4px;margin-top:5px}.buyer-image-actions button{border:1px solid #bbb;background:#f5f5f5;color:#587083;padding:4px 6px;font-size:10px;cursor:pointer}.buyer-image.has-image{background-size:cover;background-position:center;background-repeat:no-repeat;color:transparent}</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  const upload=document.querySelector('#buyer-upload-image'),camera=document.querySelector('#buyer-camera-image'),file=document.querySelector('#buyer-image-file'),cameraFile=document.querySelector('#buyer-camera-file'),preview=document.querySelector('#buyer-image-preview');let imageData='';
+  function showImage(input){const selected=input.files&&input.files[0];if(!selected)return;const reader=new FileReader();reader.onload=function(){const image=new Image();image.onload=function(){const size=240,canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=size;canvas.height=size;ctx.fillStyle='#f8f8f8';ctx.fillRect(0,0,size,size);const scale=Math.min(size/image.width,size/image.height),width=image.width*scale,height=image.height*scale;ctx.drawImage(image,(size-width)/2,(size-height)/2,width,height);imageData=canvas.toDataURL('image/jpeg',0.86);preview.style.backgroundImage='url("'+imageData+'")';preview.classList.add('has-image')};image.src=reader.result};reader.readAsDataURL(selected)}
+  upload?.addEventListener('click',function(){file.click()});camera?.addEventListener('click',function(){cameraFile.click()});file?.addEventListener('change',function(){showImage(file)});cameraFile?.addEventListener('change',function(){showImage(cameraFile)});
+  const params=new URLSearchParams(location.search),edit=params.get('edit'),contacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),old=edit&&contacts.find(function(item){return item.nome===edit});
+  if(old){document.querySelector('#buyer-name').value=old.nome||'';document.querySelector('#buyer-code').value=old.dados?.['Código de integração']||'';document.querySelector('#buyer-owner').value=old.dados?.['Comprador responsável']||'';document.querySelector('#buyer-type').value=old.dados?.['Tipo de comprador']||'';document.querySelector('#buyer-active').checked=old.ativo!==false;if(old.imagem){imageData=old.imagem;preview.style.backgroundImage='url("'+imageData+'")';preview.classList.add('has-image')}}
+  const save=document.querySelector('.buyer-save');if(!save)return;save.onclick=function(){const name=document.querySelector('#buyer-name'),code=document.querySelector('#buyer-code'),owner=document.querySelector('#buyer-owner'),type=document.querySelector('#buyer-type');if(!name.value.trim()){name.focus();alert('Informe a descrição do comprador.');return}const current=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),records=JSON.parse(localStorage.getItem('piremaxx_compradores')||'[]'),id=old?.id||Date.now(),registro={id:id,nome:name.value.trim(),tipos:['comprador'],telefone:'',dados:{'Nome / Razão Social':name.value.trim(),'Código de integração':code.value,'Comprador responsável':owner.value,'Tipo de comprador':type.value},endereco:{},adicionais:{},imagem:imageData,ativo:document.querySelector('#buyer-active').checked};localStorage.setItem('piremaxx_contatos',JSON.stringify(old?current.map(function(item){return item.id===old.id?registro:item}):current.concat(registro)));const buyer={id:id,nome:registro.nome,codigo:code.value,responsavel:owner.value,tipoComprador:type.value,ativo:registro.ativo,imagem:imageData,tipo:'comprador'};localStorage.setItem('piremaxx_compradores',JSON.stringify(old?records.map(function(item){return item.id===old.id?buyer:item}):records.concat(buyer)));location.href='clientes.html#compradores'};
+});
+</script>

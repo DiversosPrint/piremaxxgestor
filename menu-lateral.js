@@ -2,13 +2,14 @@
   const sidebar=document.querySelector('.sidebar');
   if(!sidebar)return;
   const path=(location.pathname.split('/').pop()||'index.html').toLowerCase();
-  const active=path==='vendas.html'?'vendas':path==='compras.html'?'compras':(path==='clientes.html'||path==='novo-cliente.html')?'clientes':(path==='produtos.html'||path==='novo-produto.html')?'produtos':'home';
+  const active=path==='frota.html'?'frota':path==='vendas.html'?'vendas':path==='compras.html'?'compras':(path==='clientes.html'||path==='novo-cliente.html')?'clientes':(path==='produtos.html'||path==='novo-produto.html')?'produtos':'home';
   const items=[
     ['home','Home','index.html','icons8-home-48.png','dashboard-link'],
-    ['financeiro','Financeiro','index.html','icons8-financial-64.png','finance-link'],
+    ['financeiro','Financeiro','financeiro.html','icons8-financial-64.png','finance-link'],
     ['vendas','Vendas','vendas.html','icons8-buy-for-cash-48.png',''],
     ['compras','Compras','compras.html','icons8-buy-48.png',''],
-    ['clientes','Clientes','clientes.html','icons8-budget-48.png',''],
+    ['frota','Frota','frota.html','icons8-shipped-48.png',''],
+    ['clientes','Contatos','clientes.html','icons8-budget-48.png',''],
     ['produtos','Produtos','produtos.html','icons8-product-48.png',''],
     ['boletos','Boletos','#','icons8-boleto-bancário-48.png',''],
     ['cobrancas','Cobranças','#','icons8-billing-32.png',''],
@@ -20,6 +21,12 @@
   sidebar.classList.add('shared-sidebar');
   function render(){sidebar.innerHTML='<div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav>'+items.map(x=>'<a class="'+x[4]+' '+(x[0]===active?'active':'')+'" href="'+x[2]+'" data-menu-key="'+x[0]+'"><img src="public/icons/'+x[3]+'" alt=""><b>'+x[1]+'</b></a>').join('')+'<a href="#" data-menu-key="suporte"><span>❔</span><b>Suporte online</b></a></nav>'}
   render();
+  if(path==='clientes.html'){
+    document.title='Gestão Piremaxx - Contatos';
+    const title=document.querySelector('.clients-title');
+    if(title)title.textContent='Contatos';
+    setTimeout(function(){document.title='Gestão Piremaxx - Contatos'},0);
+  }
   if(!document.getElementById('shared-menu-style')){
     const style=document.createElement('style');
     style.id='shared-menu-style';
@@ -29,6 +36,137 @@
     if(sharedBrand){sharedBrand.style.display='block';sharedBrand.style.height='49px';sharedBrand.style.backgroundImage="url('public/logo.webp')";sharedBrand.style.backgroundPosition='center center';sharedBrand.style.backgroundRepeat='no-repeat';sharedBrand.style.backgroundSize='120px auto';sharedBrand.style.fontSize='0';}
   }
   document.addEventListener('DOMContentLoaded',render);
+})();
+
+// Última normalização da lista de Fornecedores, após os scripts legados.
+(function(){
+  if((location.pathname.split('/').pop()||'').toLowerCase()!=='clientes.html')return;
+  const initialSupplierHash=location.hash==='#fornecedors'||location.hash==='#fornecedores';
+  if(!initialSupplierHash)return;
+  function renderSuppliers(){
+    const tab=[...document.querySelectorAll('.client-tabs button')].find(function(item){const text=item.textContent.toLowerCase();return text.includes('fornecedor')&&!text.includes('comprador')});
+    if(tab)tab.classList.add('active');
+    document.querySelectorAll('.client-tabs button').forEach(function(item){if(item!==tab)item.classList.remove('active')});
+    const search=document.querySelector('.client-search input');if(search)search.placeholder='Buscar fornecedores';
+    const body=document.querySelector('.client-table tbody');if(body){let records=[];try{records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(e){}let dedicated=[];try{dedicated=JSON.parse(localStorage.getItem('piremaxx_fornecedores')||'[]')}catch(e){}records=records.concat(dedicated);records=records.filter(function(item){const tipos=Array.isArray(item.tipos)?item.tipos:[];const tipo=String(item.tipo||item.categoria||item.category||'').toLowerCase();return tipos.includes('fornecedor')||tipos.includes('fornecedors')||tipo==='fornecedor'});const seen={};records=records.filter(function(item){const key=String(item.id||item.nome||'');if(seen[key])return false;seen[key]=true;return true});body.innerHTML=records.length?records.map(function(item){const cells=[item.id||'',item.nome||item.name||'',item.telefone||item.phone||'', '', (item.cidade||item.city||'')+(item.uf?'/'+item.uf:'')];return '<tr><td>□</td>'+cells.map(function(value){return '<td>'+String(value).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})+'</td>'}).join('')+'</tr>'}).join(''):'<tr><td colspan="6" class="empty">Nenhum fornecedor encontrado.</td></tr>'}
+    history.replaceState(null,'','clientes.html#fornecedores');document.title='Gestão Piremaxx - Fornecedores';
+  }
+  setTimeout(renderSuppliers,2500);
+  setTimeout(renderSuppliers,3800);
+})();
+
+// No celular, o menu original abre sobre o conteúdo e não reduz a largura da
+// página. O botão é criado aqui para funcionar em todas as telas que usam o
+// menu compartilhado.
+(function(){
+  function setupMobileMenu(){
+    const sidebar=document.querySelector('.sidebar');
+    const topbar=document.querySelector('main>.topbar, main>.products-topbar');
+    if(!sidebar||!topbar||topbar.querySelector('.mobile-menu-toggle'))return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='mobile-menu-toggle';
+    button.setAttribute('aria-label','Abrir menu');
+    button.setAttribute('aria-expanded','false');
+    button.textContent='☰';
+    topbar.insertBefore(button,topbar.firstChild);
+    const backdrop=document.createElement('button');
+    backdrop.type='button';
+    backdrop.className='mobile-menu-backdrop';
+    backdrop.setAttribute('aria-label','Fechar menu');
+    document.body.appendChild(backdrop);
+    function close(){
+      document.body.classList.remove('mobile-menu-open');
+      button.setAttribute('aria-expanded','false');
+    }
+    function toggle(){
+      const open=document.body.classList.toggle('mobile-menu-open');
+      button.setAttribute('aria-expanded',String(open));
+    }
+    button.addEventListener('click',toggle);
+    backdrop.addEventListener('click',close);
+    sidebar.addEventListener('click',function(event){
+      if(event.target.closest('a'))close();
+    });
+    window.addEventListener('resize',function(){
+      if(window.innerWidth>700)close();
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupMobileMenu);
+  else setupMobileMenu();
+})();
+
+// Aba adicional de compradores na tela de Contatos. Ela é adicionada ao final
+// do DOM para preservar os índices legados de Fornecedores e Transportadores,
+// mas recebe ordem visual logo após Clientes.
+(function(){
+  if((location.pathname.split('/').pop()||'').toLowerCase()!=='clientes.html')return;
+  function setupBuyersTab(){
+    const tabs=document.querySelector('.client-tabs');
+    const table=document.querySelector('.client-table');
+    if(!tabs||!table||tabs.querySelector('.buyers-tab'))return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='buyers-tab';
+    button.textContent='▣ COMPRADORES';
+    tabs.appendChild(button);
+    const all=[...tabs.querySelectorAll('button')];
+    if(all[0])all[0].style.order='0';
+    if(all[1])all[1].style.order='2';
+    if(all[2])all[2].style.order='3';
+    button.style.order='1';
+    const style=document.createElement('style');
+    style.textContent='.client-tabs .buyers-tab{background:#b17828!important}.client-tabs .buyers-tab.active{background:#d49a35!important}.client-tabs .buyers-tab:hover{background:#c1882e!important}';
+    document.head.appendChild(style);
+    button.addEventListener('click',function(){
+      all.concat(button).forEach(function(item){item.classList.remove('active')});
+      button.classList.add('active');
+      const body=table.querySelector('tbody');
+      const records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(item){return Array.isArray(item.tipos)&&item.tipos.includes('comprador')});
+      if(body)body.innerHTML=records.length?records.map(function(item){return '<tr><td>□</td><td>'+String(item.id||'')+'</td><td>'+String(item.nome||'')+'</td><td>'+String(item.telefone||'')+'</td><td></td><td>'+String(item.cidade||'')+(item.uf?'/'+String(item.uf):'')+'</td></tr>'}).join(''):'<tr><td colspan="6" class="empty">Nenhum comprador encontrado.</td></tr>';
+      const search=document.querySelector('.client-search input');
+      if(search)search.placeholder='Buscar compradores';
+      const novo=document.querySelector('.client-toolbar button');
+      if(novo){
+        novo.style.background='#b17828';
+        novo.onclick=function(){location.href='novo-comprador.html'};
+      }
+      document.title='Gestão Piremaxx - Compradores';
+      history.replaceState(null,'','clientes.html#compradores');
+    });
+    document.addEventListener('click',function(event){
+      if(location.hash!=='#compradores')return;
+      const rowName=event.target.closest('.client-table tbody td:nth-child(3)');
+      if(rowName&&rowName.textContent.trim()&&!rowName.textContent.includes('Nenhum')){
+        event.preventDefault();event.stopImmediatePropagation();
+        location.href='novo-comprador.html?edit='+encodeURIComponent(rowName.textContent.trim());return;
+      }
+      const target=event.target.closest('.client-toolbar button:first-child');
+      if(!target)return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      location.href='novo-comprador.html';
+    },true);
+    if(location.hash==='#compradores')button.click();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(setupBuyersTab,450)});
+  else setTimeout(setupBuyersTab,450);
+})();
+
+// O botão Novo usa o mesmo cadastro completo em todas as categorias da guia
+// Contatos. A categoria da aba atual chega ao formulário para marcar o tipo
+// correto, sem impedir que o usuário marque mais de uma opção.
+(function(){
+  if((location.pathname.split('/').pop()||'').toLowerCase()!=='clientes.html')return;
+  document.addEventListener('click',function(event){
+    const target=event.target.closest('.client-toolbar button:first-child');
+    if(!target)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const hash=location.hash.replace('#','');
+    const tipo=hash==='fornecedores'?'fornecedor':hash==='transportadores'?'transportador':hash==='compradores'?'comprador':'cliente';
+    location.href='novo-cliente.html?tipo='+tipo;
+  },true);
 })();
 
 // Reproduz a transição curta do original ao trocar abas: o enquadramento fica
@@ -50,6 +188,15 @@
     clearTimeout(timer);
     timer=setTimeout(function(){region.classList.remove('shared-tab-transition')},280);
   },true);
+})();
+
+// Corrige o hash antigo digitado como "fornecedors" e reabre a lista correta.
+(function(){
+  if((location.pathname.split('/').pop()||'').toLowerCase()!=='clientes.html')return;
+  if(location.hash==='#fornecedors'){
+    history.replaceState(null,'','clientes.html#fornecedores');
+    setTimeout(function(){const tab=[...document.querySelectorAll('.client-tabs button')].find(function(item){return item.textContent.toLowerCase().includes('fornecedor')&&!item.textContent.toLowerCase().includes('comprador')});if(tab)tab.click();history.replaceState(null,'','clientes.html#fornecedores')},1000);
+  }
 })();
 
 // Aplica o enquadramento final antes da primeira pintura da página. Isso evita
