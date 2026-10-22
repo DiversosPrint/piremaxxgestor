@@ -40,45 +40,128 @@ document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
 },0)});
 </script>
 <script>
-// Salvamento final do cadastro genérico: executa antes das rotinas legadas e
-// evita que um segundo handler descarte a categoria escolhida.
-document.addEventListener('DOMContentLoaded',function(){
-  var save=document.querySelector('.save');
-  if(!save)return;
-  save.addEventListener('click',function(event){
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    var fields=[].slice.call(document.querySelectorAll('#dados .field'));
-    var read=function(label){var field=fields.find(function(item){return item.textContent.toLowerCase().includes(label.toLowerCase())});var control=field&&field.querySelector('input:not([type=checkbox]),select,textarea');return control?control.value.trim():''};
-    var name=read('Nome / Razão Social'), box=document.querySelector('.contact-types'), types=box?[].slice.call(box.querySelectorAll('input:checked')).map(function(input){return input.value}):[];
-    if(!name){alert('Informe o Nome / Razão Social.');return}
-    if(!types.length){alert('Selecione pelo menos um tipo de contato.');return}
-    var all=[];try{all=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(error){all=[]}
-    var params=new URLSearchParams(location.search),key=params.get('edit'),old=key&&all.find(function(item){return String(item.nome)===String(key)});
-    var record={id:old&&old.id||Date.now(),nome:name,tipos:types,telefone:read('Telefone(s)'),dados:{'Nome / Razão Social':name,'CPF / CNPJ':read('CPF / CNPJ'),'Nome fantasia':read('Nome fantasia'),'Nome do contato':read('Nome do contato'),'Telefone(s)':read('Telefone(s)'),'E-mail(s)':read('E-mail(s)')},endereco:old&&old.endereco||{},adicionais:old&&old.adicionais||{}};
-    all=old?all.map(function(item){return item.id===old.id?record:item}):all.concat(record);
-    localStorage.setItem('piremaxx_contatos',JSON.stringify(all));
-    var target={cliente:'clientes',fornecedor:'fornecedores',comprador:'compradores',transportador:'transportadores'}[types[0]]||'clientes';
-    location.href='clientes.html#'+target;
-  },true);
-});
+// Salvamento final e configuração automática pela aba de origem (Cliente, Comprador, Fornecedor, Transportador)
+(function(){
+  var params=new URLSearchParams(location.search);
+  var editKey=params.get('edit');
+  var rawTipo=(params.get('tipo')||'').toLowerCase();
+  var allContacts=[];
+  try{allContacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(e){allContacts=[]}
+  var existing=editKey&&allContacts.find(function(x){return String(x.nome).trim()===String(editKey).trim()||String(x.id)===String(editKey)});
+  var tipo=['cliente','comprador','fornecedor','transportador'].includes(rawTipo)?rawTipo:(existing&&Array.isArray(existing.tipos)&&existing.tipos[0]?existing.tipos[0]:'cliente');
+
+  var meta={
+    cliente:{titleNew:'Novo cliente',titleEdit:'Editar cliente',color:'#64a3f5',hash:'clientes',search:'em:clientes '},
+    comprador:{titleNew:'Novo comprador',titleEdit:'Editar comprador',color:'#b17828',hash:'compradores',search:'em:compradores '},
+    fornecedor:{titleNew:'Novo fornecedor',titleEdit:'Editar fornecedor',color:'#f36f21',hash:'fornecedores',search:'em:fornecedores '},
+    transportador:{titleNew:'Novo transportador',titleEdit:'Editar transportador',color:'#4dcc00',hash:'transportadores',search:'em:transportadores '}
+  }[tipo]||{titleNew:'Novo cliente',titleEdit:'Editar cliente',color:'#64a3f5',hash:'clientes',search:'em:clientes '};
+
+  function applyCategoryTheme(){
+    var pageTitle=editKey?meta.titleEdit:meta.titleNew;
+    document.title='Gestão Piremaxx - '+pageTitle;
+    var head=document.querySelector('.client-form-head');
+    if(head){
+      head.textContent=pageTitle;
+      head.style.setProperty('background',meta.color,'important');
+    }
+    var style=document.getElementById('auto-contact-type-style');
+    if(!style){
+      style=document.createElement('style');
+      style.id='auto-contact-type-style';
+      document.head.appendChild(style);
+    }
+    style.textContent=
+      '.new-client .contact-types{display:none!important}'+
+      '.new-client .form-panel{width:100%!important;margin-left:0!important;box-sizing:border-box!important}'+
+      '.new-client .client-tabs button{color:'+meta.color+'!important}'+
+      '.new-client .client-tabs button.active{background:'+meta.color+'!important;color:#fff!important}';
+    var backBtn=document.querySelector('.actions .back');
+    if(backBtn){
+      backBtn.onclick=function(e){
+        e.preventDefault();
+        location.href='clientes.html#'+meta.hash;
+      };
+    }
+    var box=document.querySelector('.contact-types');
+    if(box){
+      box.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
+        cb.checked=(cb.value===tipo);
+      });
+    }
+  }
+  applyCategoryTheme();
+  document.addEventListener('DOMContentLoaded',function(){
+    applyCategoryTheme();
+    var save=document.querySelector('.save');
+    if(!save)return;
+    save.addEventListener('click',function(event){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      var readPanel=function(id){
+        var o={};
+        document.querySelectorAll('#'+id+' .field').forEach(function(f){
+          var k=(f.querySelector('span')?.textContent.trim()||[].slice.call(f.childNodes).find(function(n){return n.nodeType===3})?.textContent.trim()||'').replace(/[:?]/g,'').trim();
+          var c=f.querySelector('input:not([type=checkbox]),select,textarea');
+          if(k&&c)o[k]=c.value.trim();
+        });
+        return o;
+      };
+      var dados=readPanel('dados');
+      var endereco=readPanel('endereco');
+      var adicionais=readPanel('adicionais');
+      var name=dados['Nome / Razão Social']||'';
+      if(!name){
+        var firstInput=document.querySelector('#dados input:not([type=checkbox])');
+        name=firstInput?firstInput.value.trim():'';
+      }
+      if(!name){
+        alert('Informe o Nome / Razão Social.');
+        return;
+      }
+      var all=[];
+      try{all=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(err){all=[]}
+      var old=editKey&&all.find(function(item){return String(item.nome).trim()===String(editKey).trim()||String(item.id)===String(editKey)});
+      var types=old&&Array.isArray(old.tipos)&&old.tipos.length?(old.tipos.includes(tipo)?old.tipos:[tipo].concat(old.tipos)):[tipo];
+      var entregas=[].slice.call(document.querySelectorAll('.delivery-form')).map(function(f){
+        var o={};
+        f.querySelectorAll('input,select,textarea').forEach(function(x){if(x.name)o[x.name]=x.value});
+        return o;
+      });
+      var controls=function(id){return [].slice.call(document.querySelectorAll('#'+id+' input:not([type=checkbox]),#'+id+' select,#'+id+' textarea')).map(function(x){return x.value})};
+      var record={
+        id:(old&&old.id)||Date.now(),
+        nome:name,
+        tipos:types,
+        telefone:dados['Telefone(s)']||'',
+        cidade:endereco['Cidade']||(old&&old.cidade)||'',
+        uf:endereco['Estado']||(old&&old.uf)||'',
+        dados:dados,
+        endereco:endereco,
+        adicionais:adicionais,
+        snap:{dados:controls('dados'),endereco:controls('endereco'),adicionais:controls('adicionais')},
+        entregas:entregas
+      };
+      all=old?all.map(function(item){return String(item.id)===String(old.id)?record:item}):all.concat(record);
+      localStorage.setItem('piremaxx_contatos',JSON.stringify(all));
+      if(window.piremaxxAudit){
+        window.piremaxxAudit.log({
+          module:'Contatos',
+          action:(old?'Editou ':'Novo ')+tipo,
+          detail:name,
+          value:tipo.toUpperCase()
+        });
+      }
+      location.href='clientes.html#'+meta.hash;
+    },true);
+  });
+})();
 </script>
 <style>
-/* Mantém o seletor de categorias integrado ao formulário, sem sobreposição. */
 .new-client .client-form{width:auto!important;max-width:1180px!important;margin:0 auto!important;padding:28px 48px!important}
-.new-client .form-panel{width:auto!important;margin-left:0!important}
-.new-client .contact-types{position:static!important;width:auto!important;margin:0 0 16px!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:18px!important;padding:12px 16px!important;box-sizing:border-box!important}
-.new-client .contact-types>span{width:100%!important;flex-basis:100%!important;margin-bottom:3px!important}
-@media(max-width:700px){.new-client .client-form{padding:20px 12px!important}.new-client .contact-types{align-items:flex-start!important;gap:10px 14px!important}.new-client .contact-types label{flex:0 0 46%!important}}
-</style>
-<script>if(new URLSearchParams(location.search).get('tipo')==='comprador'){location.replace('novo-comprador.html')}</script>
-<style>
-.new-client .client-form{max-width:1180px;margin:0 auto;padding:40px 75px}
-.new-client .form-panel{grid-template-columns:repeat(2,minmax(0,1fr));margin-left:165px}
-.new-client .contact-types{position:absolute;top:104px;left:0;width:145px;display:flex;flex-direction:column;gap:16px;font-size:11px}
-.new-client .contact-types span{margin-bottom:4px}
-.new-client .client-form{position:relative}
-@media(max-width:900px){.new-client .client-form{padding:25px}.new-client .form-panel{margin-left:0}.new-client .contact-types{position:static;width:auto;margin-bottom:16px}}
+.new-client .form-panel{width:100%!important;margin-left:0!important;grid-template-columns:repeat(2,minmax(0,1fr))}
+.new-client .contact-types{display:none!important}
+@media(max-width:700px){.new-client .client-form{padding:20px 12px!important}}
 </style>
 <script src="vendas-importadas.js?v=2"></script>
 <script>
@@ -245,26 +328,5 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 <script>(function(){function fix(){var link=[].slice.call(document.querySelectorAll('.sidebar nav a')).find(function(a){return a.textContent.indexOf('Financeiro')>=0});if(link)link.href='financeiro.html'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix);else fix()})();</script>
-<style>.contact-types{display:flex!important;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 14px;background:#f1f1f1;border:1px solid #ddd;border-radius:3px}.contact-types>span{width:100%;color:#68747a;font-weight:bold}.contact-types label{display:flex;align-items:center;gap:7px;color:#587083}.contact-types input{width:auto!important;height:auto!important}</style>
-<script>
-document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
-  var data=document.querySelector('#dados'), box=data&&data.querySelector('.contact-types');
-  if(!data||!box)return;
-  if(!box.querySelector('input[value="comprador"]')){var label=document.createElement('label');label.innerHTML='<input type="checkbox" value="comprador"> Comprador';box.appendChild(label)}
-  var params=new URLSearchParams(location.search), tipo=params.get('tipo');
-  if(tipo)box.querySelectorAll('input').forEach(function(input){input.checked=input.value===tipo});
-  var save=document.querySelector('.save');if(!save)return;
-  save.onclick=function(){
-    var fields=[].slice.call(document.querySelectorAll('#dados .field'));
-    var read=function(label){var field=fields.find(function(item){return item.textContent.includes(label)});var control=field&&field.querySelector('input,select,textarea');return control?control.value:''};
-    var name=read('Nome / Razão Social').trim(), tipos=[].slice.call(box.querySelectorAll('input:checked')).map(function(input){return input.value});
-    if(!name){alert('Informe o Nome / Razão Social.');return}if(!tipos.length){alert('Selecione pelo menos um tipo de contato.');return}
-    var all=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),key=params.get('edit'),old=key&&all.find(function(item){return item.nome===key});
-    var obj={id:old&&old.id||Date.now(),nome:name,tipos:tipos,telefone:read('Telefone(s)'),dados:{'Nome / Razão Social':name,'CPF / CNPJ':read('CPF / CNPJ'),'Nome fantasia':read('Nome fantasia'),'Nome do contato':read('Nome do contato'),'Telefone(s)':read('Telefone(s)'),'E-mail(s)':read('E-mail(s)')},endereco:{},adicionais:{}};
-    localStorage.setItem('piremaxx_contatos',JSON.stringify(old?all.map(function(item){return item.id===old.id?obj:item}):all.concat(obj)));
-    var dest={cliente:'clientes',fornecedor:'fornecedores',comprador:'compradores',transportador:'transportadores'}[tipos[0]]||'clientes';location.href='clientes.html#'+dest;
-  };
-},1600)});
-</script>
-<style id="new-client-topbar-fix">body:has(.new-client) main.new-client{padding-top:49px!important}body:has(.new-client) main.new-client>.topbar{position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;z-index:40!important}</style><script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('main.new-client');if(!main||main.querySelector('.topbar'))return;var top=document.createElement('header');top.className='topbar';top.innerHTML='<div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="search">em:clientes <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div>';main.insertBefore(top,main.firstChild)});</script>
+<style id="new-client-topbar-fix">body:has(.new-client) main.new-client{padding-top:49px!important}body:has(.new-client) main.new-client>.topbar{position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;z-index:40!important}html body .contact-types,html body .new-client .contact-types{display:none!important}html body .new-client .form-panel{width:100%!important;margin-left:0!important;box-sizing:border-box!important}</style><script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('main.new-client');if(!main||main.querySelector('.topbar'))return;var top=document.createElement('header');top.className='topbar';top.innerHTML='<div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="search">em:clientes <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div>';main.insertBefore(top,main.firstChild)});</script>
 <style id="new-client-topbar-spacing-fix">html body:has(.new-client) main.new-client>.client-form-head{margin-top:-49px!important}</style>

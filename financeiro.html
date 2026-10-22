@@ -5,6 +5,45 @@
 <style>.finance-tabs button[data-finance-tab="receivables"].active{background:#35b96f}.finance-tabs button[data-finance-tab="payables"].active{background:#f25a5d}.finance-tabs button[data-finance-tab="transfers"].active{background:#f0c400}.finance-tabs button[data-finance-tab="recurrence"].active{background:#26a7e8}.finance-tabs button[data-finance-tab="receipts"].active{background:#8a2be2}.finance-tabs button[data-finance-tab="conciliation"].active{background:#3f86bd}.finance-tabs button[data-finance-tab="transfers"]{background:#f0c400}.finance-tabs button:hover{filter:brightness(.94)}</style><script>
 (function(){var tabs=document.querySelector('.finance-tabs'),recurrence=tabs&&tabs.querySelector('[data-finance-tab="recurrence"]');if(!tabs||!recurrence)return;var transfer=tabs.querySelector('[data-finance-tab="transfers"]');if(!transfer){transfer=document.createElement('button');transfer.type='button';transfer.dataset.financeTab='transfers';transfer.textContent='⇄ TRANSFERÊNCIAS';tabs.insertBefore(transfer,recurrence)}tabs.querySelectorAll('[data-finance-tab]').forEach(function(tab){tab.onclick=function(){tabs.querySelectorAll('[data-finance-tab]').forEach(function(x){x.classList.remove('active')});this.classList.add('active');var isReceivable=this.dataset.financeTab==='receivables';document.getElementById('finance-receivables').classList.toggle('finance-hidden',!isReceivable);document.getElementById('finance-other').classList.toggle('finance-hidden',isReceivable)}})})();
 </script>
+<style id="finance-payable-fix-style">
+.finance-form-overlay.payment-mode .finance-form-header{background:#f25a5d}.finance-form-overlay.payment-mode .finance-form-header{position:relative}.finance-attachment-badge{position:absolute;right:34px;top:0;height:32px;line-height:32px;padding:0 12px;background:#fff;color:#68747a;font-size:11px;font-weight:normal;cursor:pointer}.finance-form-overlay.payment-mode .finance-form-header .finance-form-close{color:#a52f35}.finance-payable-file{display:none}.finance-form-overlay.payment-mode .finance-form-card{max-width:922px;margin:0 auto}.finance-form-overlay.payment-mode .finance-form-body{padding:40px 6% 55px;background:#fff}.finance-form-overlay.payment-mode .finance-form-field input:focus,.finance-form-overlay.payment-mode .finance-form-field select:focus{outline:0;border-color:#d33;box-shadow:0 0 0 1px #d33}.finance-payable-list .finance-payable-empty{padding:76px 10px!important;text-align:center!important;background:#eee;color:#587383!important}.finance-payable-list .finance-payable-empty span{color:#1675c4}.finance-payable-list .finance-payable-total{height:38px;border-top:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;padding:0 14px 0 11%;font-weight:bold;color:#476579;font-size:12px}.finance-payable-list table{width:100%;border-collapse:collapse;table-layout:fixed}.finance-payable-list th{height:42px;text-align:left;color:#587383;font-size:12px}.finance-payable-list td{height:48px;padding:0 14px;border-bottom:1px solid #e5e5e5;color:#587383;font-size:12px}.finance-payable-list th:first-child,.finance-payable-list td:first-child{width:5%;text-align:center}.finance-payable-list th:nth-child(2),.finance-payable-list td:nth-child(2){width:9%}.finance-payable-list th:nth-child(3),.finance-payable-list td:nth-child(3){width:27%}.finance-payable-list th:nth-child(4),.finance-payable-list td:nth-child(4){width:18%}.finance-payable-list th:nth-child(5),.finance-payable-list td:nth-child(5){width:12%}.finance-payable-list th:nth-child(6),.finance-payable-list td:nth-child(6){width:14%}.finance-payable-list th:nth-child(7),.finance-payable-list td:nth-child(7){width:15%;text-align:right}.finance-payable-list input[type=checkbox]{width:13px;height:13px;accent-color:#f25a5d}
+</style>
+<script id="finance-payable-fix-script">
+(function(){
+  var panel=document.querySelector('.finance-panel'), other=document.getElementById('finance-other'), tabs=document.querySelectorAll('[data-finance-tab]'), toolbar=document.querySelector('.finance-toolbar'), overlay=document.getElementById('finance-receivable-form');
+  if(!panel||!other||!toolbar)return;
+  var key='piremaxx_contas_pagar',today=new Date(),dateValue=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  function read(){try{var x=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}}
+  function save(x){localStorage.setItem(key,JSON.stringify(x))}
+  function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function money(v){return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+  function configureForm(){
+    overlay.classList.add('payment-mode');
+    overlay.querySelector('.finance-form-header span').textContent='Conta a pagar';
+    var labels=[].slice.call(overlay.querySelectorAll('.finance-form-field span'));
+    labels.forEach(function(label){if(label.textContent.trim()==='Receber agora')label.textContent='Pagar agora';if(label.textContent.trim()==='Recebido de')label.textContent='Pago a'});
+    var fields=[].slice.call(overlay.querySelectorAll('.finance-form-field'));
+    fields.forEach(function(field){if((field.textContent||'').indexOf('Data de crédito')>=0)field.style.display='none'});
+    var dateField=fields.find(function(field){return (field.textContent||'').indexOf('Data de vencimento')>=0});if(dateField){var dateLabel=dateField.querySelector('span');if(dateLabel)dateLabel.textContent='Data de vencimento';var input=dateField.querySelector('input');if(input){input.value=dateValue;input.min='2000-01-01'}}
+    var select=[].slice.call(overlay.querySelectorAll('select')).find(function(x){return (x.parentElement.textContent||'').indexOf('Categoria')>=0});
+    if(select){select.innerHTML='<option value=""></option><optgroup label="Despesas operacionais"><option>Água</option><option>Aluguel</option><option>Condomínio</option><option>FGTS</option><option>INSS</option><option>Luz</option><option>Material de consumo</option><option>Material de escritório</option><option>Salário</option><option>Outras despesas</option></optgroup><optgroup label="Despesas de vendas"><option>Comissões</option><option>Embalagens</option><option>Fretes</option><option>Outras despesas</option></optgroup><optgroup label="Deduções"><option>Devoluções de vendas</option></optgroup><optgroup label="Impostos"><option>IPI</option><option>ICMS</option><option>ISSQN</option><option>SIMPLES</option><option>Outro imposto</option></optgroup><optgroup label="Despesas diversas"><option>Tarifas bancárias</option><option>Juros e multas</option><option>Outras despesas</option></optgroup><optgroup label="Investimentos"><option>Automóvel</option><option>Computador</option><option>Móveis</option><option>Outros investimentos</option></optgroup><optgroup label="Compras (estoque)"><option>Compras (estoque)</option><option>Frete fora da nota</option><option>ICMS ST fora da nota</option><option>Despesas fora da nota</option></optgroup>'}
+    var header=overlay.querySelector('.finance-form-header');if(!header.querySelector('.finance-attachment-badge')){var badge=document.createElement('span');badge.className='finance-attachment-badge';badge.textContent='⌕ Nenhum arquivo anexado';var file=document.createElement('input');file.type='file';file.className='finance-payable-file';file.accept='.pdf,.jpg,.jpeg,.png,.xml';header.appendChild(badge);header.appendChild(file);badge.onclick=function(){file.click()};file.onchange=function(){badge.textContent=file.files&&file.files[0]?'⌕ '+file.files[0].name:'⌕ Nenhum arquivo anexado'}}
+  }
+  function render(){
+    var list=read(),total=list.reduce(function(sum,item){return sum+Number(item.value||0)},0),html='<div class="finance-payable-list"><table class="finance-table"><thead><tr><th>□</th><th>Cód</th><th>Descrição</th><th>Contato</th><th>Conta</th><th>Data ↕</th><th>Valor</th></tr></thead><tbody>';
+    html+=list.length?list.map(function(item){return '<tr><td><input type="checkbox" aria-label="Selecionar conta a pagar"></td><td>'+esc(item.id)+'</td><td>'+esc(item.description)+'</td><td>'+esc(item.contact||'')+'</td><td>'+esc(item.account||'Caixa interno')+'</td><td>'+esc(item.date||'')+'</td><td>'+money(item.value)+'</td></tr>'}).join(''):'<tr><td colspan="7" class="finance-payable-empty">Nenhum pagamento encontrado.<br><span>Veja no mês anterior</span></td></tr>';
+    html+='</tbody></table><div class="finance-payable-total"><span>TOTAL LISTADO ('+list.length+' item'+(list.length===1?'':'s')+')</span><span>'+money(total)+'</span></div><div class="finance-footer"><button>100 linhas por página⌃</button><span>'+list.length+' registros encontrados</span><span class="pages"><button>⏮</button><button>‹</button><button>1/1</button><button>›</button><button>⏭</button></span></div></div>';other.innerHTML=html;
+  }
+  function activatePayables(){panel.classList.add('payables-mode');tabs.forEach(function(tab){tab.classList.toggle('active',tab.dataset.financeTab==='payables')});var recBox=document.getElementById('finance-receivables');if(recBox)recBox.classList.add('finance-hidden');other.classList.remove('finance-hidden');render()}
+  function openForm(){overlay=document.getElementById('finance-receivable-form');if(!overlay)return;configureForm();overlay.classList.add('open');document.body.style.overflow='hidden';var desc=overlay.querySelector('#finance-description');setTimeout(function(){if(desc)desc.focus()},30)}
+  function closeForm(){if(overlay)overlay.classList.remove('open');document.body.style.overflow=''}
+  document.addEventListener('click',function(event){var button=event.target.closest('.finance-new');if(button&&panel.classList.contains('payables-mode')){event.preventDefault();event.stopImmediatePropagation();overlay=document.getElementById('finance-receivable-form');openForm()}},true);
+  tabs.forEach(function(tab){tab.addEventListener('click',function(){overlay=document.getElementById('finance-receivable-form');if(this.dataset.financeTab==='payables')activatePayables();else if(overlay&&overlay.classList.contains('open'))closeForm()})});
+  document.addEventListener('click',function(event){if(!panel.classList.contains('payables-mode'))return;var target=event.target.closest('.finance-form-actions .save');if(!target)return;overlay=document.getElementById('finance-receivable-form');var desc=overlay&&overlay.querySelector('#finance-description'),field=overlay&&overlay.querySelector('#finance-description-field');if(!desc)return;if(!desc.value.trim()){field.classList.add('invalid');desc.focus();event.preventDefault();event.stopImmediatePropagation();return}var fs=[].slice.call(overlay.querySelectorAll('.finance-form-field')),get=function(label){var f=fs.find(function(x){return (x.textContent||'').indexOf(label)>=0});return f&&f.querySelector('input,select')?f.querySelector('input,select').value:''},value=(overlay.querySelector('.finance-form-inline input')||{}).value||'',date=get('Data de vencimento'),dateBR=date?date.split('-').reverse().join('/'):'',item={id:'local-'+Date.now(),description:desc.value.trim(),value:Number(String(value).replace(/\./g,'').replace(',','.').replace(/[^0-9.-]/g,''))||0,contact:get('Pago a'),account:'Caixa interno',date:dateBR,status:get('Pagar agora')==='Sim'?'Pago':'A pagar',category:get('Categoria')};var list=read();list.unshift(item);save(list);render();closeForm()},true);
+  document.addEventListener('click',function(event){if(event.target.closest('.finance-form-close,.finance-form-actions .cancel'))closeForm()},true);
+  if(location.hash==='#pagar'||location.hash==='#pagamentos')activatePayables();
+})();
+</script>
 <style>.finance-tabs button{position:relative;cursor:pointer;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,background-color .16s ease}.finance-tabs button:hover{filter:brightness(.9);transform:translateY(-1px);box-shadow:0 3px 7px rgba(43,83,94,.22);z-index:1}.finance-tabs button:active{transform:translateY(0) scale(.98);box-shadow:0 1px 3px rgba(0,0,0,.2)}.finance-tabs button.active{box-shadow:0 1px 2px rgba(43,83,94,.16)}.finance-tabs button.active:hover{filter:brightness(.88)}</style>
 <style>.finance-tabs button[data-finance-tab="transfers"]{background:#5e7d89}.finance-tabs button[data-finance-tab="receivables"]:hover{background:#35b96f}.finance-tabs button[data-finance-tab="payables"]:hover{background:#f25a5d}.finance-tabs button[data-finance-tab="transfers"]:hover{background:#f0c400}.finance-tabs button[data-finance-tab="recurrence"]:hover{background:#26a7e8}.finance-tabs button[data-finance-tab="receipts"]:hover{background:#8a2be2}.finance-tabs button[data-finance-tab="conciliation"]:hover{background:#3f86bd}</style>
 <style>.finance-edit-menu{position:relative;display:inline-flex}.finance-edit-menu>button{margin:0}.finance-edit-options{display:none;position:absolute;top:34px;left:0;z-index:20;min-width:455px;padding:5px 0;background:#fff;border:1px solid #c9cfd3;border-radius:3px;box-shadow:0 3px 8px rgba(0,0,0,.25)}.finance-edit-menu.open .finance-edit-options{display:block}.finance-edit-options button{display:block;width:100%;height:auto!important;min-width:0!important;padding:6px 12px;text-align:left;border:0!important;border-radius:0!important;background:#fff!important;color:#587383!important;font-size:12px;font-weight:400}.finance-edit-options button:hover{background:#edf2f4!important;color:#2f6078!important}.finance-table input[type=checkbox]{width:13px;height:13px;vertical-align:middle;accent-color:#377fb9;cursor:pointer}</style><script>(function(){var table=document.querySelector('.finance-table'),edit=document.querySelector('.finance-toolbar button[title="Editar"]');if(table){var head=table.querySelector('thead tr th:first-child');if(head)head.innerHTML='<input type="checkbox" aria-label="Selecionar todos" class="finance-select-all">';table.querySelectorAll('tbody tr').forEach(function(row){var cell=row.querySelector('td:first-child');if(cell)cell.innerHTML='<input type="checkbox" aria-label="Selecionar recebimento" class="finance-row-check">'});var all=table.querySelector('.finance-select-all');if(all)all.onchange=function(){table.querySelectorAll('.finance-row-check').forEach(function(box){box.checked=all.checked})};table.addEventListener('change',function(event){if(event.target.classList.contains('finance-row-check')&&!event.target.checked&&all)all.checked=false})}if(edit){var wrap=document.createElement('div');wrap.className='finance-edit-menu';edit.parentNode.insertBefore(wrap,edit);wrap.appendChild(edit);var options=document.createElement('div');options.className='finance-edit-options';[['▱','Editar selecionado(s) (Descrição, dt. venc., valor, plano de contas e conta caixa)'],['◈','Editar selecionado(s) (Palavras-chave e forma de pagamento)'],['↪','Reabrir selecionado(s)']].forEach(function(item){var action=document.createElement('button');action.type='button';action.innerHTML='<span>'+item[0]+'</span> '+item[1];action.onclick=function(){wrap.classList.remove('open')};options.appendChild(action)});wrap.appendChild(options);edit.onclick=function(event){event.stopPropagation();wrap.classList.toggle('open')};document.addEventListener('click',function(){wrap.classList.remove('open')})}})();</script>
@@ -116,7 +155,7 @@
 <style>.finance-toolbar button[title="Receber"] .finance-button-icon{content:url('public/icons/icons8-dollar-bag.gif')}</style>
 <script>document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){var toolbar=document.querySelector('.finance-toolbar');if(!toolbar)return;['Editar','Receber'].forEach(function(title){var button=toolbar.querySelector('button[title="'+title+'"]'),icon=button&&button.querySelector('.finance-button-icon');if(!icon)return;icon.style.setProperty('width','19px','important');icon.style.setProperty('height','22px','important');icon.style.setProperty('max-width','19px','important');icon.style.setProperty('max-height','22px','important');icon.style.objectFit='contain';if(title==='Receber')icon.src='public/icons/icons8-dollar-bag.gif'})},80)});</script>
 <style>.finance-panel.conciliation-mode{min-height:0;box-shadow:0 0 0 1px #3f86bd inset}.finance-panel.conciliation-mode .finance-toolbar{border-bottom-color:#3f86bd}.finance-panel.conciliation-mode .finance-new{background:#377fb9;border-color:#377fb9;color:#fff;min-width:144px}.finance-conciliation-list{background:#fff}.finance-conciliation-list table{width:100%;border-collapse:collapse;table-layout:fixed}.finance-conciliation-list th{height:42px;text-align:left;color:#587383;font-size:12px}.finance-conciliation-list td{height:48px;padding:0 12px;border-bottom:1px solid #e5e5e5;color:#587383;font-size:12px}.finance-conciliation-list th:first-child,.finance-conciliation-list td:first-child{width:5%;text-align:center}.finance-conciliation-list th:nth-child(2),.finance-conciliation-list td:nth-child(2){width:8%}.finance-conciliation-list th:nth-child(3),.finance-conciliation-list td:nth-child(3){width:14%}.finance-conciliation-list th:nth-child(4),.finance-conciliation-list td:nth-child(4){width:21%}.finance-conciliation-list th:nth-child(5),.finance-conciliation-list td:nth-child(5){width:15%}.finance-conciliation-list th:nth-child(6),.finance-conciliation-list td:nth-child(6){width:15%}.finance-conciliation-list th:nth-child(7),.finance-conciliation-list td:nth-child(7){width:12%}.finance-conciliation-empty{text-align:center!important;background:#eee;color:#587383!important}.finance-conciliation-empty span{display:block;color:#1675c4;margin-top:6px}.finance-panel.conciliation-mode .finance-balance{display:none}.finance-panel.conciliation-mode .finance-toolbar .finance-new{font-size:0}.finance-panel.conciliation-mode .finance-toolbar .finance-new:after{content:'⊞ Nova conciliação';font-size:12px}.finance-panel.conciliation-mode .finance-toolbar button[title="Excluir"]{font-size:0}.finance-panel.conciliation-mode .finance-toolbar button[title="Excluir"]:after{content:'▣';font-size:14px}.finance-panel.conciliation-mode .finance-toolbar button[title="Editar"],.finance-panel.conciliation-mode .finance-toolbar button[title="Mais opções"],.finance-panel.conciliation-mode .finance-toolbar button[title="Calendário"]{display:none}.finance-panel.conciliation-mode .finance-toolbar button[title="Imprimir"]{display:inline-flex}.finance-panel.conciliation-mode .finance-toolbar button[title="Imprimir"]:after{content:'▣';font-size:14px}</style>
-<script>(function(){var panel=document.querySelector('.finance-panel'),other=document.getElementById('finance-other'),toolbar=document.querySelector('.finance-toolbar'),tabs=document.querySelectorAll('[data-finance-tab]');if(!panel||!other||!toolbar)return;var originalToolbar=toolbar.innerHTML,conciliation='<div class="finance-conciliation-list"><table><thead><tr><th>□</th><th>Cód</th><th>Arquivo</th><th>Banco</th><th>Identificação</th><th>Conta</th><th>Data arquivo</th><th>Concluído</th></tr></thead><tbody><tr><td colspan="8" class="finance-conciliation-empty">Nenhuma conciliação encontrada.<span>Veja no mês anterior</span></td></tr></tbody></table></div>';tabs.forEach(function(tab){tab.addEventListener('click',function(){var active=this.dataset.financeTab==='conciliation';panel.classList.toggle('conciliation-mode',active);if(active){toolbar.innerHTML='<button class="finance-new" title="Nova conciliação">⊞ Nova conciliação</button><button title="Importar">▤ Importar</button><button title="Excluir">▣</button><button title="Imprimir">▣</button><button class="finance-month">Mês Atual</button><button class="finance-arrows">‹</button><span>Outubro 2026</span><button class="finance-arrows">›</button><button style="background:#377fb9;color:#fff">⌕</button>';other.innerHTML=conciliation}else{toolbar.innerHTML=originalToolbar}})});})();</script>
+<script>(function(){var panel=document.querySelector('.finance-panel'),other=document.getElementById('finance-other'),toolbar=document.querySelector('.finance-toolbar'),tabs=document.querySelectorAll('[data-finance-tab]');if(!panel||!other||!toolbar)return;var originalToolbar=toolbar.innerHTML,wasConciliation=false,conciliation='<div class="finance-conciliation-list"><table><thead><tr><th>□</th><th>Cód</th><th>Arquivo</th><th>Banco</th><th>Identificação</th><th>Conta</th><th>Data arquivo</th><th>Concluído</th></tr></thead><tbody><tr><td colspan="8" class="finance-conciliation-empty">Nenhuma conciliação encontrada.<span>Veja no mês anterior</span></td></tr></tbody></table></div>';tabs.forEach(function(tab){tab.addEventListener('click',function(){var active=this.dataset.financeTab==='conciliation';panel.classList.toggle('conciliation-mode',active);if(active){wasConciliation=true;toolbar.innerHTML='<button class="finance-new" title="Nova conciliação">⊞ Nova conciliação</button><button title="Importar">▤ Importar</button><button title="Excluir">▣</button><button title="Imprimir">▣</button><button class="finance-month">Mês Atual</button><button class="finance-arrows">‹</button><span>Outubro 2026</span><button class="finance-arrows">›</button><button style="background:#377fb9;color:#fff">⌕</button>';other.innerHTML=conciliation}else if(wasConciliation){wasConciliation=false;toolbar.innerHTML=originalToolbar}})});})();</script>
 <style>.conciliation-upload-overlay{display:none;position:fixed;inset:0;z-index:140;background:#fff}.conciliation-upload-overlay.open{display:block}.conciliation-upload-header{height:42px;background:#4a83ad;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 10px;font-weight:bold;font-size:14px}.conciliation-upload-header button{border:0;background:transparent;color:#b9d1e5;font-size:17px;cursor:pointer}.conciliation-upload-card{margin:40px 6%;padding:28px 30px 24px;background:#eee;border:1px solid #e0e0e0;border-radius:4px;display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}.conciliation-upload-field{display:flex;flex-direction:column;gap:6px;color:#71808a;font-size:11px}.conciliation-upload-field input[type=file],.conciliation-upload-field select{height:27px;border:1px solid #c8ced2;border-radius:3px;background:#fff;color:#71808a;padding:0 8px;font-size:12px}.conciliation-upload-field input[type=file]{padding:2px 5px}.conciliation-upload-note{grid-column:1/-1;color:#71808a;font-size:12px;line-height:16px}.conciliation-upload-actions{position:absolute;right:6%;top:253px;display:flex;gap:5px;border:0}.conciliation-upload-actions button{height:31px;border:0;border-radius:3px;padding:0 15px;font-weight:bold;cursor:pointer}.conciliation-upload-actions .send{background:#35a968;color:#fff}.conciliation-upload-actions .back{background:#eee;color:#777;border:1px solid #d5d5d5}</style>
 <script>(function(){var overlay=document.createElement('div');overlay.className='conciliation-upload-overlay';overlay.innerHTML='<div class="conciliation-upload-header"><span>Enviar arquivo bancário</span><button type="button" aria-label="Fechar">×</button></div><div class="conciliation-upload-card"><label class="conciliation-upload-field"><span>Arquivo OFX (obtido no seu banco online)</span><input type="file" accept=".ofx,.csv,.xls,.xlsx"></label><label class="conciliation-upload-field"><span>Conta relacionada</span><select><option>Selecione a conta</option><option>Caixa interno</option></select></label><div class="conciliation-upload-note">O sistema também aceita, ainda de forma experimental, importação de<br>arquivos .csv e também .xls e .xlsx (Excel).</div></div><div class="conciliation-upload-actions"><button type="button" class="send">Enviar arquivo</button><button type="button" class="back">Voltar</button></div>';document.body.appendChild(overlay);function close(){overlay.classList.remove('open');document.body.style.overflow=''}function open(){overlay.classList.add('open');document.body.style.overflow='hidden'}document.addEventListener('DOMContentLoaded',function(){document.addEventListener('click',function(event){var button=event.target.closest('.finance-toolbar button[title="Nova conciliação"]');if(button){event.preventDefault();open()}})});overlay.querySelector('.conciliation-upload-header button').addEventListener('click',close);overlay.querySelector('.back').addEventListener('click',close);overlay.querySelector('.send').addEventListener('click',function(){close()})})();</script>
 <script>(function(){var root='public/icons/';function apply(){var toolbar=document.querySelector('.finance-panel.conciliation-mode .finance-toolbar');if(!toolbar)return;var icons={'Nova conciliação':'icons8-add-48.png','Importar':'icons8-to-do-list.gif','Excluir':'icons8-trash.gif','Imprimir':'icons8-print.gif'};Object.keys(icons).forEach(function(title){var button=toolbar.querySelector('button[title="'+title+'"]');if(!button)return;var icon=button.querySelector('.finance-button-icon');if(!icon){icon=document.createElement('img');icon.className='finance-button-icon';icon.alt='';button.insertBefore(icon,button.firstChild)}icon.src=root+icons[title];button.style.fontSize='0';icon.style.width=title==='Nova conciliação'?'16px':'18px';icon.style.height=title==='Nova conciliação'?'16px':'18px';icon.style.maxWidth=icon.style.width;icon.style.maxHeight=icon.style.height;icon.style.objectFit='contain';if(title==='Nova conciliação')button.style.minWidth='144px'})}document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('[data-finance-tab]').forEach(function(tab){tab.addEventListener('click',function(){if(this.dataset.financeTab==='conciliation')setTimeout(apply,20)})});setTimeout(apply,100)})})();</script>
@@ -182,8 +221,8 @@
       button.innerHTML='';button.appendChild(icon);button.appendChild(document.createTextNode(item[1]));
     });
   }
-  document.addEventListener('DOMContentLoaded',function(){organizeFinanceTabs();setTimeout(organizeFinanceTabs,100)});
-  setTimeout(organizeFinanceTabs,120);
+  organizeFinanceTabs();
+  document.addEventListener('DOMContentLoaded',organizeFinanceTabs);
 })();
 </script>
 <style>
@@ -220,8 +259,8 @@
       }
     });
   }
+  applyToolbarIcons();
   document.addEventListener('DOMContentLoaded',function(){applyToolbarIcons();new MutationObserver(applyToolbarIcons).observe(document.body,{childList:true,subtree:true})});
-  setTimeout(applyToolbarIcons,120);
 })();
 </script>
 <script>
@@ -256,3 +295,270 @@ document.addEventListener('DOMContentLoaded',function(){
   },0)},true);
 });
 </script>
+<style>.finance-form-overlay:not(.payment-mode) .finance-attachment-badge{display:none!important}</style>
+<script id="finance-payable-hash-fix">
+(function(){
+  var panel=document.querySelector('.finance-panel');
+  var overlay=document.getElementById('finance-receivable-form');
+  if(!panel||!overlay)return;
+
+  var receiveCategories='<option value=""></option><optgroup label="Receitas diversas"><option>Rendimentos financeiros</option><option>Outras receitas</option></optgroup><optgroup label="Receitas de vendas"><option>Venda de produtos/serviços</option></optgroup>';
+  var paymentCategories='<option value=""></option><optgroup label="Despesas operacionais"><option>Água</option><option>Aluguel</option><option>Condomínio</option><option>FGTS</option><option>INSS</option><option>Luz</option><option>Material de consumo</option><option>Material de escritório</option><option>Salário</option><option>Outras despesas</option></optgroup><optgroup label="Despesas de vendas"><option>Comissões</option><option>Embalagens</option><option>Fretes</option><option>Outras despesas</option></optgroup><optgroup label="Deduções"><option>Devoluções de vendas</option></optgroup><optgroup label="Impostos"><option>IPI</option><option>ICMS</option><option>ISSQN</option><option>SIMPLES</option><option>Outro imposto</option></optgroup><optgroup label="Despesas diversas"><option>Tarifas bancárias</option><option>Juros e multas</option><option>Outras despesas</option></optgroup><optgroup label="Investimentos"><option>Automóvel</option><option>Computador</option><option>Móveis</option><option>Outros investimentos</option></optgroup><optgroup label="Compras (estoque)"><option>Compras (estoque)</option><option>Frete fora da nota</option><option>ICMS ST fora da nota</option><option>Despesas fora da nota</option></optgroup>';
+
+  function todayISO(){
+    var now=new Date();
+    return now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  }
+
+  function configureReceivableOrPayableForm(isPayment, resetFields){
+    overlay.classList.toggle('payment-mode', !!isPayment);
+    var title=overlay.querySelector('.finance-form-header span');
+    if(title)title.textContent=isPayment?'Conta a pagar':'Conta a receber';
+
+    var fields=[].slice.call(overlay.querySelectorAll('.finance-form-card > .finance-form-grid > .finance-form-field'));
+    if(fields[2]){
+      var lbl2=fields[2].querySelector('span');
+      if(lbl2)lbl2.textContent=isPayment?'Pagar agora':'Receber agora';
+    }
+    if(fields[3]){
+      var lbl3=fields[3].querySelector('span');
+      if(lbl3)lbl3.textContent='Data de vencimento';
+    }
+    if(fields[4]){
+      fields[4].style.display=isPayment?'none':'';
+    }
+    if(fields[5]){
+      var lbl5=fields[5].querySelector('span');
+      if(lbl5)lbl5.textContent=isPayment?'Pago a':'Recebido de';
+    }
+    if(fields[6]){
+      var sel6=fields[6].querySelector('select');
+      if(sel6)sel6.innerHTML=isPayment?paymentCategories:receiveCategories;
+    }
+
+    if(resetFields){
+      var desc=overlay.querySelector('#finance-description');
+      var descField=overlay.querySelector('#finance-description-field');
+      if(desc)desc.value='';
+      if(descField)descField.classList.remove('invalid');
+      var valInput=overlay.querySelector('.finance-form-inline input');
+      if(valInput)valInput.value='';
+      if(fields[2]&&fields[2].querySelector('select'))fields[2].querySelector('select').value='Não';
+      if(fields[3]&&fields[3].querySelector('input'))fields[3].querySelector('input').value=todayISO();
+      if(fields[4]&&fields[4].querySelector('input'))fields[4].querySelector('input').value='';
+      if(fields[5]&&fields[5].querySelector('input'))fields[5].querySelector('input').value='';
+      if(fields[6]&&fields[6].querySelector('select'))fields[6].querySelector('select').value='';
+      if(fields[7]&&fields[7].querySelector('input'))fields[7].querySelector('input').value='';
+    }
+  }
+
+  function openReceivableOrPayableModal(isPayment){
+    configureReceivableOrPayableForm(isPayment, true);
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+    var desc=overlay.querySelector('#finance-description');
+    if(desc)setTimeout(function(){desc.focus()},25);
+  }
+
+  function closeReceivableOrPayableModal(){
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+  }
+
+  function parseMoney(v){
+    var s=String(v==null?'':v).replace(/R\$|\s/g,'');
+    if(s.indexOf(',')>=0)s=s.replace(/\./g,'').replace(',','.');
+    return Number(s.replace(/[^0-9.-]/g,''))||0;
+  }
+
+  function formatMoney(n){
+    return 'R$ '+Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+
+  function escHtml(s){
+    return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});
+  }
+
+  function updateReceivablesTotal(){
+    var container=document.getElementById('finance-receivables');
+    if(!container)return;
+    var rows=[].slice.call(container.querySelectorAll('tbody tr')).filter(function(r){return !r.querySelector('td[colspan]')});
+    var sum=rows.reduce(function(acc,r){
+      var cells=r.querySelectorAll('td');
+      return acc+(cells[7]?parseMoney(cells[7].textContent):0);
+    },0);
+    var totalEl=container.querySelector('.finance-total');
+    if(totalEl){
+      var spans=totalEl.querySelectorAll('span');
+      if(spans[0])spans[0].textContent='TOTAL LISTADO ('+rows.length+' '+(rows.length===1?'item':'itens')+')';
+      if(spans[1])spans[1].textContent=formatMoney(sum);
+    }
+  }
+
+  function appendReceivableRow(item){
+    var tbody=document.querySelector('#finance-receivables .finance-table tbody');
+    if(!tbody)return;
+    var isReceived=item.status==='Recebida'||item.status==='Pago';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><input type="checkbox" class="finance-list-check" aria-label="Selecionar item"></td>'+
+      '<td>'+escHtml(item.id)+'</td>'+
+      '<td>'+escHtml(item.description)+'</td>'+
+      '<td>'+escHtml(item.contact||'')+'</td>'+
+      '<td>'+escHtml(item.account||'Caixa interno')+'</td>'+
+      '<td>'+escHtml(item.date||'')+'</td>'+
+      '<td class="'+(isReceived?'received':'receive')+'">'+escHtml(isReceived?'Recebida':'A Receber')+'</td>'+
+      '<td>'+formatMoney(item.value)+'</td>';
+    tbody.insertBefore(tr,tbody.firstChild);
+    updateReceivablesTotal();
+  }
+
+  function restoreCustomReceivables(){
+    try{
+      var tbody=document.querySelector('#finance-receivables .finance-table tbody');
+      if(!tbody)return;
+      var existingIds={};
+      [].slice.call(tbody.querySelectorAll('tr td:nth-child(2)')).forEach(function(td){
+        existingIds[(td.textContent||'').trim()]=true;
+      });
+      var saved=JSON.parse(localStorage.getItem('piremaxx_contas_receber')||'[]');
+      if(!Array.isArray(saved))return;
+      saved.slice().reverse().forEach(function(item){
+        var id=String(item.id||item.code||'').trim();
+        if(!id||existingIds[id]||(!item.description&&!item.value))return;
+        existingIds[id]=true;
+        appendReceivableRow(item);
+      });
+    }catch(err){}
+  }
+
+  document.addEventListener('click',function(e){
+    var tabBtn=e.target.closest('[data-finance-tab]');
+    if(tabBtn){
+      var tabName=tabBtn.dataset.financeTab;
+      if(tabName!=='payables')panel.classList.remove('payables-mode');
+      configureReceivableOrPayableForm(tabName==='payables', false);
+      if(e.isTrusted){
+        var hashMap={receivables:'#recebimentos',payables:'#pagamentos',transfers:'#transferencias',recurrence:'#recorrencia',receipts:'#recibos',conciliation:'#conciliacao'};
+        if(hashMap[tabName])history.replaceState(null,'',location.pathname+hashMap[tabName]);
+      }
+      return;
+    }
+
+    var newBtn=e.target.closest('.finance-panel .finance-new, .finance-title .new');
+    if(newBtn){
+      var activeTab=document.querySelector('[data-finance-tab].active');
+      var mode=activeTab?activeTab.dataset.financeTab:'receivables';
+      if(mode==='receivables'){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        panel.classList.remove('payables-mode');
+        openReceivableOrPayableModal(false);
+        return;
+      }
+      if(mode==='payables'){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        panel.classList.add('payables-mode');
+        openReceivableOrPayableModal(true);
+        return;
+      }
+      if(mode==='transfers'){
+        var tOverlay=document.getElementById('finance-transfer-form');
+        if(tOverlay){e.preventDefault();e.stopImmediatePropagation();tOverlay.classList.add('open');document.body.style.overflow='hidden';}
+        return;
+      }
+      if(mode==='recurrence'){
+        var rOverlay=document.getElementById('finance-recurrence-form');
+        if(rOverlay){e.preventDefault();e.stopImmediatePropagation();rOverlay.classList.add('open');document.body.style.overflow='hidden';}
+        return;
+      }
+      if(mode==='receipts'){
+        var rcOverlay=document.getElementById('finance-receipt-form');
+        if(rcOverlay){e.preventDefault();e.stopImmediatePropagation();rcOverlay.classList.add('open');document.body.style.overflow='hidden';}
+        return;
+      }
+      if(mode==='conciliation'){
+        var cOverlay=document.querySelector('.conciliation-upload-overlay');
+        if(cOverlay){e.preventDefault();e.stopImmediatePropagation();cOverlay.classList.add('open');document.body.style.overflow='hidden';}
+        return;
+      }
+    }
+
+    var saveBtn=e.target.closest('#finance-receivable-form .finance-form-actions .save');
+    if(saveBtn&&!overlay.classList.contains('payment-mode')&&!panel.classList.contains('payables-mode')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var desc=overlay.querySelector('#finance-description');
+      var descField=overlay.querySelector('#finance-description-field');
+      if(!desc||!desc.value.trim()){
+        if(descField)descField.classList.add('invalid');
+        if(desc)desc.focus();
+        return;
+      }
+      if(descField)descField.classList.remove('invalid');
+      var fields=[].slice.call(overlay.querySelectorAll('.finance-form-card > .finance-form-grid > .finance-form-field'));
+      var valInput=overlay.querySelector('.finance-form-inline input');
+      var recNow=fields[2]&&fields[2].querySelector('select')?fields[2].querySelector('select').value:'Não';
+      var dueVal=fields[3]&&fields[3].querySelector('input')?fields[3].querySelector('input').value:'';
+      var dateBR=dueVal?dueVal.split('-').reverse().join('/'):'';
+      var contactVal=fields[5]&&fields[5].querySelector('input')?fields[5].querySelector('input').value:'';
+      var nextCode=4759;
+      try{
+        var existingCodes=[].slice.call(document.querySelectorAll('#finance-receivables .finance-table tbody tr td:nth-child(2)')).map(function(td){return parseInt(td.textContent,10)||0});
+        if(existingCodes.length)nextCode=Math.max.apply(null,existingCodes)+1;
+      }catch(err){}
+      var newItem={
+        id:String(nextCode),
+        description:desc.value.trim(),
+        contact:contactVal.trim(),
+        account:'Caixa interno',
+        date:dateBR,
+        status:recNow==='Sim'?'Recebida':'A Receber',
+        value:parseMoney(valInput?valInput.value:0)
+      };
+      appendReceivableRow(newItem);
+      try{
+        var saved=JSON.parse(localStorage.getItem('piremaxx_contas_receber')||'[]');
+        if(!Array.isArray(saved))saved=[];
+        saved.unshift(newItem);
+        localStorage.setItem('piremaxx_contas_receber',JSON.stringify(saved));
+      }catch(err){}
+      closeReceivableOrPayableModal();
+      return;
+    }
+
+    if(e.target.closest('#finance-receivable-form .finance-form-close, #finance-receivable-form .finance-form-actions .cancel')){
+      closeReceivableOrPayableModal();
+    }
+  },true);
+
+  function applyHashRoute(){
+    var recBox=document.getElementById('finance-receivables');
+    var otherBox=document.getElementById('finance-other');
+    if(location.hash==='#pagar'||location.hash==='#pagamentos'){
+      var pTab=document.querySelector('[data-finance-tab="payables"]');
+      if(pTab)pTab.click();
+      if(recBox)recBox.classList.add('finance-hidden');
+      if(otherBox)otherBox.classList.remove('finance-hidden');
+      panel.classList.add('payables-mode');
+      configureReceivableOrPayableForm(true, false);
+    }else if(!location.hash||location.hash==='#receber'||location.hash==='#recebimentos'){
+      var rTab=document.querySelector('[data-finance-tab="receivables"]');
+      if(rTab){
+        document.querySelectorAll('[data-finance-tab]').forEach(function(t){t.classList.toggle('active',t===rTab)});
+      }
+      if(recBox)recBox.classList.remove('finance-hidden');
+      if(otherBox)otherBox.classList.add('finance-hidden');
+      panel.classList.remove('payables-mode');
+      configureReceivableOrPayableForm(false, false);
+    }
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    restoreCustomReceivables();
+    applyHashRoute();
+  });
+  window.addEventListener('hashchange',applyHashRoute);
+  setTimeout(applyHashRoute,0);
+})();
+</script>
+<script src="menu-lateral.js?v=layout-fixed"></script>

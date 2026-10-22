@@ -1,38 +1,594 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gestão Piremaxx - Painel inicial</title><link rel="stylesheet" href="styles.css"><style>.dashboard{padding:17px 22px}.dashboard-title{height:49px;background:#5e7d89;color:#fff;padding:11px;font-size:16px}.dash-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:22px}.dash-card{background:#fff;border:1px solid #43c47b;padding:12px 15px;color:#4f6d79}.dash-card.red{border-color:#ff6068}.dash-card strong{font-size:21px;color:#42bd77;margin-right:9px}.dash-card.red strong{color:#ff5962}.dash-card footer{display:block;background:#43c47b;color:#fff;text-align:center;margin:10px -15px -12px;padding:4px}.dash-card.red footer{background:#ff5962}.dash-grid{display:grid;grid-template-columns:1.45fr 1fr;gap:22px}.dash-panel{background:#fff;border:1px solid #dfe3e5;margin-bottom:22px}.dash-panel h3{margin:0;background:#587783;color:#fff;padding:9px 10px;font-size:13px}.dash-panel p{padding:0 14px;color:#4f6772}.dash-chart{height:260px;padding:20px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 48px,#e8ecee 49px);display:flex;align-items:end;gap:18px}.dash-chart i{width:10%;background:#399fe0;height:60%;display:block}.dash-chart i:nth-child(2n){background:#48c0bc;height:40%}.dash-list p{padding:8px 14px;border-bottom:1px solid #eee}.dash-list b{float:right;color:#3dbd77}.side-icon{width:16px;height:16px;object-fit:contain;vertical-align:-3px;margin-right:8px}</style></head><body><aside class="sidebar"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav><a class="active" href="index.html"><img class="side-icon" src="public/icons/icons8-home-48.png"><b>Home</b></a><a href="vendas.html"><img class="side-icon" src="public/icons/icons8-buy-for-cash-48.png"><b>Vendas</b></a><a href="compras.html"><img class="side-icon" src="public/icons/icons8-buy-48.png"><b>Compras</b></a><a><img class="side-icon" src="public/icons/icons8-budget-48.png"><b>Clientes</b></a><a><img class="side-icon" src="public/icons/icons8-product-48.png"><b>Produtos</b></a><a><img class="side-icon" src="public/icons/icons8-boleto-bancário-48.png"><b>Boletos</b></a><a><img class="side-icon" src="public/icons/icons8-billing-32.png"><b>Cobranças</b></a><a><img class="side-icon" src="public/icons/icons8-pix-48.png"><b>Pix</b></a><a><img class="side-icon" src="public/icons/icons8-fiscal-50.png"><b>NF-e / Fiscal</b></a><a><img class="side-icon" src="public/icons/icons8-business-report-94.png"><b>Relatórios</b></a><a><img class="side-icon" src="public/icons/icons8-settings-48.png"><b>Configurações</b></a><a>❔ <b>Suporte online</b></a></nav></aside><main><header class="topbar"><div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="search">Digite sua busca <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div></header><div class="dashboard-title">Painel inicial</div><section class="dashboard"><div class="dash-metrics"><div class="dash-card"><strong>19</strong>Contas a receber hoje<br><small>Total R$ 43.367,86</small><footer>Mais detalhes »</footer></div><div class="dash-card red"><strong>0</strong>Contas a pagar hoje<br><small>Total R$ 0,00</small><footer>Mais detalhes »</footer></div><div class="dash-card"><strong>59</strong>A receber na semana<br><small>Total R$ 141.133,78</small><footer>Mais detalhes »</footer></div><div class="dash-card red"><strong>0</strong>A pagar na semana<br><small>Total R$ 0,00</small><footer>Mais detalhes »</footer></div></div><div class="dash-grid"><div><section class="dash-panel"><h3>⊟ Quadro de avisos</h3><p>↪ Há 724 financeiros a receber atrasados. Total R$ 1.590.078,05 (detalhar).</p><p>⚑ Há 54 vendas ainda em orçamento. Total R$ 213.728,61 (detalhar).</p></section><section class="dash-panel"><h3>⌁ Vendas por mês</h3><div class="dash-chart"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></section></div><div><section class="dash-panel"><h3>◉ Vendas por categoria <small>Outubro 2026</small></h3><div style="height:300px;border-radius:50%;background:conic-gradient(#399fe0 0 87%,#48b9bb 87%);width:300px;margin:30px auto"></div></section><section class="dash-panel dash-list"><h3>▤ Últimas Atividades</h3><p>♣ Novo contato <b>Od im an</b></p><p>▣ Nova conta a receber <b>R$ 3.850,00</b></p><p>⚑ Novo orçamento <b>R$ 11.550,00</b></p></section></div></div></section></main></body></html>
-<script>document.addEventListener('DOMContentLoaded',function(){const nav=document.querySelector('.sidebar nav');if(nav&&!nav.querySelector('.finance-link')){const a=document.createElement('a');a.className='finance-link';a.href='financeiro.html';a.innerHTML='<img class="side-icon" src="public/icons/icons8-financial-64.png"><b>Financeiro</b>';nav.insertBefore(a,nav.children[1])}});</script>
-<script>document.addEventListener('DOMContentLoaded',function(){const a=[...document.querySelectorAll('.sidebar nav a')].find(x=>x.textContent.includes('Clientes'));if(a)a.href='clientes.html'});</script>
-<script src="menu-lateral.js?v=layout-5"></script>
-<script>(function(){function fixFinanceLink(){var link=[].slice.call(document.querySelectorAll('.sidebar nav a')).find(function(item){return item.textContent.indexOf('Financeiro')>=0});if(link){link.href='financeiro.html';link.setAttribute('href','financeiro.html')}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fixFinanceLink);else fixFinanceLink();setTimeout(fixFinanceLink,0)})();</script>
-<style id="dashboard-live-style">
-.dash-card{cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}.dash-card:hover{transform:translateY(-2px);box-shadow:0 3px 9px #49677933}.dash-card small{display:block;margin-top:3px}.dash-chart{align-items:stretch;gap:10px;padding:18px 22px 10px}.dash-chart .dash-bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0}.dash-chart .dash-bar i{width:65%;min-height:2px;height:var(--bar-height);background:#399fe0;margin:0;border-radius:2px 2px 0 0}.dash-chart .dash-bar:nth-child(even) i{background:#48c0bc}.dash-chart .dash-bar span{font-size:10px;color:#6d7c83;margin-top:7px}.dash-chart .dash-empty{width:100%;text-align:center;color:#87949a;align-self:center}.dash-category-empty{height:300px;display:flex;align-items:center;justify-content:center;color:#87949a;font-size:12px}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gestão Piremaxx - Painel inicial</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.dashboard{padding:17px 22px 32px;background:#f2f3f4;min-height:calc(100vh - 98px);box-sizing:border-box}
+.dashboard-title{height:49px;background:#5e7d89;color:#fff;padding:11px 16px;font-size:16px;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box}
+.dashboard-title small{font-size:12px;color:#dbe4e8;font-weight:normal}
+.dash-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:20px}
+.dash-card{background:#fff;border:1px solid #43c47b;padding:12px 15px;color:#4f6d79;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;display:flex;flex-direction:column;justify-content:space-between;border-radius:2px}
+.dash-card:hover{transform:translateY(-2px);box-shadow:0 3px 10px rgba(73,103,121,.2)}
+.dash-card.red{border-color:#ff6068}
+.dash-card.blue{border-color:#399fe0}
+.dash-card.amber{border-color:#f0a83a}
+.dash-card-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.dash-card strong{font-size:22px;color:#42bd77;line-height:1.1}
+.dash-card.red strong{color:#ff5962}
+.dash-card.blue strong{color:#399fe0}
+.dash-card.amber strong{color:#e69824}
+.dash-card .dash-card-label{font-size:13px;font-weight:bold;color:#4a6774}
+.dash-card small{display:block;margin-top:6px;font-size:12px;color:#627b86}
+.dash-card footer{display:block;background:#43c47b;color:#fff;text-align:center;margin:10px -15px -12px;padding:5px;font-size:11px;font-weight:bold}
+.dash-card.red footer{background:#ff5962}
+.dash-card.blue footer{background:#399fe0}
+.dash-card.amber footer{background:#f0a83a}
+.dash-grid{display:grid;grid-template-columns:1.38fr 1fr;gap:20px;align-items:start}
+.dash-panel{background:#fff;border:1px solid #dfe3e5;margin-bottom:20px;border-radius:2px;overflow:hidden}
+.dash-panel h3{margin:0;background:#587783;color:#fff;padding:9px 12px;font-size:13px;display:flex;align-items:center;justify-content:space-between}
+.dash-panel h3 small{font-weight:normal;font-size:11px;color:#dce6ea}
+.dash-notices p{margin:0;padding:10px 14px;color:#4f6772;border-bottom:1px solid #eef1f3;font-size:12px;line-height:1.45;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dash-notices p:last-child{border-bottom:0}
+.dash-notices a{color:#2878ba;text-decoration:none;font-weight:bold;white-space:nowrap;font-size:11px}
+.dash-notices a:hover{text-decoration:underline}
+.dash-chart{height:245px;padding:24px 18px 12px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 44px,#edf1f3 45px);display:flex;align-items:stretch;gap:12px;box-sizing:border-box}
+.dash-chart .dash-bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0;cursor:pointer}
+.dash-chart .dash-bar-val{font-size:10px;font-weight:bold;color:#496775;margin-bottom:5px;white-space:nowrap}
+.dash-chart .dash-bar i{width:62%;min-height:4px;height:var(--bar-height);background:#399fe0;margin:0;border-radius:3px 3px 0 0;transition:filter .15s ease}
+.dash-chart .dash-bar:nth-child(even) i{background:#48c0bc}
+.dash-chart .dash-bar:hover i{filter:brightness(1.08)}
+.dash-chart .dash-bar span{font-size:11px;font-weight:bold;color:#5c7079;margin-top:7px}
+.dash-chart .dash-bar small{font-size:10px;color:#82939b}
+.dash-top-products{width:100%;border-collapse:collapse;font-size:12px;color:#496673}
+.dash-top-products th{background:#edf1f3;color:#587382;text-align:left;padding:8px 12px;font-weight:bold;font-size:11px;border-bottom:1px solid #dde3e6}
+.dash-top-products td{padding:8px 12px;border-bottom:1px solid #eef1f3}
+.dash-top-products tr:last-child td{border-bottom:0}
+.dash-top-products .right{text-align:right;font-weight:bold;color:#2c8e63}
+.dash-top-products .center{text-align:center}
+.dash-cat-box{display:grid;grid-template-columns:165px 1fr;gap:16px;padding:16px;align-items:center}
+.dash-pie{width:150px;height:150px;border-radius:50%;margin:0 auto;position:relative;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.dash-pie::after{content:"";position:absolute;inset:34px;background:#fff;border-radius:50%}
+.dash-cat-legend{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#4e6874}
+.dash-cat-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed #e6ecef}
+.dash-cat-item:last-child{border-bottom:0}
+.dash-cat-dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.dash-fin-summary{background:#f7f9fa;border-top:1px solid #e3e8eb;padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;font-size:11px;color:#546e7a}
+.dash-fin-summary div{display:flex;justify-content:space-between;align-items:center}
+.dash-fin-summary b{color:#2f4c58;font-size:12px}
+.dash-fin-summary b.pos{color:#2a9d60}
+.dash-fin-summary b.neg{color:#e05258}
+.audit-filters{display:flex;gap:4px}
+.audit-filters button{border:0;background:rgba(255,255,255,.16);color:#fff;font-size:10px;padding:3px 7px;border-radius:3px;cursor:pointer}
+.audit-filters button.active,.audit-filters button:hover{background:#209c99}
+.audit-list{max-height:365px;overflow-y:auto}
+.audit-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:9px 14px;border-bottom:1px solid #eef1f3;font-size:12px;color:#4a6470;cursor:pointer;transition:background .1s ease}
+.audit-row:hover{background:#f5f9fa}
+.audit-row:last-child{border-bottom:0}
+.audit-badge{font-size:10px;font-weight:bold;padding:3px 6px;border-radius:3px;color:#fff;text-transform:uppercase;letter-spacing:.3px;min-width:68px;text-align:center}
+.audit-badge.fin{background:#35a968}
+.audit-badge.pay{background:#e95757}
+.audit-badge.sale{background:#209c99}
+.audit-badge.quote{background:#f0a83a}
+.audit-badge.contact{background:#5b9eed}
+.audit-badge.stock{background:#6d7f8b}
+.audit-info strong{display:block;font-size:12px;color:#39525e}
+.audit-info small{display:block;font-size:11px;color:#788b94;margin-top:2px}
+.audit-val{text-align:right;font-weight:bold;font-size:12px;color:#359c66;white-space:nowrap}
+.audit-val.neg{color:#e05258}
+.audit-val small{display:block;font-weight:normal;font-size:10px;color:#86969e;margin-top:2px}
+@media(max-width:980px){
+  .dash-metrics{grid-template-columns:1fr 1fr}
+  .dash-grid{grid-template-columns:1fr}
+  .dash-cat-box{grid-template-columns:1fr}
+}
 </style>
+</head>
+<body>
+<aside class="sidebar shared-sidebar" data-rendered="1"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav><a class="dashboard-link active" href="index.html" data-menu-key="home"><img src="public/icons/icons8-home-48.png" alt=""><b>Home</b></a><a class="finance-link " href="financeiro.html" data-menu-key="financeiro"><img src="public/icons/icons8-financial-64.png" alt=""><b>Financeiro</b></a><a class=" " href="vendas.html" data-menu-key="vendas"><img src="public/icons/icons8-buy-for-cash-48.png" alt=""><b>Vendas</b></a><a class=" " href="compras.html" data-menu-key="compras"><img src="public/icons/icons8-buy-48.png" alt=""><b>Compras</b></a><a class=" " href="frota.html" data-menu-key="frota"><img src="public/icons/icons8-shipped-48.png" alt=""><b>Frota</b></a><a class=" " href="clientes.html" data-menu-key="clientes"><img src="public/icons/icons8-budget-48.png" alt=""><b>Contatos</b></a><a class=" " href="produtos.html" data-menu-key="produtos"><img src="public/icons/icons8-product-48.png" alt=""><b>Produtos</b></a><a class=" " href="#" data-menu-key="boletos"><img src="public/icons/icons8-boleto-bancário-48.png" alt=""><b>Boletos</b></a><a class=" " href="#" data-menu-key="cobrancas"><img src="public/icons/icons8-billing-32.png" alt=""><b>Cobranças</b></a><a class=" " href="#" data-menu-key="pix"><img src="public/icons/icons8-pix-48.png" alt=""><b>Pix</b></a><a class=" " href="#" data-menu-key="fiscal"><img src="public/icons/icons8-fiscal-50.png" alt=""><b>NF-e / Fiscal</b></a><a class=" " href="relatorios.html" data-menu-key="relatorios"><img src="public/icons/icons8-business-report-94.png" alt=""><b>Relatórios</b></a><a class=" " href="configuracoes.html" data-menu-key="configuracoes"><img src="public/icons/icons8-settings-48.png" alt=""><b>Configurações</b></a><a href="#" data-menu-key="suporte"><span>❔</span><b>Suporte online</b></a></nav></aside>
+<main>
+  <header class="topbar">
+    <div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div>
+    <div class="search">Digite sua busca <button>⌕</button></div>
+    <div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div>
+  </header>
+  <div class="dashboard-title">
+    <span>Painel inicial — Visão Geral e Financeira</span>
+    <small id="dash-period-label">Competência: Outubro / 2026</small>
+  </div>
+  <section class="dashboard">
+    <div class="dash-metrics">
+      <div class="dash-card" id="card-receivables">
+        <div>
+          <div class="dash-card-top"><strong id="metric-rec-count">6</strong><span class="dash-card-label">Contas a receber</span></div>
+          <small id="metric-rec-total">Em aberto: R$ 8.234,90</small>
+        </div>
+        <footer>Mais detalhes »</footer>
+      </div>
+      <div class="dash-card red" id="card-payables">
+        <div>
+          <div class="dash-card-top"><strong id="metric-pay-count">0</strong><span class="dash-card-label">Contas a pagar</span></div>
+          <small id="metric-pay-total">Em aberto: R$ 0,00</small>
+        </div>
+        <footer>Mais detalhes »</footer>
+      </div>
+      <div class="dash-card blue" id="card-sales">
+        <div>
+          <div class="dash-card-top"><strong id="metric-sales-count">188</strong><span class="dash-card-label">Vendas em Outubro</span></div>
+          <small id="metric-sales-total">Faturamento: R$ 511.909,12</small>
+        </div>
+        <footer>Mais detalhes »</footer>
+      </div>
+      <div class="dash-card amber" id="card-quotes">
+        <div>
+          <div class="dash-card-top"><strong id="metric-quotes-count">52</strong><span class="dash-card-label">Orçamentos abertos</span></div>
+          <small id="metric-quotes-total">Total: R$ 208.216,64</small>
+        </div>
+        <footer>Mais detalhes »</footer>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div>
+        <section class="dash-panel dash-notices">
+          <h3><span>⊟ Quadro de avisos do sistema</span><small>Monitoramento em tempo real</small></h3>
+          <div id="dash-notices-body"></div>
+        </section>
+
+        <section class="dash-panel">
+          <h3><span>⌁ Evolução de Faturamento Mensal</span><small id="dash-chart-subtitle">Maio/2026 a Outubro/2026</small></h3>
+          <div class="dash-chart" id="dash-monthly-chart"></div>
+        </section>
+
+        <section class="dash-panel">
+          <h3><span>★ Produtos mais vendidos no mês</span><small>Outubro 2026</small></h3>
+          <table class="dash-top-products">
+            <thead>
+              <tr>
+                <th>Produto / Medida</th>
+                <th class="center">Qtd. Vendida</th>
+                <th class="right">Total Faturado</th>
+              </tr>
+            </thead>
+            <tbody id="dash-top-products-body"></tbody>
+          </table>
+        </section>
+      </div>
+
+      <div>
+        <section class="dash-panel">
+          <h3><span>◉ Vendas por categoria & Posição de Caixa</span><small>Outubro 2026</small></h3>
+          <div class="dash-cat-box">
+            <div class="dash-pie" id="dash-category-pie"></div>
+            <div class="dash-cat-legend" id="dash-category-legend"></div>
+          </div>
+          <div class="dash-fin-summary" id="dash-fin-summary"></div>
+        </section>
+
+        <section class="dash-panel">
+          <h3>
+            <span>▤ Últimas Atividades (Auditoria)</span>
+            <span class="audit-filters" id="audit-filters">
+              <button type="button" data-filter="all" class="active">Todas</button>
+              <button type="button" data-filter="fin">Financeiro</button>
+              <button type="button" data-filter="sale">Vendas</button>
+              <button type="button" data-filter="cad">Cadastros</button>
+            </span>
+          </h3>
+          <div class="audit-list" id="dash-audit-list"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="menu-lateral.js?v=layout-fixed"></script>
+<script src="vendas-importadas.js?v=2"></script>
 <script id="dashboard-live-script">
 (function(){
-  function read(key){try{var value=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(value)?value:[]}catch(e){return []}}
-  function num(value){if(typeof value==='number')return isFinite(value)?value:0;var s=String(value==null?'':value).replace(/R\$|\s/g,'');if(s.indexOf(',')>=0)s=s.replace(/\./g,'').replace(',','.');return Number(s.replace(/[^0-9.-]/g,''))||0}
-  function money(value){return 'R$ '+Number(value||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
-  function date(value){if(!value)return null;var s=String(value).slice(0,10),p;if(/^\d{4}-\d{2}-\d{2}$/.test(s))p=s.split('-');else if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)){var x=s.split('/');p=[x[2],x[1],x[0]]}else return null;var d=new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));return isNaN(d.getTime())?null:d}
-  function keyDate(d){return d?d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'):''}
-  function same(a,b){return a&&b&&keyDate(a)===keyDate(b)}
-  function status(value){return String(value||'').toLowerCase()}
-  function paid(value){return /recebid|pag[oa]|quitad|conclu|pago/.test(status(value))}
-  function accountSources(keys){for(var i=0;i<keys.length;i++){var list=read(keys[i]);if(list.length)return list}return []}
-  function normalizeAccounts(list,type){return list.map(function(item,index){return {id:item.id||item.code||index,description:item.description||item.descricao||item.name||item.nome||type,contact:item.contact||item.contato||item.client||item.cliente||item.supplier||item.fornecedor||'',value:num(item.value||item.valor||item.amount||item.total),date:date(item.dueDate||item.dataVencimento||item.vencimento||item.date||item.data),status:item.status||item.situacao||''}}).filter(function(x){return x.value||x.date})}
-  function derivedSales(){var out=[];read('localSales').forEach(function(s){if(status(s.type)==='orçamento')return;var parts=Array.isArray(s.financial)&&s.financial.length?s.financial:(Array.isArray(s.parts)&&s.parts.length?s.parts:[{value:s.total,date:s.date,status:s.status||'A receber'}]);parts.forEach(function(p,i){out.push({id:String(s.code)+'-'+i,description:'Venda '+(s.code||''),contact:s.client||'',value:num(p.value||p.valor)||num(s.total),date:date(p.date||s.date),status:p.status||s.status||'A receber'})})});return out}
-  function derivedPurchases(){return read('piremaxx_compras').map(function(p){return {id:p.code,description:'Compra '+(p.code||''),contact:p.supplier||p.fornecedor||'',value:num(p.total),date:date(p.dueDate||p.date),status:p.status||'A pagar'}}).filter(function(x){return x.value||x.date})}
-  function build(){
-    var now=new Date(), start=new Date(now.getFullYear(),now.getMonth(),now.getDate()), end=new Date(start);end.setDate(end.getDate()+7);
-    var receives=normalizeAccounts(accountSources(['piremaxx_contas_receber','contasReceber','localReceivables','financeReceivables']),'Conta a receber');if(!receives.length)receives=derivedSales();
-    var pays=normalizeAccounts(accountSources(['piremaxx_contas_pagar','contasPagar','localPayables','financePayables']),'Conta a pagar');if(!pays.length)pays=derivedPurchases();
-    function stats(list,from,to){var pending=list.filter(function(x){return !paid(x.status)}),inRange=pending.filter(function(x){return x.date&&x.date>=from&&x.date<to});return {count:inRange.length,total:inRange.reduce(function(a,x){return a+x.value},0)}}
-    var todayEnd=new Date(start);todayEnd.setDate(todayEnd.getDate()+1),receivingToday=stats(receives,start,todayEnd),payingToday=stats(pays,start,todayEnd),receivingWeek=stats(receives,start,end),payingWeek=stats(pays,start,end),openStats=function(list){var pending=list.filter(function(x){return !paid(x.status)});return {count:pending.length,total:pending.reduce(function(a,x){return a+x.value},0)}};
-    var cards=document.querySelectorAll('.dash-card'),values=[openStats(receives),openStats(pays),receivingWeek,payingWeek],labels=['Contas a receber','Contas a pagar','A receber na semana','A pagar na semana'];
-    cards.forEach(function(card,i){var s=values[i];card.innerHTML='<strong>'+s.count+'</strong>'+labels[i]+'<br><small>Total '+money(s.total)+'</small><footer>Mais detalhes »</footer>';card.onclick=function(){location.href='financeiro.html#'+(i%2?'pagar':'receber')}});
-    var overdue=receives.filter(function(x){return x.date&&x.date<start&&!paid(x.status)}),quotes=read('localSales').filter(function(x){return status(x.type)==='orçamento'}),notice=document.querySelector('.dash-panel p');if(notice)notice.innerHTML='↪ Há <b>'+overdue.length+'</b> contas a receber atrasadas. Total <b>'+money(overdue.reduce(function(a,x){return a+x.value},0))+'</b>.';var notice2=document.querySelectorAll('.dash-panel p')[1];if(notice2)notice2.innerHTML='⚑ Há <b>'+quotes.length+'</b> orçamento(s) em aberto. Total <b>'+money(quotes.reduce(function(a,x){return a+num(x.total)},0))+'</b>.';
-    var sales=read('localSales').filter(function(x){return status(x.type)!=='orçamento'}),chart=document.querySelector('.dash-chart');if(chart){var bars=[];for(var m=5;m>=0;m--){var d=new Date(now.getFullYear(),now.getMonth()-m,1),next=new Date(d.getFullYear(),d.getMonth()+1,1),total=sales.filter(function(x){var sd=date(x.date);return sd&&sd>=d&&sd<next}).reduce(function(a,x){return a+num(x.total)},0);bars.push({label:d.toLocaleDateString('pt-BR',{month:'short'}).replace('.',''),total:total})}var max=Math.max.apply(null,bars.map(function(x){return x.total}));chart.innerHTML=bars.some(function(x){return x.total})?bars.map(function(x){return '<div class="dash-bar" title="'+money(x.total)+'"><i style="--bar-height:'+((max?Math.max(4,x.total/max*190):4))+'px"></i><span>'+x.label+'</span></div>'}).join(''):'<div class="dash-empty">Ainda não há vendas locais para exibir.</div>'}
-    var category=document.querySelector('.dash-panel h3 + div[style*="conic-gradient"]');if(category){var cats={};sales.forEach(function(s){(s.items||[]).forEach(function(item){var k=item.type||'Produto';cats[k]=(cats[k]||0)+num(item.total||item.price*item.qty)})});var totalCat=Object.values(cats).reduce(function(a,x){return a+x},0);if(totalCat){var angle=0,colors=['#399fe0','#48b9bb','#f0b14a','#e96b72'],parts=Object.keys(cats).map(function(k,i){var next=angle+cats[k]/totalCat*360,part=colors[i%colors.length]+' '+angle+'deg '+next+'deg';angle=next;return part});category.style.background='conic-gradient('+parts.join(',')+')';category.title=Object.keys(cats).map(function(k){return k+': '+money(cats[k])}).join(' | ')}else{category.style.background='#e9eef0';category.className='dash-category-empty';category.textContent='Ainda não há vendas locais para categorizar'}}
-    var activities=[];read('piremaxx_contatos').forEach(function(x){activities.push({date:null,label:'Novo contato',value:x.nome||''})});sales.slice(0,3).forEach(function(x){activities.push({date:date(x.createdAt||x.date),label:x.type==='Orçamento'?'Novo orçamento':'Nova venda',value:money(x.total)} )});read('piremaxx_compras').slice(0,2).forEach(function(x){activities.push({date:date(x.date),label:'Nova compra',value:money(num(x.total))})});activities.sort(function(a,b){return (b.date||0)-(a.date||0)});var list=document.querySelector('.dash-list');if(list)list.innerHTML='<h3>▤ Últimas Atividades</h3>'+activities.slice(0,5).map(function(x){return '<p>▣ '+x.label+' <b>'+x.value+'</b></p>'}).join('')+(activities.length?'':'<p>Nenhuma atividade local registrada.</p>');
+  var defaultReceivables=[
+    {id:'4758',description:'Venda à vista, código 3248.',contact:'A R TRANSPORTE DE CARGAS LTDA',account:'Caixa interno',date:'16/10/2026',status:'Recebida',value:585.00},
+    {id:'4757',description:'Venda a prazo, código 3246, parcela 2/2.',contact:'G3 LOCACAO DE VEICULOS LTDA',account:'Caixa interno',date:'27/10/2026',status:'A Receber',value:3749.95},
+    {id:'4756',description:'Venda a prazo, código 3246, parcela 1/2.',contact:'G3 LOCACAO DE VEICULOS LTDA',account:'Caixa interno',date:'19/10/2026',status:'A Receber',value:3749.95},
+    {id:'4755',description:'Venda à vista, código 3247.',contact:'21172840 LUIZ CARLOS DA SILVA BARBOZA',account:'Caixa interno',date:'16/10/2026',status:'Recebida',value:945.00},
+    {id:'4754',description:'Venda à vista, código 3242.',contact:'50.903.522 PAULO ROBERTO DE MOURA',account:'Caixa interno',date:'16/10/2026',status:'Recebida',value:1165.09},
+    {id:'4753',description:'Venda à vista, código 3240.',contact:'AUTO PECAS E SERVICOS SILVA',account:'Caixa interno',date:'16/10/2026',status:'Recebida',value:2159.99},
+    {id:'4752',description:'Venda a prazo, código 3239, parcela 1/3.',contact:'EXPRESSO LOGISTICA RJ LTDA',account:'Caixa interno',date:'22/10/2026',status:'A Receber',value:180.00},
+    {id:'4751',description:'Venda a prazo, código 3239, parcela 2/3.',contact:'EXPRESSO LOGISTICA RJ LTDA',account:'Caixa interno',date:'25/10/2026',status:'A Receber',value:180.00},
+    {id:'4750',description:'Venda a prazo, código 3239, parcela 3/3.',contact:'EXPRESSO LOGISTICA RJ LTDA',account:'Caixa interno',date:'29/10/2026',status:'A Receber',value:180.00},
+    {id:'4749',description:'Venda a prazo, código 3235.',contact:'BORRACHARIA DO JOAO',account:'Caixa interno',date:'30/10/2026',status:'A Receber',value:195.00}
+  ];
+
+  function read(key){
+    try{
+      var v=JSON.parse(localStorage.getItem(key)||'[]');
+      return Array.isArray(v)?v:[];
+    }catch(e){return []}
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
+  function num(value){
+    if(typeof value==='number')return isFinite(value)?value:0;
+    var s=String(value==null?'':value).replace(/R\$|\s/g,'');
+    if(s.indexOf(',')>=0)s=s.replace(/\./g,'').replace(',','.');
+    return Number(s.replace(/[^0-9.-]/g,''))||0;
+  }
+  function money(value){
+    return 'R$ '+Number(value||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function esc(v){
+    return String(v==null?'':v).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function isPaidStatus(st){
+    return /recebid|pag[oa]|quitad|conclu|finalizad/i.test(String(st||''));
+  }
+  function formatDateBR(str){
+    if(!str)return '';
+    var s=String(str).slice(0,10);
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s)){
+      var p=s.split('-');
+      return p[2]+'/'+p[1]+'/'+p[0];
+    }
+    return s;
+  }
+
+  function buildDashboard(){
+    // 1. Consolida Contas a Receber (Sistema + Local)
+    var savedRec=read('piremaxx_contas_receber');
+    var recById={};
+    defaultReceivables.forEach(function(r){recById[String(r.id)]=r});
+    savedRec.forEach(function(r){
+      var id=String(r.id||r.code||('rec-'+Math.random()));
+      recById[id]={
+        id:id,
+        description:r.description||r.descricao||'Conta a receber',
+        contact:r.contact||r.contato||r.client||'',
+        account:r.account||'Caixa interno',
+        date:formatDateBR(r.date||r.dueDate||r.vencimento||'16/10/2026'),
+        status:r.status||r.situacao||'A Receber',
+        value:num(r.value||r.valor||r.amount||r.total)
+      };
+    });
+    var receivables=Object.keys(recById).map(function(k){return recById[k]}).sort(function(a,b){return (parseInt(b.id,10)||0)-(parseInt(a.id,10)||0)});
+    if(!savedRec.length){
+      try{localStorage.setItem('piremaxx_contas_receber',JSON.stringify(receivables))}catch(e){}
+    }
+    var openReceivables=receivables.filter(function(r){return !isPaidStatus(r.status)});
+    var paidReceivables=receivables.filter(function(r){return isPaidStatus(r.status)});
+    var openRecTotal=openReceivables.reduce(function(acc,r){return acc+num(r.value)},0);
+    var paidRecTotal=paidReceivables.reduce(function(acc,r){return acc+num(r.value)},0);
+
+    // 2. Consolida Contas a Pagar + Compras + Coletas
+    var savedPay=read('piremaxx_contas_pagar');
+    var localPurchases=read('piremaxx_compras');
+    var localCollections=read('piremaxx_coletas');
+    var payables=savedPay.map(function(p,idx){
+      return {
+        id:String(p.id||p.code||('P-'+(idx+1))),
+        description:p.description||p.descricao||'Conta a pagar',
+        contact:p.contact||p.contato||p.supplier||p.fornecedor||'',
+        date:formatDateBR(p.date||p.dueDate||p.vencimento||''),
+        status:p.status||p.situacao||'A Pagar',
+        value:num(p.value||p.valor||p.amount||p.total)
+      };
+    });
+    localPurchases.forEach(function(pur){
+      if(!payables.some(function(p){return String(p.id)===String(pur.code)})){
+        payables.push({
+          id:String(pur.code||'C'),
+          description:'Compra de mercadorias '+(pur.code||''),
+          contact:pur.supplier||pur.fornecedor||'Fornecedor',
+          date:formatDateBR(pur.dueDate||pur.date||''),
+          status:pur.status||'A Pagar',
+          value:num(pur.total)
+        });
+      }
+    });
+    var openPayables=payables.filter(function(p){return !isPaidStatus(p.status)});
+    var paidPayables=payables.filter(function(p){return isPaidStatus(p.status)});
+    var openPayTotal=openPayables.reduce(function(acc,p){return acc+num(p.value)},0);
+    var paidPayTotal=paidPayables.reduce(function(acc,p){return acc+num(p.value)},0);
+
+    // 3. Consolida Vendas e Orçamentos (Base Importada + LocalSales)
+    var importedSales=Array.isArray(window.importedSales)?window.importedSales:[];
+    var localSales=read('localSales');
+    var deletedSales={};
+    read('deletedSalesCodes').forEach(function(c){deletedSales[String(c)]=true});
+
+    var allSalesMap={};
+    importedSales.forEach(function(s){
+      if(deletedSales[String(s.code)])return;
+      allSalesMap[String(s.code)]=s;
+    });
+    localSales.forEach(function(s){
+      if(deletedSales[String(s.code)])return;
+      allSalesMap[String(s.code)]=s;
+    });
+    var allRecords=Object.keys(allSalesMap).map(function(k){return allSalesMap[k]});
+
+    var salesList=[];
+    var quotesList=[];
+    allRecords.forEach(function(r){
+      var t=String(r.type||'').toLowerCase();
+      if(t.indexOf('orçamento')>=0||t.indexOf('orcamento')>=0){
+        quotesList.push(r);
+      }else{
+        salesList.push(r);
+      }
+    });
+
+    // Filtra vendas de Outubro/2026 (mês atual de referência do sistema)
+    var octSales=salesList.filter(function(s){
+      return String(s.date||'').slice(0,7)==='2026-10';
+    });
+    var octSalesTotal=octSales.reduce(function(acc,s){return acc+num(s.total)},0);
+    var quotesTotal=quotesList.reduce(function(acc,q){return acc+num(q.total)},0);
+
+    // 4. Atualiza os 4 Cards Superiores
+    document.getElementById('metric-rec-count').textContent=openReceivables.length;
+    document.getElementById('metric-rec-total').textContent='Em aberto: '+money(openRecTotal)+' ('+receivables.length+' no mês)';
+    document.getElementById('card-receivables').onclick=function(){location.href='financeiro.html#recebimentos'};
+
+    document.getElementById('metric-pay-count').textContent=openPayables.length;
+    document.getElementById('metric-pay-total').textContent='Em aberto: '+money(openPayTotal)+(paidPayTotal?' | Pago: '+money(paidPayTotal):'');
+    document.getElementById('card-payables').onclick=function(){location.href='financeiro.html#pagamentos'};
+
+    document.getElementById('metric-sales-count').textContent=octSales.length;
+    document.getElementById('metric-sales-total').textContent='Faturamento: '+money(octSalesTotal);
+    document.getElementById('card-sales').onclick=function(){location.href='vendas.html'};
+
+    document.getElementById('metric-quotes-count').textContent=quotesList.length;
+    document.getElementById('metric-quotes-total').textContent='Total: '+money(quotesTotal);
+    document.getElementById('card-quotes').onclick=function(){location.href='vendas.html#orcamentos'};
+
+    // 5. Atualiza Quadro de Avisos com Dados Reais de Todos os Módulos
+    var importedProducts=Array.isArray(window.importedProducts)?window.importedProducts:[];
+    var localProducts=read('localProducts');
+    var allProducts=localProducts.concat(importedProducts);
+    var lowStockProducts=allProducts.filter(function(p){
+      return num(p.stock)<=num(p.minStock||0);
+    });
+    var totalContacts=(Array.isArray(window.importedContacts)?window.importedContacts.length:0)+read('piremaxx_contatos').length;
+
+    var noticesHtml='';
+    noticesHtml+='<p><span>↪ Há <b>'+openReceivables.length+'</b> título(s) a receber em aberto no financeiro, somando <b>'+money(openRecTotal)+'</b> (e <b>'+paidReceivables.length+'</b> já recebidos: <b>'+money(paidRecTotal)+'</b>).</span><a href="financeiro.html#recebimentos">detalhar »</a></p>';
+    noticesHtml+='<p><span>⚑ Há <b>'+quotesList.length+'</b> negociação(ões) em aberto na aba de orçamentos. Total acumulado: <b>'+money(quotesTotal)+'</b>.</span><a href="vendas.html#orcamentos">detalhar »</a></p>';
+    noticesHtml+='<p><span>⚠ Há <b>'+lowStockProducts.length+'</b> produto(s) com estoque igual ou abaixo do mínimo no catálogo de pneus.</span><a href="produtos.html">detalhar »</a></p>';
+    noticesHtml+='<p><span>▣ Base corporativa ativa: <b>'+totalContacts.toLocaleString('pt-BR')+'</b> contatos, <b>'+allProducts.length+'</b> produtos e <b>'+allRecords.length.toLocaleString('pt-BR')+'</b> vendas/orçamentos sincronizados.</span><a href="clientes.html">detalhar »</a></p>';
+    document.getElementById('dash-notices-body').innerHTML=noticesHtml;
+
+    // 6. Gráfico de Evolução de Faturamento Mensal (Maio a Outubro de 2026)
+    var monthKeys=[
+      {ym:'2026-05',label:'Mai/26'},
+      {ym:'2026-06',label:'Jun/26'},
+      {ym:'2026-07',label:'Jul/26'},
+      {ym:'2026-08',label:'Ago/26'},
+      {ym:'2026-09',label:'Set/26'},
+      {ym:'2026-10',label:'Out/26'}
+    ];
+    var monthTotals=monthKeys.map(function(m){
+      var list=salesList.filter(function(s){return String(s.date||'').slice(0,7)===m.ym});
+      var sum=list.reduce(function(acc,s){return acc+num(s.total)},0);
+      return {ym:m.ym,label:m.label,count:list.length,total:sum};
+    });
+    var maxMonth=Math.max.apply(null,monthTotals.map(function(m){return m.total}))||1;
+    var chartEl=document.getElementById('dash-monthly-chart');
+    if(chartEl){
+      chartEl.innerHTML=monthTotals.map(function(m){
+        var barH=Math.max(10,Math.round((m.total/maxMonth)*155));
+        var shortVal='R$ '+Math.round(m.total/1000).toLocaleString('pt-BR')+' mil';
+        return '<div class="dash-bar" onclick="location.href=\'vendas.html\'" title="'+m.label+': '+money(m.total)+' ('+m.count+' vendas)">'+
+          '<div class="dash-bar-val">'+shortVal+'</div>'+
+          '<i style="--bar-height:'+barH+'px"></i>'+
+          '<span>'+m.label+'</span>'+
+          '<small>'+m.count+' vendas</small>'+
+        '</div>';
+      }).join('');
+    }
+
+    // 7. Produtos Mais Vendidos e Vendas por Categoria em Outubro 2026
+    var prodStats={};
+    var catStats={'Pneus Linha A (Tabela A)':0,'Pneus Linha B / Outros':0,'Serviços / Carcaças':0};
+    octSales.forEach(function(s){
+      var items=Array.isArray(s.items)?s.items:[];
+      if(!items.length){
+        catStats['Pneus Linha A (Tabela A)']+=num(s.total);
+        return;
+      }
+      items.forEach(function(it){
+        var name=String(it.name||it.product||'Produto').trim();
+        var q=num(it.qty||it.quantity||1);
+        var val=num(it.total)||(num(it.price)*q);
+        if(!prodStats[name])prodStats[name]={name:name,qty:0,total:0};
+        prodStats[name].qty+=q;
+        prodStats[name].total+=val;
+
+        if(/^A-/i.test(name)||String(it.table||'').toUpperCase().indexOf('TABELA A')>=0){
+          catStats['Pneus Linha A (Tabela A)']+=val;
+        }else if(/servi|conserto|montagem|balanceamento/i.test(name)){
+          catStats['Serviços / Carcaças']+=val;
+        }else{
+          catStats['Pneus Linha B / Outros']+=val;
+        }
+      });
+    });
+
+    var topProducts=Object.keys(prodStats).map(function(k){return prodStats[k]}).sort(function(a,b){return b.total-a.total}).slice(0,5);
+    var topBody=document.getElementById('dash-top-products-body');
+    if(topBody){
+      topBody.innerHTML=topProducts.map(function(p){
+        return '<tr><td><b>'+esc(p.name)+'</b></td><td class="center">'+p.qty.toLocaleString('pt-BR')+' un</td><td class="right">'+money(p.total)+'</td></tr>';
+      }).join('')||'<tr><td colspan="3">Nenhum item vendido no período.</td></tr>';
+    }
+
+    // Gráfico de Categorias + Resumo Financeiro
+    var catEntries=Object.keys(catStats).map(function(k){return {label:k,total:catStats[k]}}).filter(function(c){return c.total>0});
+    var catTotalSum=catEntries.reduce(function(acc,c){return acc+c.total},0)||1;
+    var catColors=['#399fe0','#48c0bc','#f0a83a'];
+    var angle=0;
+    var conicParts=catEntries.map(function(c,i){
+      var pct=(c.total/catTotalSum)*100;
+      var next=angle+(pct*3.6);
+      var str=catColors[i%catColors.length]+' '+angle.toFixed(1)+'deg '+next.toFixed(1)+'deg';
+      angle=next;
+      c.pct=pct;
+      c.color=catColors[i%catColors.length];
+      return str;
+    });
+    var pieEl=document.getElementById('dash-category-pie');
+    if(pieEl){
+      pieEl.style.background=conicParts.length?'conic-gradient('+conicParts.join(',')+')':'#dce4e8';
+    }
+    var legEl=document.getElementById('dash-category-legend');
+    if(legEl){
+      legEl.innerHTML=catEntries.map(function(c){
+        return '<div class="dash-cat-item"><span><i class="dash-cat-dot" style="background:'+c.color+'"></i>'+esc(c.label)+' ('+c.pct.toFixed(1)+'%)</span><b>'+money(c.total)+'</b></div>';
+      }).join('');
+    }
+    var baseCash=6403855.54 + paidRecTotal - paidPayTotal;
+    var finSumEl=document.getElementById('dash-fin-summary');
+    if(finSumEl){
+      finSumEl.innerHTML=
+        '<div><span>Saldo Caixa Interno:</span><b class="pos">'+money(baseCash)+'</b></div>'+
+        '<div><span>Recebido em Outubro:</span><b class="pos">'+money(paidRecTotal)+'</b></div>'+
+        '<div><span>A Receber (Aberto):</span><b>'+money(openRecTotal)+'</b></div>'+
+        '<div><span>A Pagar (Aberto):</span><b class="neg">'+money(openPayTotal)+'</b></div>';
+    }
+
+    // 8. Auditoria Real — "Últimas Atividades"
+    var auditEvents=[];
+    // A) Eventos gravados em tempo real pelo sistema de auditoria
+    read('piremaxx_auditoria').forEach(function(a){
+      var mod=String(a.module||'Sistema').toLowerCase();
+      var cat=mod.indexOf('fin')>=0?'fin':(mod.indexOf('vend')>=0||mod.indexOf('orç')>=0)?'sale':'cad';
+      var badgeClass=mod.indexOf('pag')>=0?'pay':mod.indexOf('fin')>=0?'fin':mod.indexOf('orç')>=0?'quote':mod.indexOf('vend')>=0?'sale':'contact';
+      auditEvents.push({
+        sortKey:a.timestamp||Date.now(),
+        cat:cat,
+        badgeClass:badgeClass,
+        badge:a.module||'Sistema',
+        title:a.action||'Atividade registrada',
+        sub:(a.detail?a.detail+' • ':'')+'Usuário: '+(a.user||'odiman')+' • '+(a.dateStr||'Hoje'),
+        value:a.value||'',
+        isNeg:mod.indexOf('pag')>=0,
+        href:cat==='fin'?'financeiro.html':cat==='sale'?'vendas.html':'clientes.html'
+      });
+    });
+
+    // B) Contas a Receber e a Pagar recentes
+    receivables.slice(0,5).forEach(function(r,idx){
+      auditEvents.push({
+        sortKey:1760650000000 - idx*1000,
+        cat:'fin',
+        badgeClass:'fin',
+        badge:'Recebimento',
+        title:'#'+r.id+' — '+r.description,
+        sub:(r.contact||'Cliente')+' • Venc: '+r.date+' • '+r.status,
+        value:money(r.value),
+        isNeg:false,
+        href:'financeiro.html#recebimentos'
+      });
+    });
+    payables.slice(0,4).forEach(function(p,idx){
+      auditEvents.push({
+        sortKey:1760645000000 - idx*1000,
+        cat:'fin',
+        badgeClass:'pay',
+        badge:'Pagamento',
+        title:'#'+p.id+' — '+p.description,
+        sub:(p.contact||'Fornecedor')+' • Venc: '+(p.date||'Out/2026')+' • '+p.status,
+        value:money(p.value),
+        isNeg:true,
+        href:'financeiro.html#pagamentos'
+      });
+    });
+
+    // C) Coletas de carcaças registradas
+    localCollections.slice(0,3).forEach(function(col,idx){
+      auditEvents.push({
+        sortKey:1760642000000 - idx*1000,
+        cat:'cad',
+        badgeClass:'stock',
+        badge:'Coleta',
+        title:'Coleta #'+col.code+' — '+(col.activity||'Carcaças'),
+        sub:(col.client||'Cliente')+' • Situação: '+(col.status||'Em preparação'),
+        value:money(col.total),
+        isNeg:false,
+        href:'compras.html'
+      });
+    });
+
+    // D) Contatos e Produtos recém-cadastrados localmente
+    read('piremaxx_contatos').slice(0,4).forEach(function(c,idx){
+      auditEvents.push({
+        sortKey:1760640000000 - idx*1000,
+        cat:'cad',
+        badgeClass:'contact',
+        badge:'Contato',
+        title:'Cadastro de contato: '+(c.nome||c.name||'Contato'),
+        sub:'Código #'+(c.id||'Novo')+' • '+((c.cidade||'')+(c.uf?'/'+c.uf:''))+' • Usuário: odiman',
+        value:(Array.isArray(c.tipos)&&c.tipos[0]?c.tipos[0].toUpperCase():'CLIENTE'),
+        isNeg:false,
+        href:'clientes.html'
+      });
+    });
+
+    // E) Últimas Vendas e Orçamentos reais da base (ordenados pelo protocolo mais recente #3248, #3247...)
+    var recentCommercial=allRecords.slice().sort(function(a,b){return (Number(b.code)||0)-(Number(a.code)||0)}).slice(0,10);
+    recentCommercial.forEach(function(s,idx){
+      var isQuote=String(s.type||'').toLowerCase().indexOf('orçamento')>=0;
+      auditEvents.push({
+        sortKey:1760630000000 - idx*1000,
+        cat:'sale',
+        badgeClass:isQuote?'quote':'sale',
+        badge:isQuote?'Orçamento':'Venda',
+        title:(isQuote?'Orçamento #':'Venda #')+s.code+' — '+(s.client||'Cliente'),
+        sub:'Vendedor: '+(s.seller||'Diego Miranda')+' • Data: '+formatDateBR(s.date)+' • '+(s.status||'Concluída'),
+        value:money(s.total),
+        isNeg:false,
+        href:isQuote?'vendas.html#orcamentos':'vendas.html'
+      });
+    });
+
+    auditEvents.sort(function(a,b){return b.sortKey-a.sortKey});
+
+    var currentFilter='all';
+    function renderAudit(){
+      var filtered=auditEvents.filter(function(ev){
+        return currentFilter==='all'||ev.cat===currentFilter;
+      }).slice(0,12);
+      var listEl=document.getElementById('dash-audit-list');
+      if(!listEl)return;
+      listEl.innerHTML=filtered.map(function(ev){
+        return '<div class="audit-row" onclick="location.href=\''+ev.href+'\'">'+
+          '<span class="audit-badge '+ev.badgeClass+'">'+esc(ev.badge)+'</span>'+
+          '<div class="audit-info"><strong>'+esc(ev.title)+'</strong><small>'+esc(ev.sub)+'</small></div>'+
+          '<div class="audit-val '+(ev.isNeg?'neg':'')+'">'+esc(ev.value)+'</div>'+
+        '</div>';
+      }).join('')||'<div class="audit-row"><div class="audit-info"><strong>Nenhuma atividade encontrada neste filtro.</strong></div></div>';
+    }
+    renderAudit();
+
+    var filterBar=document.getElementById('audit-filters');
+    if(filterBar&&!filterBar.dataset.bound){
+      filterBar.dataset.bound='1';
+      filterBar.addEventListener('click',function(e){
+        var btn=e.target.closest('button[data-filter]');
+        if(!btn)return;
+        currentFilter=btn.dataset.filter;
+        filterBar.querySelectorAll('button').forEach(function(b){b.classList.toggle('active',b===btn)});
+        renderAudit();
+      });
+    }
+  }
+
+  buildDashboard();
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',buildDashboard);
+  }
+  window.addEventListener('focus',buildDashboard);
 })();
 </script>
+</body>
+</html>

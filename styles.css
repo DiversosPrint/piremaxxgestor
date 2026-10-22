@@ -12,180 +12,396 @@ body .sidebar.shared-sidebar nav a b,body .sidebar nav a b{margin:0!important;li
 body main{margin-left:var(--shared-sidebar-width)!important;width:calc(100% - var(--shared-sidebar-width))!important;min-width:0!important}
 body main>.topbar{height:var(--shared-top-height)!important;min-height:var(--shared-top-height)!important;box-sizing:border-box!important;position:sticky!important;top:0!important;z-index:40!important}
 
-/* Estrutura padrão do sistema: cabeçalho superior inteiro e menu abaixo dele. */
-body:has(.clients),body:has(.purchase-content),body:has(.sales-content){font-size:14px}
-body:has(.clients) .sidebar,body:has(.purchase-content) .sidebar,body:has(.sales-content) .sidebar{top:65px!important;width:190px!important;min-width:190px!important;height:calc(100vh - 65px)!important;min-height:calc(100vh - 65px)!important}
-body:has(.clients) .sidebar .brand,body:has(.purchase-content) .sidebar .brand,body:has(.sales-content) .sidebar .brand{display:none!important}
-body:has(.clients) .sidebar nav,body:has(.purchase-content) .sidebar nav,body:has(.sales-content) .sidebar nav{padding-top:0!important}
-body:has(.clients) .sidebar nav a,body:has(.purchase-content) .sidebar nav a,body:has(.sales-content) .sidebar nav a{height:40px!important;min-height:40px!important;padding:10px 15px!important;font-size:14px!important;line-height:20px!important}
-body:has(.clients) main,body:has(.purchase-content) main,body:has(.sales-content) main{margin-left:190px!important;width:calc(100% - 190px)!important;padding-top:65px!important}
-body:has(.clients) main>.topbar,body:has(.purchase-content) main>.topbar,body:has(.sales-content) main>.topbar{position:fixed!important;left:0!important;top:0!important;width:100%!important;height:65px!important;min-height:65px!important;padding:0 10px!important}
-body:has(.clients) .brand-mini,body:has(.purchase-content) .brand-mini,body:has(.sales-content) .brand-mini{width:133px!important}
-body:has(.clients) .search,body:has(.purchase-content) .search,body:has(.sales-content) .search{width:288px!important}
+/* Estrutura padrão unificada e fixa em todas as guias do sistema */
 .client-tabs button,.purchase-tab,.tabs .tab{border-radius:4px 4px 0 0!important}
-.standard-layout{font-size:14px}
-.standard-layout .sidebar{top:65px!important;width:190px!important;min-width:190px!important;height:calc(100vh - 65px)!important;min-height:calc(100vh - 65px)!important}
-.standard-layout .sidebar .brand{display:none!important}
-.standard-layout .sidebar nav{padding-top:0!important}
-.standard-layout .sidebar nav a{height:40px!important;min-height:40px!important;padding:10px 15px!important;font-size:14px!important;line-height:20px!important}
-.standard-layout main{margin-left:190px!important;width:calc(100% - 190px)!important;padding-top:65px!important}
-.standard-layout main>.topbar{position:fixed!important;left:0!important;top:0!important;width:100%!important;height:65px!important;min-height:65px!important;padding:0 10px!important}
-.standard-layout .brand-mini{width:133px!important}
-.standard-layout .search{width:288px!important}
-/* Padrão visual compartilhado: o menu mantém o mesmo enquadramento compacto
-   do sistema original em todas as guias, inclusive durante a primeira pintura. */
+.sales-pagination{display:none;align-items:center;justify-content:flex-end;gap:8px;padding:10px 0;color:#496a79;font-size:12px}.sales-pagination button{border:1px solid #cbd4d8;background:#fff;color:#496a79;border-radius:3px;min-width:28px;height:28px}.sales-pagination button:disabled{opacity:.45;cursor:default}
+
+html body,
+html body.standard-layout,
+html body:has(.clients),
+html body:has(.purchase-content),
+html body:has(.sales-content),
+html body:has(.finance-page),
+html body:has(.products-topbar){font-size:12px!important}
+
+/* Menu lateral fixo e idêntico em todas as telas */
+html body .sidebar,
+html body .sidebar.shared-sidebar,
 html body.standard-layout .sidebar,
 html body:has(.sales-content) .sidebar,
 html body:has(.purchase-content) .sidebar,
-html body:has(.clients) .sidebar{top:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important}
+html body:has(.clients) .sidebar,
+html body:has(.finance-page) .sidebar,
+html body:has(.products-topbar) .sidebar,
+html body.standard-layout:has(.sales-content) .sidebar,
+html body.standard-layout:has(.purchase-content) .sidebar,
+html body.standard-layout:has(.clients) .sidebar{
+  position:fixed!important;
+  left:0!important;
+  top:0!important;
+  width:143px!important;
+  min-width:143px!important;
+  max-width:143px!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  background:#344750!important;
+  overflow:hidden!important;
+  z-index:90!important;
+}
+
+/* Logo 1 (topo da barra lateral) fixa e idêntica */
+html body .sidebar>.brand,
+html body .sidebar.shared-sidebar .brand,
 html body.standard-layout .sidebar .brand,
 html body:has(.sales-content) .sidebar .brand,
 html body:has(.purchase-content) .sidebar .brand,
-html body:has(.clients) .sidebar .brand{display:block!important;height:49px!important}
+html body:has(.clients) .sidebar .brand,
+html body:has(.finance-page) .sidebar .brand,
+html body:has(.products-topbar) .sidebar .brand,
+html body.standard-layout:has(.sales-content) .sidebar .brand,
+html body.standard-layout:has(.purchase-content) .sidebar .brand,
+html body.standard-layout:has(.clients) .sidebar .brand{
+  display:block!important;
+  visibility:visible!important;
+  width:143px!important;
+  height:49px!important;
+  min-height:49px!important;
+  max-height:49px!important;
+  margin:0!important;
+  padding:0!important;
+  background-color:#eee!important;
+  background-image:url('public/logo.webp')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:auto 26px!important;
+  font-size:0!important;
+  color:transparent!important;
+  box-sizing:border-box!important;
+}
+html body .sidebar>.brand strong,
+html body .sidebar>.brand small{display:none!important}
+
+/* Itens do menu lateral */
+html body .sidebar nav,
+html body .sidebar.shared-sidebar nav,
+html body.standard-layout .sidebar nav{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+html body .sidebar nav a,
+html body .sidebar.shared-sidebar nav a,
 html body.standard-layout .sidebar nav a,
 html body:has(.sales-content) .sidebar nav a,
 html body:has(.purchase-content) .sidebar nav a,
-html body:has(.clients) .sidebar nav a{height:31px!important;min-height:31px!important;padding:9px 13px!important;font-size:12px!important;line-height:13px!important}
+html body:has(.clients) .sidebar nav a,
+html body.standard-layout:has(.sales-content) .sidebar nav a,
+html body.standard-layout:has(.purchase-content) .sidebar nav a,
+html body.standard-layout:has(.clients) .sidebar nav a{
+  height:31px!important;
+  min-height:31px!important;
+  max-height:31px!important;
+  padding:9px 13px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  font-size:12px!important;
+  line-height:13px!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  box-sizing:border-box!important;
+}
+html body .sidebar nav a.active,
+html body .sidebar nav a:hover{background:#263840!important}
+
+/* Container principal alinhado ao menu e ao topo fixo */
+html body main,
 html body.standard-layout main,
 html body:has(.sales-content) main,
 html body:has(.purchase-content) main,
-html body:has(.clients) main{margin-left:143px!important;width:calc(100% - 143px)!important;padding-top:0!important}
-html body.standard-layout main>.topbar,
-html body:has(.sales-content) main>.topbar,
-html body:has(.purchase-content) main>.topbar,
-html body:has(.clients) main>.topbar{position:relative!important;left:auto!important;top:auto!important;width:100%!important;height:49px!important;min-height:49px!important;padding:0 10px!important}
-
-/* Maior especificidade para neutralizar regras antigas específicas das telas. */
-html body.standard-layout:has(.sales-content) .sidebar,
-html body.standard-layout:has(.purchase-content) .sidebar,
-html body.standard-layout:has(.clients) .sidebar{top:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important}
-html body.standard-layout:has(.sales-content) .sidebar .brand,
-html body.standard-layout:has(.purchase-content) .sidebar .brand,
-html body.standard-layout:has(.clients) .sidebar .brand{display:block!important;height:49px!important}
-html body.standard-layout:has(.sales-content) .sidebar nav a,
-html body.standard-layout:has(.purchase-content) .sidebar nav a,
-html body.standard-layout:has(.clients) .sidebar nav a{height:31px!important;min-height:31px!important;padding:9px 13px!important;font-size:12px!important;line-height:13px!important}
+html body:has(.clients) main,
+html body:has(.finance-page) main,
+html body:has(.products-topbar) main,
+html body .products-page,
 html body.standard-layout:has(.sales-content) main,
 html body.standard-layout:has(.purchase-content) main,
-html body.standard-layout:has(.clients) main{margin-left:143px!important;width:calc(100% - 143px)!important;padding-top:0!important}
+html body.standard-layout:has(.clients) main{
+  margin-left:143px!important;
+  width:calc(100% - 143px)!important;
+  min-width:0!important;
+  padding-top:98px!important;
+  box-sizing:border-box!important;
+}
+
+/* Barra superior (topbar) fixa e idêntica em todas as guias */
+html body main>.topbar,
+html body main>.products-topbar,
+html body .products-page>.products-topbar,
+html body.standard-layout main>.topbar,
+html body.standard-layout main>.products-topbar,
+html body:has(.sales-content) main>.topbar,
+html body:has(.purchase-content) main>.topbar,
+html body:has(.clients) main>.topbar,
+html body:has(.finance-page) main>.topbar,
+html body:has(.products-topbar) main>.products-topbar,
 html body.standard-layout:has(.sales-content) main>.topbar,
 html body.standard-layout:has(.purchase-content) main>.topbar,
-html body.standard-layout:has(.clients) main>.topbar{position:relative!important;left:auto!important;top:auto!important;width:100%!important;height:49px!important;min-height:49px!important;padding:0 10px!important}
-.sales-pagination{display:none;align-items:center;justify-content:flex-end;gap:8px;padding:10px 0;color:#496a79;font-size:12px}.sales-pagination button{border:1px solid #cbd4d8;background:#fff;color:#496a79;border-radius:3px;min-width:28px;height:28px}.sales-pagination button:disabled{opacity:.45;cursor:default}
-/* Estrutura fixa: o menu e a barra superior permanecem imóveis durante a navegação. */
-html body .sidebar{position:fixed!important;left:0!important;top:0!important;height:100vh!important;min-height:100vh!important;z-index:50!important}
-html body main{margin-left:143px!important;width:calc(100% - 143px)!important;padding-top:98px!important}
-html body main>.topbar{position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;z-index:40!important}
-html body main>.titlebar,html body main>.clients-title,html body main>.purchase-header,html body main>.dashboard-title{position:fixed!important;left:143px!important;top:49px!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;z-index:35!important;opacity:1!important;background-color:#5e7d89!important;background-image:none!important}
-html body:has(.sales-content) .sales-content>.tabs,html body:has(.sales-content) .sales-content>.toolbar{opacity:1!important;background-color:#f2f3f4!important;background-image:none!important;isolation:isolate!important}
-/* As abas de Clientes seguem exatamente a mesma métrica das abas de Vendas. */
-html body .client-tabs{display:flex!important;align-items:flex-start!important;height:38px!important;min-height:38px!important;border-bottom:1px solid #20a9a8!important;margin:0!important}
-html body .client-tabs button{height:38px!important;min-height:38px!important;box-sizing:border-box!important;padding:10px 16px!important;margin:0 4px 0 0!important;border:0!important;border-radius:4px 4px 0 0!important;font-size:12px!important;line-height:18px!important}
-/* A área inteira do item Financeiro funciona como um único botão clicável. */
-.sidebar nav a.finance-link,.sidebar nav a[href="financeiro.html"]{position:relative!important;z-index:2!important;display:flex!important;width:100%!important;min-width:100%!important;box-sizing:border-box!important;align-items:center!important;cursor:pointer!important;pointer-events:auto!important}
-.sidebar nav a.finance-link>*,.sidebar nav a[href="financeiro.html"]>*{pointer-events:none!important}
-.topbar .user{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:210px;padding-right:4px;position:relative;line-height:15px}.topbar .user:before{content:'';order:2;width:32px;height:32px;border-radius:50%;background:linear-gradient(#f8f8f8 0 38%,#c9c9c9 39% 58%,#707070 59%);box-shadow:0 0 0 1px #bfc5c8;display:block}.topbar .user:after{content:'⌄';order:3;color:#66777d;font-size:12px;margin-left:-4px}.topbar .user small{display:block}.topbar .user-menu{z-index:180}
-.topbar .user{padding-right:46px!important;min-width:225px!important}.topbar .user:before{display:none!important}.topbar .user-avatar{position:absolute;right:12px;top:3px;width:32px;height:32px;border-radius:50%;background:linear-gradient(#f8f8f8 0 38%,#c9c9c9 39% 58%,#707070 59%);box-shadow:0 0 0 1px #bfc5c8}.topbar .user:after{position:absolute;right:2px;top:12px}
-/* Logo principal da barra superior */
-.brand-mini{height:49px!important;font-size:0!important;color:transparent!important;background-image:url('public/logo.webp')!important;background-position:left center!important;background-repeat:no-repeat!important;background-size:contain!important;display:flex!important;align-items:center!important}
-.brand-mini strong,.brand-mini small{display:none!important}
-.brand-mini{background-image:url('public/logo.png')!important}
-.sidebar>.brand{background-image:url('public/logo.webp')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important}
-.brand-mini{background-size:auto 32px!important;background-position:center center!important}
-.sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
-html body .products-page{padding-top:98px!important}
-html body .products-page .products-content{padding-top:24px!important}
-html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
-html body .products-page>.products-topbar{position:fixed!important;z-index:40!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
-html body .products-page .products-content{padding-top:24px!important}
-/* Ajuste final da composição da página de Produtos: barra superior, título e abas. */
-html body .products-page>.products-topbar{
+html body.standard-layout:has(.clients) main>.topbar{
   position:fixed!important;
-  z-index:40!important;
   left:143px!important;
   top:0!important;
   width:calc(100% - 143px)!important;
   height:49px!important;
   min-height:49px!important;
+  max-height:49px!important;
+  padding:0 10px!important;
+  margin:0!important;
+  background:#eee!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  box-sizing:border-box!important;
+  z-index:85!important;
 }
-html body .products-page{padding-top:98px!important}
-html body .products-page .products-content{padding-top:24px!important}
-html body .products-page .product-tabs{
-  position:relative!important;
-  z-index:60!important;
-  overflow:visible!important;
-}
-/* Mantém o espaçamento padrão entre a barra da página e as abas. */
-html body .products-page .products-content{padding-top:24px!important}
-html body .products-page>.products-topbar{position:fixed!important;z-index:40!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
-html body .products-page .products-content{padding-top:24px!important}
-html body .products-page>.products-topbar{position:fixed!important;z-index:40!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
-html body .products-page .products-content{padding-top:24px!important}
 
-/* Mantém as duas logos no mesmo cabeçalho em todas as páginas */
-body:has(.purchase-content) .sidebar,
-body:has(.sales-content) .sidebar,
-body:has(.finance-page) .sidebar,
-body:has(.products-topbar) .sidebar{top:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important}
-body:has(.purchase-content) .sidebar .brand,
-body:has(.sales-content) .sidebar .brand,
-body:has(.finance-page) .sidebar .brand,
-body:has(.products-topbar) .sidebar .brand{display:block!important}
-body:has(.purchase-content) main,
-body:has(.sales-content) main,
-body:has(.finance-page) main,
-body:has(.products-topbar) main{margin-left:143px!important;width:calc(100% - 143px)!important}
-body:has(.purchase-content) main>.topbar,
-body:has(.sales-content) main>.topbar,
-body:has(.finance-page) main>.topbar,
-body:has(.products-topbar) main>.products-topbar{height:49px!important;min-height:49px!important}
-
-/* Prioridade sobre os ajustes antigos das páginas internas */
-html body:has(.purchase-content) .sidebar,
-html body:has(.sales-content) .sidebar,
-html body:has(.finance-page) .sidebar,
-html body:has(.products-topbar) .sidebar{top:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important}
-html body:has(.purchase-content) .sidebar .brand,
-html body:has(.sales-content) .sidebar .brand,
-html body:has(.finance-page) .sidebar .brand,
-html body:has(.products-topbar) .sidebar .brand{display:block!important}
-html body:has(.purchase-content) main,
-html body:has(.sales-content) main,
-html body:has(.finance-page) main,
-html body:has(.products-topbar) main{margin-left:143px!important;width:calc(100% - 143px)!important;padding-top:0!important}
-html body:has(.purchase-content) main>.topbar,
-html body:has(.sales-content) main>.topbar,
-html body:has(.finance-page) main>.topbar,
-html body:has(.products-topbar) main>.products-topbar{position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important}
-html body:has(.purchase-content) .sidebar,
-html body:has(.sales-content) .sidebar,
-html body:has(.finance-page) .sidebar,
-html body:has(.products-topbar) .sidebar{z-index:100!important}
-html body:has(.purchase-content) .brand-mini,
+/* Logo 2 (barra superior) fixa na mesma posição e tamanho em todas as guias */
+html body .topbar .brand-mini,
+html body .products-topbar .brand-mini,
+html body.standard-layout .brand-mini,
+html body:has(.dashboard) .brand-mini,
 html body:has(.sales-content) .brand-mini,
+html body:has(.purchase-content) .brand-mini,
+html body:has(.clients) .brand-mini,
 html body:has(.finance-page) .brand-mini,
-html body:has(.products-topbar) .brand-mini{width:133px!important;height:49px!important;min-height:49px!important;background-size:auto 26px!important;background-position:center 48%!important;background-repeat:no-repeat!important}
-html body:has(.clients) .brand-mini{width:133px!important;height:49px!important;min-height:49px!important;background-size:auto 26px!important;background-position:center 48%!important;background-repeat:no-repeat!important}
-html body.finance-page .topbar .brand-mini{width:133px!important;height:49px!important;min-height:49px!important;background-size:auto 26px!important;background-position:center 48%!important;background-repeat:no-repeat!important}
-html body:has(.products-topbar) main.products-page{padding-top:98px!important}
-.products-page{padding-top:98px!important}
-html body .products-page{padding-top:98px!important}
+html body.finance-page .topbar .brand-mini,
+html body:has(.products-topbar) .brand-mini{
+  display:block!important;
+  width:133px!important;
+  min-width:133px!important;
+  max-width:133px!important;
+  height:49px!important;
+  min-height:49px!important;
+  max-height:49px!important;
+  flex:0 0 133px!important;
+  margin:0!important;
+  padding:0!important;
+  background-color:transparent!important;
+  background-image:url('public/logo.png')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:auto 26px!important;
+  font-size:0!important;
+  color:transparent!important;
+  box-sizing:border-box!important;
+}
+html body .brand-mini strong,
+html body .brand-mini small{display:none!important}
+
+/* Caixa de pesquisa fixa na mesma posição e medida em todas as guias */
+html body .topbar .search,
+html body .products-topbar .products-search,
+html body.standard-layout .search{
+  width:288px!important;
+  min-width:288px!important;
+  max-width:288px!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  flex:0 0 288px!important;
+  margin:0 0 0 8px!important;
+  padding:0 0 0 12px!important;
+  background:#fff!important;
+  color:#a0a0a0!important;
+  font:12px/32px Arial,sans-serif!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  box-sizing:border-box!important;
+}
+html body .topbar .search button,
+html body .products-topbar .products-search button{
+  float:none!important;
+  width:67px!important;
+  min-width:67px!important;
+  max-width:67px!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  flex:0 0 67px!important;
+  margin:0 0 0 auto!important;
+  padding:0!important;
+  border:0!important;
+  background:#06b8bb!important;
+  color:#fff!important;
+  font:22px/32px Arial,sans-serif!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  cursor:pointer!important;
+}
+
+/* Usuário no topo direito */
+html body .topbar .user,
+html body .products-topbar .products-user,
+html body .products-topbar .user{
+  margin-left:auto!important;
+  text-align:right!important;
+  color:#496170!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:center!important;
+  min-width:225px!important;
+  padding:6px 46px 6px 8px!important;
+  position:relative!important;
+  line-height:15px!important;
+  font-size:12px!important;
+  cursor:pointer!important;
+}
+html body .topbar .user small,
+html body .products-topbar .products-user small,
+html body .products-topbar .user small{
+  display:block!important;
+  font-size:9px!important;
+  color:#78878f!important;
+}
+html body .topbar .user:before,
+html body .products-topbar .products-user:before{display:none!important}
+html body .topbar .user-avatar,
+html body .products-topbar .user-avatar{
+  position:absolute!important;
+  right:12px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:32px!important;
+  height:32px!important;
+  border-radius:50%!important;
+  background:linear-gradient(#f8f8f8 0 38%,#c9c9c9 39% 58%,#707070 59%)!important;
+  box-shadow:0 0 0 1px #bfc5c8!important;
+}
+html body .topbar .user:after,
+html body .products-topbar .products-user:after,
+html body .products-topbar .user:after{
+  content:'⌄'!important;
+  position:absolute!important;
+  right:2px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  color:#66777d!important;
+  font-size:12px!important;
+}
+html body .topbar .user-menu,
+html body .products-topbar .user-menu{
+  display:none;
+  position:absolute;
+  right:0;
+  top:44px;
+  width:190px;
+  background:#344952;
+  color:#fff;
+  z-index:180;
+  box-shadow:0 2px 5px #0004;
+  text-align:left;
+}
+html body .topbar .user-menu.open,
+html body .products-topbar .user-menu.open{display:block}
+html body .topbar .user-menu a,
+html body .products-topbar .user-menu a{
+  display:block;
+  color:#fff;
+  text-decoration:none;
+  padding:10px 12px;
+  border-bottom:1px solid #53666d;
+  font-size:12px;
+}
+html body .topbar .user-menu a:hover,
+html body .products-topbar .user-menu a:hover{background:#263840}
+
+/* Barra de título da página fixa logo abaixo da topbar */
+html body main>.titlebar,
+html body main>.dashboard-title,
+html body main>.finance-title,
+html body main>.purchase-header,
+html body main>.fleet-title,
+html body main>.clients-title,
+html body main>.products-title,
+html body main>.reports-title,
+html body main>.config-title{
+  position:fixed!important;
+  left:143px!important;
+  top:49px!important;
+  width:calc(100% - 143px)!important;
+  height:49px!important;
+  min-height:49px!important;
+  max-height:49px!important;
+  padding:0 14px!important;
+  margin:0!important;
+  background-color:#5e7d89!important;
+  background-image:none!important;
+  color:#fff!important;
+  font-size:16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  box-sizing:border-box!important;
+  opacity:1!important;
+  z-index:80!important;
+}
+
+html body:has(.sales-content) .sales-content>.tabs,html body:has(.sales-content) .sales-content>.toolbar{opacity:1!important;background-color:#f2f3f4!important;background-image:none!important;isolation:isolate!important}
+html body .client-tabs{display:flex!important;align-items:flex-start!important;height:38px!important;min-height:38px!important;border-bottom:1px solid #20a9a8!important;margin:0!important}
+html body .client-tabs button{height:38px!important;min-height:38px!important;box-sizing:border-box!important;padding:10px 16px!important;margin:0 4px 0 0!important;border:0!important;border-radius:4px 4px 0 0!important;font-size:12px!important;line-height:18px!important}
+.sidebar nav a.finance-link,.sidebar nav a[href="financeiro.html"]{position:relative!important;z-index:2!important;display:flex!important;width:100%!important;min-width:100%!important;box-sizing:border-box!important;align-items:center!important;cursor:pointer!important;pointer-events:auto!important}
+.sidebar nav a.finance-link>*,.sidebar nav a[href="financeiro.html"]>*{pointer-events:none!important}
 html body .products-page .products-content{padding-top:24px!important}
 html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
-.sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
-.sidebar>.brand{background-size:133px auto!important}
-.sidebar>.brand{background-size:auto 26px!important}
-.sidebar>.brand{background-size:133px auto!important}
-.sidebar>.brand{background-size:auto 26px!important}
-.brand-mini,.sidebar>.brand{background-size:auto 32px!important;background-position:center center!important}
-body:has(.dashboard) .brand-mini{width:133px!important;background-size:contain!important}
-.products-topbar .brand-mini{width:133px!important;background-size:contain!important}
-.sidebar>.brand{font-size:0!important;color:transparent!important;background-image:url('public/logo.png')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;padding:0!important}
-.sidebar>.brand strong,.sidebar>.brand small{display:none!important}
-.sidebar>.brand{background-image:none!important}
-.sidebar>.brand{background-image:url('public/logo.webp')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important}
-.brand-mini{background-size:auto 32px!important;background-position:center center!important}
-.sidebar>.brand{background-size:120px auto!important;background-position:center center!important}
-html body .products-page{padding-top:98px!important}
-html body .products-page .products-content{padding-top:24px!important}
-html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
+
+/* Formulários e modais abertos nunca ocultam o menu lateral (143px) nem o topo fixo (49px) */
+html body .finance-form-overlay,
+html body .transfer-form-overlay,
+html body .recurrence-form-overlay,
+html body .receipt-form-overlay,
+html body .receipt-history-overlay,
+html body .conciliation-upload-overlay,
+html body .new-purchase,
+html body .stock-adjust-modal,
+html body .account-modal{
+  left:143px!important;
+  top:49px!important;
+  right:0!important;
+  bottom:0!important;
+  width:calc(100% - 143px)!important;
+  height:calc(100vh - 49px)!important;
+  z-index:82!important;
+}
+html body .finance-form-overlay .finance-form-body,
+html body .finance-form-overlay.payment-mode .finance-form-body{
+  padding:28px 6% 32px!important;
+  min-height:calc(100vh - 190px)!important;
+  box-sizing:border-box!important;
+}
+html body .collection-modal,
+html body .finance-print-dialog,
+html body .contact-sheet,
+html body .whatsapp-sale-modal,
+html body .return-detail-modal,
+html body .category-modal{
+  left:143px!important;
+  top:49px!important;
+  right:0!important;
+  bottom:0!important;
+  width:calc(100% - 143px)!important;
+  height:calc(100vh - 49px)!important;
+  z-index:84!important;
+}
+html body .product-top,
+html body .service-top,
+html body .buyer-head{
+  position:fixed!important;
+  left:143px!important;
+  top:49px!important;
+  width:calc(100% - 143px)!important;
+  z-index:80!important;
+}
