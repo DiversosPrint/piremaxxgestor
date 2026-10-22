@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vendas</title><link rel="stylesheet" href="styles.css?v=fixed-layout"><link rel="stylesheet" href="vendas.css?v=compact-20261018"><style>.sales-content>.tabs .tab{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap;line-height:1!important}.sales-content>.tabs .sales-tab-icon{display:block;width:15px!important;height:15px!important;max-width:15px!important;max-height:15px!important;object-fit:contain;flex:0 0 15px;pointer-events:none}.toolbar .local-action-icon{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important;object-fit:contain}</style></head>
+<body><aside class="sidebar"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav><a href="index.html"><img src="public/icons/icons8-home-48.png" alt=""><b>Home</b></a><a href="index.html"><img src="public/icons/icons8-financial-64.png" alt=""><b>Financeiro</b></a><a class="active" href="vendas.html"><img src="public/icons/icons8-buy-for-cash-48.png" alt=""><b>Vendas</b></a><a href="compras.html"><img src="public/icons/icons8-buy-48.png" alt=""><b>Compras</b></a><a href="clientes.html"><img src="public/icons/icons8-budget-48.png" alt=""><b>Clientes</b></a><a href="#"><img src="public/icons/icons8-product-48.png" alt=""><b>Produtos</b></a><a href="#"><img src="public/icons/icons8-boleto-bancário-48.png" alt=""><b>Boletos</b></a><a href="#"><img src="public/icons/icons8-billing-32.png" alt=""><b>Cobranças</b></a><a href="#"><img src="public/icons/icons8-pix-48.png" alt=""><b>Pix</b></a><a href="#"><img src="public/icons/icons8-fiscal-50.png" alt=""><b>NF-e / Fiscal</b></a><a href="#"><img src="public/icons/icons8-business-report-94.png" alt=""><b>Relatórios</b></a><a href="#"><img src="public/icons/icons8-settings-48.png" alt=""><b>Configurações</b></a><a href="#"><span>❔</span><b>Suporte online</b></a></nav></aside>
+<main><header class="topbar"><div class="brand-mini">egestor<span>+</span><small>Plano profissional</small></div><div class="search">em:vendas <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS</small> ◉</div></header><div class="titlebar"><span>Vendas <small>(produtos e serviços)</small></span></div>
+<section class="sales-content"><div class="tabs"><button id="salesTab" class="tab active"><img class="sales-tab-icon" src="public/icons/icons8-fast-cart-48.png" width="15" height="15" alt="">VENDAS</button><button id="quotesTab" class="tab"><img class="sales-tab-icon" src="public/icons/icons8-estimate-48.png" width="15" height="15" alt="">ORÇAMENTOS</button><button id="returnsTab" class="tab"><img class="sales-tab-icon" src="public/icons/icons8-undo-48.png" width="15" height="15" alt="">DEVOLUÇÕES</button></div><div class="toolbar"><button class="new-btn" onclick="showSale()">⊞ Nova</button><span class="list-tools"><button title="Clonar venda" aria-label="Clonar venda"><img src="public/icons/icons8-copy.gif" width="18" height="18" alt="Clonar venda" class="local-action-icon"></button><button title="Gerar NFe" aria-label="Gerar NFe"><img src="public/icons/icons8-nf.gif" width="18" height="18" alt="Gerar NFe" class="local-action-icon"></button><button title="Excluir" aria-label="Excluir"><img src="public/icons/icons8-trash.gif" width="18" height="18" alt="Excluir" class="local-action-icon"></button><button title="Editar" aria-label="Editar"><img src="public/icons/icons8-edit-pencil.gif" width="18" height="18" alt="Editar" class="local-action-icon"></button><button title="WhatsApp" aria-label="Enviar para WhatsApp"><img src="public/icons/icons8-whatsapp.gif" width="18" height="18" alt="WhatsApp" class="local-action-icon"></button><button title="Imprimir" aria-label="Imprimir"><img src="public/icons/icons8-print.gif" width="18" height="18" alt="Imprimir" class="local-action-icon"></button><button class="print-menu-btn" title="Mais opções" onclick="this.nextElementSibling.classList.toggle('hidden')">⌄</button><div class="print-menu hidden"><button><span>▣</span> Imprimir selecionada</button><button><span>▣</span> Imprimir listagem</button></div></span><span>Mês Atual　‹　 Outubro 2026　›　 🔍</span></div><table class="sales-table"><thead><tr><th>□</th><th>Protocolo</th><th>Cliente</th><th>Vendedor</th><th>Data</th><th>Tipo</th><th data-quote-status-head="1">Status</th><th>Total</th></tr></thead><tbody id="saleRows"></tbody></table></section>
+<section id="newSale" class="new-sale hidden"><div class="sale-header"><strong>Nova Venda</strong><span>⌕ Nenhum arquivo anexado　×</span></div><div class="form-grid"><label>Nome do cliente<input id="client" value="Od im an"></label><label>Venda ou orçamento?<select><option>Venda</option><option>Orçamento</option></select></label><label>Data<input type="date" value="2026-10-15"></label><label>Vendedor<select><option>Diego Miranda</option><option>Viviane Martins</option></select></label><label>Consumidor final?<select><option>Sim</option><option>Não</option></select></label><label>Palavra-chave<input></label></div><div class="cart-title">Carrinho</div><div class="cart-head"><span>Produto ou serviço</span><span>Preço</span><span>Quantidade</span><span>Desconto</span><span>Total</span></div><div id="items"></div><button class="add-item" onclick="addItem()">+ Adicionar item</button><div class="total-line"><b>TOTAL</b><span id="qtyTotal">0</span><span>R$ 0,00</span><strong id="grandTotal">R$ 0,00</strong></div><label class="notes">Observações gerais<textarea></textarea></label><div class="finance-title">Financeiro</div><div class="finance-head"><span>Parcelas</span><span>Valor</span><span>Data</span><span>Forma de pagamento</span><span>Status</span></div><div id="installments"></div><div class="finance-total"><b>TOTAL</b><span id="financeTotal">R$ 0,00</span><button onclick="addInstallment()">Adicionar parcela</button></div><div class="parcel-menu"><button onclick="togglePlans()">Formas de parcelamento⌃</button><div id="plans" class="plans hidden"><button onclick="setPlan(1)">15, 30, 60 dias</button><button onclick="setPlan(2)">30, 60, 90 dias</button><button onclick="setPlan(3)">30, 60, 90, 120 dias</button><button onclick="setPlan(5)">Adicionar 5 parcelas</button><button onclick="setPlan(1)">Informar manualmente</button></div></div><div class="actions"><button class="exchange">◉ Troco (F9)</button><button class="save">Salvar</button><button>Voltar</button></div></section></main><script src="vendas-importadas.js?v=2"></script><script src="vendas-performance.js?v=2"></script><script src="vendas.js?v=32"></script></body></html>
+<script src="menu-lateral.js?v=layout-fixed"></script>
+<style>.client-tabs button,.purchase-tab,.tabs .tab{border-radius:4px 4px 0 0!important}</style>
+<script>document.addEventListener('click',function(e){if(e.target.closest('[data-sales-page]')){setTimeout(function(){window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0},0)}},true);</script>
+<script>(function(){function fix(){var link=[].slice.call(document.querySelectorAll('.sidebar nav a')).find(function(a){return a.textContent.indexOf('Financeiro')>=0});if(link)link.href='financeiro.html'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix);else fix()})();</script>
+<style>
+.sales-content>.tabs .tab{display:inline-flex!important;align-items:center;justify-content:center;gap:5px;white-space:nowrap;line-height:1!important}
+.sales-content>.tabs .sales-tab-icon{display:block;width:15px!important;height:15px!important;max-width:15px!important;max-height:15px!important;object-fit:contain;flex:0 0 15px;pointer-events:none}
+</style>
+<script>
+(function(){
+  var icons={salesTab:['icons8-fast-cart-48.png','VENDAS'],quotesTab:['icons8-estimate-48.png','ORÇAMENTOS'],returnsTab:['icons8-undo-48.png','DEVOLUÇÕES']};
+  function applySalesTabIcons(){
+    document.querySelectorAll('.sales-content>.tabs .tab').forEach(function(button){
+      var item=icons[button.id];if(!item)return;
+      if(button.querySelector('.sales-tab-icon'))return;
+      var icon=document.createElement('img');icon.className='sales-tab-icon';icon.src='public/icons/'+item[0];icon.alt='';
+      button.innerHTML='';button.appendChild(icon);button.appendChild(document.createTextNode(item[1]));
+    });
+  }
+  applySalesTabIcons();
+  document.addEventListener('DOMContentLoaded',function(){
+    applySalesTabIcons();
+    if(location.hash==='#orcamentos'){
+      var qTab=document.getElementById('quotesTab');
+      if(qTab)qTab.click();
+    }
+  });
+})();
+</script>
+<style id="sales-selection-checkboxes">
+.sales-table th:first-child,.sales-table td:first-child{width:42px;text-align:center;vertical-align:middle}
+.sales-table input.sale-select,.sales-table input.sales-select-all{width:16px;height:16px;margin:0;accent-color:#209b98;cursor:pointer;vertical-align:middle}
+.sales-table tbody tr.sales-row-selected{background:#e6f7f5!important;box-shadow:inset 3px 0 #209b98}
+</style>
+<script>
+(function(){
+  function installSalesCheckboxes(){
+    var table=document.querySelector('.sales-table'),head=table&&table.querySelector('thead tr'),body=document.getElementById('saleRows');
+    if(!table||!head||!body||table.dataset.returnsView==='1')return;
+    var cell=head.cells[0];
+    if(cell){
+      var master=cell.querySelector('.sales-select-all');
+      if(!master){
+        cell.textContent='';
+        master=document.createElement('input');
+        master.type='checkbox';master.className='sales-select-all';master.id='salesSelectAll';
+        master.title='Selecionar todas as vendas visíveis';master.setAttribute('aria-label','Selecionar todas as vendas visíveis');
+        cell.appendChild(master);
+        master.addEventListener('change',function(){
+          body.querySelectorAll('tr:not([hidden]):not(.hidden) .sale-select').forEach(function(box){box.checked=master.checked;box.closest('tr').classList.toggle('sales-row-selected',box.checked)});
+          master.indeterminate=false;
+        });
+      }
+    }
+    body.querySelectorAll('tr').forEach(function(row){
+      var first=row.cells[0];
+      if(!first||row.id==='returnsEmptyRow'||row.cells.length<7)return;
+      var box=first.querySelector('.sale-select');
+      if(!box){
+        first.textContent='';box=document.createElement('input');box.type='checkbox';box.className='sale-select';
+        box.setAttribute('aria-label','Selecionar venda '+(row.cells[1]?.textContent.trim()||''));first.appendChild(box);
+      }
+      box.onchange=function(){
+        row.classList.toggle('sales-row-selected',box.checked);
+        var visible=[].slice.call(body.querySelectorAll('tr:not([hidden]):not(.hidden) .sale-select'));
+        var checked=visible.filter(function(item){return item.checked});
+        if(master){master.checked=visible.length>0&&checked.length===visible.length;master.indeterminate=checked.length>0&&checked.length<visible.length}
+      };
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    installSalesCheckboxes();
+    var body=document.getElementById('saleRows');
+    if(body)new MutationObserver(installSalesCheckboxes).observe(body,{childList:true});
+    setTimeout(installSalesCheckboxes,120);
+  });
+  window.installSalesCheckboxes=installSalesCheckboxes;
+})();
+</script>
