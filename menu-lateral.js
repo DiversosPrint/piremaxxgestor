@@ -747,3 +747,157 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enforceFixedLayout);
   window.addEventListener('resize',enforceFixedLayout);
 })();
+
+// Papel timbrado oficial Piremaxx Pneus em todas as impressões do sistema (janelas de impressão e @media print).
+(function(){
+  const BG_URL = new URL('public/papel-timbrado.jpg', location.href).href;
+
+  function installInPagePrintLetterhead(){
+    let st = document.getElementById('piremaxx-print-letterhead-style');
+    if(!st){
+      st = document.createElement('style');
+      st.id = 'piremaxx-print-letterhead-style';
+      st.textContent = `
+        .piremaxx-print-bg-page { display: none !important; }
+        @media print {
+          @page { size: A4 portrait; margin: 0 !important; }
+          html, html body, html body.finance-printing, html body.printing-client-report {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          html body > .piremaxx-print-bg-page,
+          html body.finance-printing > .piremaxx-print-bg-page,
+          html body.printing-client-report > .piremaxx-print-bg-page {
+            display: block !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            object-fit: fill !important;
+            z-index: -1 !important;
+            pointer-events: none !important;
+          }
+          html body.finance-printing .finance-print-sheet,
+          html body .print-area,
+          html body.printing-client-report .client-report {
+            background: transparent !important;
+            padding: 34mm 14mm 16mm 14mm !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+            z-index: 2 !important;
+          }
+          html body table, html body tr, html body td {
+            background: transparent !important;
+          }
+        }
+      `;
+    }
+    if(document.body){
+      document.body.appendChild(st);
+      if(!document.querySelector('.piremaxx-print-bg-page')){
+        const img = document.createElement('img');
+        img.className = 'piremaxx-print-bg-page';
+        img.src = BG_URL;
+        img.alt = '';
+        document.body.prepend(img);
+      }
+    } else {
+      document.head.appendChild(st);
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', installInPagePrintLetterhead);
+  } else {
+    installInPagePrintLetterhead();
+  }
+  window.addEventListener('beforeprint', installInPagePrintLetterhead);
+  const nativePrint = window.print ? window.print.bind(window) : null;
+  if(nativePrint){
+    window.print = function(){
+      installInPagePrintLetterhead();
+      return nativePrint();
+    };
+  }
+
+  const popupLetterheadCSS = `
+    <style id="piremaxx-popup-letterhead">
+      @page { size: A4 portrait; margin: 0 !important; }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: 297mm;
+        background: transparent !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body {
+        padding: 34mm 15mm 18mm 15mm !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        z-index: 1 !important;
+      }
+      body:has(> .page), body:has(> .product-sheet) {
+        padding: 0 !important;
+      }
+      .page, .product-sheet {
+        padding: 34mm 15mm 18mm 15mm !important;
+        box-sizing: border-box !important;
+        min-height: 297mm !important;
+        position: relative !important;
+        z-index: 1 !important;
+      }
+      .piremaxx-print-bg {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: fill !important;
+        z-index: -1 !important;
+        pointer-events: none !important;
+      }
+      table, tbody, tr, td, .box {
+        background: transparent !important;
+      }
+    </style>
+  `;
+
+  const nativeWindowOpen = window.open;
+  window.open = function(){
+    const win = nativeWindowOpen.apply(this, arguments);
+    if(!win) return win;
+    try {
+      const nativeWrite = win.document.write.bind(win.document);
+      let rawPrint = win.print ? win.print.bind(win) : null;
+      win.print = function(){
+        const bg = win.document && win.document.querySelector('.piremaxx-print-bg');
+        if(bg && !bg.complete){
+          bg.addEventListener('load', function(){ if(rawPrint) rawPrint(); }, { once: true });
+          bg.addEventListener('error', function(){ if(rawPrint) rawPrint(); }, { once: true });
+          return;
+        }
+        if(rawPrint) rawPrint();
+      };
+      win.document.write = function(html){
+        let content = String(html || '');
+        if(/<head[^>]*>/i.test(content)){
+          content = content.replace(/<head[^>]*>/i, '$&' + popupLetterheadCSS);
+        } else {
+          content = popupLetterheadCSS + content;
+        }
+        if(/<body[^>]*>/i.test(content)){
+          content = content.replace(/<body[^>]*>/i, '$&<img class="piremaxx-print-bg" src="' + BG_URL + '" alt="">');
+        } else {
+          content = '<img class="piremaxx-print-bg" src="' + BG_URL + '" alt="">' + content;
+        }
+        return nativeWrite(content);
+      };
+    } catch(e){}
+    return win;
+  };
+})();

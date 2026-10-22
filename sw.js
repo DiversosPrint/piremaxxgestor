@@ -1,4 +1,4 @@
-const CACHE_NAME = 'piremaxx-gestor-v9';
+const CACHE_NAME = 'piremaxx-gestor-v10';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -17,6 +17,7 @@ const APP_SHELL = [
   '/public/pwa-icon.svg',
   '/public/logo.webp',
   '/public/logo.png',
+  '/public/papel-timbrado.jpg',
   '/public/icons/icons8-home-48.png'
 ];
 
