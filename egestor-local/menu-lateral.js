@@ -354,7 +354,7 @@
       style.id='standard-layout-first-paint';
     }
     style.textContent=`
-        @media (min-width: 769px) {
+        @media screen and (min-width: 769px) {
           .mobile-menu-toggle, .mobile-menu-backdrop { display:none!important; }
           body .sidebar.shared-sidebar,body .sidebar{position:fixed!important;top:0!important;left:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important;z-index:90!important;transform:none!important}
           body .sidebar.shared-sidebar .brand,body .sidebar .brand{display:block!important;visibility:visible!important;width:143px!important;height:49px!important;min-height:49px!important;background-color:#eee!important;background-image:url("public/logo.webp")!important;background-position:center center!important;background-repeat:no-repeat!important;background-size:auto 26px!important;font-size:0!important;color:transparent!important}
@@ -750,82 +750,294 @@
   window.addEventListener('resize',enforceFixedLayout);
 })();
 
-// Papel timbrado oficial Piremaxx Pneus em todas as impressões do sistema (janelas de impressão e @media print).
+// Papel timbrado oficial Piremaxx Pneus em todas as impressões do sistema + Modal de Envio via WhatsApp.
 (function(){
   const BG_URL = new URL('public/papel-timbrado.jpg', location.href).href;
 
-  function installInPagePrintLetterhead(){
-    let st = document.getElementById('piremaxx-print-letterhead-style');
-    if(!st){
-      st = document.createElement('style');
-      st.id = 'piremaxx-print-letterhead-style';
+  function escHtml(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function findContactPhone(clientName){
+    if(!clientName) return '';
+    const norm = String(clientName).trim().toLowerCase();
+    try {
+      const local = JSON.parse(localStorage.getItem('piremaxx_contatos') || '[]');
+      const hitLocal = local.find(function(x){ return String(x.nome || '').trim().toLowerCase() === norm; });
+      if(hitLocal && hitLocal.telefone) return String(hitLocal.telefone);
+    } catch(e){}
+    try {
+      const imp = window.importedContacts || [];
+      const hitImp = imp.find(function(x){ return String(x.name || x.fantasy || '').trim().toLowerCase() === norm; });
+      if(hitImp && hitImp.phones) return String(hitImp.phones);
+    } catch(e){}
+    return '';
+  }
+
+  function generateEgestorKey(code){
+    const num = String(code || '3300').replace(/\D/g, '') || '3300';
+    return '48285.' + num.padStart(4, '8').slice(0, 4) + '.01a91.4146.831a.2e5d';
+  }
+
+  // Modal oficial "Envio via WhatsApp" idêntico à referência visual
+  window.openPiremaxxWhatsAppModal = function(opts){
+    opts = opts || {};
+    document.getElementById('piremaxxWhatsAppOverlay')?.remove();
+
+    if(!document.getElementById('piremaxxWhatsAppStyle')){
+      const st = document.createElement('style');
+      st.id = 'piremaxxWhatsAppStyle';
       st.textContent = `
-        .piremaxx-print-bg-page { display: none !important; }
-        @media print {
-          @page { size: A4 portrait; margin: 0 !important; }
-          html, html body, html body.finance-printing, html body.printing-client-report {
-            margin: 0 !important;
-            padding: 0 !important;
-            background: transparent !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          html body > .piremaxx-print-bg-page,
-          html body.finance-printing > .piremaxx-print-bg-page,
-          html body.printing-client-report > .piremaxx-print-bg-page {
-            display: block !important;
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 210mm !important;
-            height: 297mm !important;
-            object-fit: fill !important;
-            z-index: -1 !important;
-            pointer-events: none !important;
-          }
-          html body.finance-printing .finance-print-sheet,
-          html body .print-area,
-          html body.printing-client-report .client-report {
-            background: transparent !important;
-            padding: 34mm 14mm 16mm 14mm !important;
-            box-sizing: border-box !important;
-            position: relative !important;
-            z-index: 2 !important;
-          }
-          html body table, html body tr, html body td {
-            background: transparent !important;
-          }
+        #piremaxxWhatsAppOverlay {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          background: rgba(0, 0, 0, 0.45);
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          padding: 36px 14px;
+          overflow-y: auto;
+          font-family: Arial, Helvetica, sans-serif;
         }
+        .wa-modal-card {
+          width: 560px;
+          max-width: 95vw;
+          background: #fff;
+          border-radius: 6px;
+          box-shadow: 0 5px 22px rgba(0, 0, 0, 0.35);
+          overflow: hidden;
+          animation: waModalFadeIn 0.16s ease-out;
+        }
+        @keyframes waModalFadeIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .wa-modal-header {
+          height: 50px;
+          background: #4cb050;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 18px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+        .wa-modal-close {
+          border: 0;
+          background: transparent;
+          color: rgba(255, 255, 255, 0.78);
+          font-size: 20px;
+          line-height: 1;
+          cursor: pointer;
+          padding: 4px;
+        }
+        .wa-modal-close:hover { color: #fff; }
+        .wa-modal-body {
+          padding: 20px 28px 22px;
+          color: #666;
+          font-size: 13px;
+        }
+        .wa-modal-alert {
+          background: #dff0d8;
+          border: 1px solid #d0e6c6;
+          color: #3c763d;
+          border-radius: 4px;
+          padding: 14px 16px;
+          margin-bottom: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 13px;
+        }
+        .wa-modal-alert a {
+          color: #1b6ec2;
+          text-decoration: none;
+        }
+        .wa-modal-alert a:hover { text-decoration: underline; }
+        .wa-modal-alert-close {
+          border: 0;
+          background: transparent;
+          color: #9ab996;
+          font-size: 18px;
+          line-height: 1;
+          cursor: pointer;
+          padding: 0 2px;
+        }
+        .wa-modal-label {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          color: #777;
+          font-size: 13px;
+          margin-bottom: 6px;
+        }
+        .wa-modal-help {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          background: #777;
+          color: #fff;
+          font-size: 10px;
+          font-weight: bold;
+          cursor: help;
+        }
+        .wa-modal-msgbox {
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          padding: 13px 15px;
+          min-height: 120px;
+          color: #666;
+          font-size: 13px;
+          line-height: 1.48;
+          background: #fff;
+          margin-bottom: 20px;
+          outline: none;
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+        .wa-modal-msgbox:focus {
+          border-color: #4cb050;
+        }
+        .wa-modal-msgbox a {
+          color: #1b6ec2;
+          text-decoration: none;
+        }
+        .wa-modal-msgbox a:hover {
+          text-decoration: underline;
+        }
+        .wa-modal-phone {
+          width: 100%;
+          height: 36px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          padding: 0 12px;
+          font-size: 14px;
+          color: #444;
+          box-sizing: border-box;
+          outline: none;
+        }
+        .wa-modal-phone:focus {
+          border-color: #4cb050;
+        }
+        .wa-modal-footer {
+          border-top: 1px solid #e5e5e5;
+          padding: 14px 18px;
+          display: flex;
+          justify-content: flex-end;
+          gap: 8px;
+          background: #fff;
+        }
+        .wa-btn-send {
+          height: 34px;
+          padding: 0 16px;
+          border: 0;
+          border-radius: 4px;
+          background: #2b9348;
+          color: #fff;
+          font-size: 13px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .wa-btn-send:hover { background: #237a3b; }
+        .wa-btn-back {
+          height: 34px;
+          padding: 0 16px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          background: #fff;
+          color: #333;
+          font-size: 13px;
+          cursor: pointer;
+        }
+        .wa-btn-back:hover { background: #f5f5f5; }
       `;
-    }
-    if(document.body){
-      document.body.appendChild(st);
-      if(!document.querySelector('.piremaxx-print-bg-page')){
-        const img = document.createElement('img');
-        img.className = 'piremaxx-print-bg-page';
-        img.src = BG_URL;
-        img.alt = '';
-        document.body.prepend(img);
-      }
-    } else {
       document.head.appendChild(st);
     }
-  }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', installInPagePrintLetterhead);
-  } else {
-    installInPagePrintLetterhead();
-  }
-  window.addEventListener('beforeprint', installInPagePrintLetterhead);
-  const nativePrint = window.print ? window.print.bind(window) : null;
-  if(nativePrint){
-    window.print = function(){
-      installInPagePrintLetterhead();
-      return nativePrint();
+    const code = String(opts.code || '3300').trim();
+    const docTypeRaw = String(opts.type || 'Venda').trim();
+    const isQuote = docTypeRaw.toLowerCase().includes('orçamento') || docTypeRaw.toLowerCase().includes('orcamento');
+    const docLabel = opts.docLabel || (isQuote ? ('o orçamento nº ' + code) : ('o pedido de venda nº ' + code));
+    const displayKey = generateEgestorKey(code);
+    const displayUrl = opts.displayUrl || ('https://v4.egestor.com.br/vendas/print.php?key=' + displayKey);
+    const openPdfUrl = opts.pdfUrl || new URL('venda-pdf.html?code=' + encodeURIComponent(code), location.href).href;
+    const initialPhone = opts.phone != null ? String(opts.phone) : findContactPhone(opts.client || '');
+
+    const overlay = document.createElement('div');
+    overlay.id = 'piremaxxWhatsAppOverlay';
+    overlay.innerHTML = `
+      <div class="wa-modal-card" role="dialog" aria-modal="true" aria-label="Envio via WhatsApp">
+        <div class="wa-modal-header">
+          <span>Envio via WhatsApp</span>
+          <button type="button" class="wa-modal-close" aria-label="Fechar">×</button>
+        </div>
+        <div class="wa-modal-body">
+          <div class="wa-modal-alert">
+            <span>Você precisa estar conectado no <a href="https://web.whatsapp.com/" target="_blank" rel="noopener">WhatsApp Web</a>.</span>
+            <button type="button" class="wa-modal-alert-close" aria-label="Fechar aviso">×</button>
+          </div>
+          <label class="wa-modal-label">Mensagem <span class="wa-modal-help" title="Mensagem que será enviada para o cliente no WhatsApp">?</span></label>
+          <div class="wa-modal-msgbox" contenteditable="true" spellcheck="false">${opts.message ? escHtml(opts.message) : `Olá!
+Aqui é da empresa DNFX - COMERCIO DE PNEUS.
+
+Estou enviando ${escHtml(docLabel)}. Para visualizar, basta clicar no link:
+<a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener">${escHtml(displayUrl)}</a>`}</div>
+          <label class="wa-modal-label" for="waModalPhoneInput">Informe o número</label>
+          <input id="waModalPhoneInput" type="tel" class="wa-modal-phone" value="${escHtml(initialPhone)}" autocomplete="off">
+        </div>
+        <div class="wa-modal-footer">
+          <button type="button" class="wa-btn-send">Enviar</button>
+          <button type="button" class="wa-btn-back">Voltar</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+    const phoneInput = overlay.querySelector('#waModalPhoneInput');
+    const msgBox = overlay.querySelector('.wa-modal-msgbox');
+    setTimeout(function(){ phoneInput?.focus(); }, 40);
+
+    function close(){ overlay.remove(); }
+    overlay.querySelector('.wa-modal-close').onclick = close;
+    overlay.querySelector('.wa-btn-back').onclick = close;
+    overlay.querySelector('.wa-modal-alert-close').onclick = function(){
+      overlay.querySelector('.wa-modal-alert')?.remove();
     };
-  }
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay) close();
+    });
 
+    msgBox.addEventListener('click', function(e){
+      const a = e.target.closest('a');
+      if(a){
+        e.preventDefault();
+        nativeWindowOpen.call(window, a.href, '_blank');
+      }
+    });
+
+    overlay.querySelector('.wa-btn-send').onclick = function(){
+      const rawPhone = (phoneInput.value || '').replace(/\D/g, '');
+      const text = (msgBox.innerText || msgBox.textContent || '').trim();
+      let phoneParam = '';
+      if(rawPhone){
+        phoneParam = rawPhone.startsWith('55') && rawPhone.length >= 12 ? rawPhone : ('55' + rawPhone);
+      }
+      const waUrl = phoneParam
+        ? ('https://web.whatsapp.com/send?phone=' + phoneParam + '&text=' + encodeURIComponent(text))
+        : ('https://web.whatsapp.com/send?text=' + encodeURIComponent(text));
+      nativeWindowOpen.call(window, waUrl, '_blank');
+      close();
+    };
+  };
+
+  // Gerador de documentos corporativos profissionais no papel timbrado Piremaxx Pneus (nunca imprime printscreen da tela)
   const popupLetterheadCSS = `
     <style id="piremaxx-popup-letterhead">
       @page { size: A4 portrait; margin: 0 !important; }
@@ -836,6 +1048,8 @@
         background: transparent !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: #1f2f3d !important;
       }
       body {
         padding: 34mm 15mm 18mm 15mm !important;
@@ -863,14 +1077,87 @@
         z-index: -1 !important;
         pointer-events: none !important;
       }
-      table, tbody, tr, td, .box {
+      .doc-header-banner {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 2px solid #1b2886;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+      }
+      .doc-header-banner h1 {
+        margin: 0 !important;
+        font-size: 18px !important;
+        color: #1b2886 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        border: 0 !important;
+        padding: 0 !important;
+      }
+      .doc-header-meta {
+        text-align: right;
+        font-size: 11px;
+        color: #3b5162;
+        line-height: 1.45;
+      }
+      table {
+        width: 100% !important;
+        border-collapse: collapse !important;
         background: transparent !important;
+        margin-top: 8px;
+      }
+      thead th, th {
+        background: #1b2886 !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        font-weight: bold !important;
+        text-transform: uppercase;
+        padding: 8px 10px !important;
+        border: 1px solid #1b2886 !important;
+        text-align: left;
+      }
+      tbody td, td {
+        background: transparent !important;
+        color: #1f2f3d !important;
+        font-size: 11.5px !important;
+        padding: 7px 10px !important;
+        border-bottom: 1px solid #cfd8de !important;
+      }
+      tfoot td, .print-total td {
+        background: rgba(27, 40, 134, 0.06) !important;
+        font-weight: bold !important;
+        color: #1b2886 !important;
+        border-top: 2px solid #1b2886 !important;
+      }
+      .doc-footer-sign {
+        margin-top: 28px;
+        padding-top: 10px;
+        border-top: 1px solid #cfd8de;
+        display: flex;
+        justify-content: space-between;
+        font-size: 10.5px;
+        color: #546a7b;
       }
     </style>
   `;
 
   const nativeWindowOpen = window.open;
-  window.open = function(){
+  window.open = function(url){
+    // Se algum botão tentar abrir wa.me diretamente, abre primeiro o modal oficial de Envio via WhatsApp
+    if(typeof url === 'string' && (url.includes('wa.me/') || url.includes('api.whatsapp.com'))){
+      let parsedText = '';
+      try {
+        const u = new URL(url);
+        parsedText = u.searchParams.get('text') || '';
+      } catch(e){}
+      const codeMatch = parsedText.match(/#(\d+)/);
+      window.openPiremaxxWhatsAppModal({
+        code: codeMatch ? codeMatch[1] : '3300',
+        type: parsedText.toLowerCase().includes('orçamento') ? 'Orçamento' : 'Venda'
+      });
+      return null;
+    }
+
     const win = nativeWindowOpen.apply(this, arguments);
     if(!win) return win;
     try {
@@ -902,4 +1189,56 @@
     } catch(e){}
     return win;
   };
+
+  window.openPiremaxxPrintDocument = function(title, bodyHtml){
+    const w = window.open('', '_blank', 'width=940,height=840');
+    if(!w){
+      alert('Permita a abertura de pop-ups para visualizar e imprimir o documento.');
+      return;
+    }
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+    w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>${escHtml(title)} - Piremaxx Pneus</title></head><body><div class="doc-header-banner"><h1>${escHtml(title)}</h1><div class="doc-header-meta"><b>PIREMAXX PNEUS</b><br>Emitido em: ${dateStr}</div></div>${bodyHtml}<div class="doc-footer-sign"><span>Documento oficial emitido pelo Sistema Gestão Piremaxx Pneus</span><span>Rua Ourique 261 - Penha Circular · Tel: (21) 3881-1891</span></div><script>window.onload=function(){window.print()}<\/script></body></html>`);
+    w.document.close();
+  };
+
+  // Se qualquer tela chamar window.print() diretamente (exceto venda-pdf.html), converte automaticamente a tabela/ficha ativa em um documento corporativo limpo no papel timbrado, evitando "printscreen" da interface!
+  const isDedicatedPdfPage = (location.pathname.split('/').pop() || '').toLowerCase() === 'venda-pdf.html';
+  const nativePrint = window.print ? window.print.bind(window) : null;
+  if(nativePrint && !isDedicatedPdfPage){
+    window.print = function(){
+      // 1. Verifica se há uma área de impressão específica preparada (.finance-print-sheet, .client-report, .print-area)
+      const specificArea = document.querySelector('.finance-print-sheet:not(:empty), .client-report:not(:empty), .print-area:not(:empty)');
+      if(specificArea){
+        const clone = specificArea.cloneNode(true);
+        clone.querySelectorAll('button, input[type="checkbox"], .contact-actions').forEach(function(el){ el.remove(); });
+        const heading = clone.querySelector('h1, h2, h3');
+        const docTitle = heading ? heading.textContent.replace(/[↪▣🖨]/g, '').trim() : (document.title || 'Relatório Piremaxx');
+        if(heading) heading.remove();
+        window.openPiremaxxPrintDocument(docTitle, clone.innerHTML);
+        return;
+      }
+      // 2. Caso contrário, extrai a tabela visível da aba atual e monta um relatório limpo
+      const visibleTable = Array.from(document.querySelectorAll('main table')).find(function(t){ return t.offsetParent !== null; });
+      if(visibleTable){
+        const cloneTable = visibleTable.cloneNode(true);
+        cloneTable.querySelectorAll('tr').forEach(function(tr){
+          const firstCell = tr.cells[0];
+          if(firstCell && (firstCell.querySelector('input[type="checkbox"]') || firstCell.textContent.trim() === '□')){
+            firstCell.remove();
+          }
+          const lastCell = tr.cells[tr.cells.length - 1];
+          if(lastCell && (lastCell.classList.contains('contact-actions') || lastCell.querySelector('button'))){
+            lastCell.remove();
+          }
+        });
+        const pageTitle = document.querySelector('.titlebar, .clients-title, .purchase-header, .finance-title, .products-title, .reports-title, .config-title');
+        const activeTab = document.querySelector('.tabs .tab.active, .client-tabs button.active, .finance-tabs button.active, .purchase-tab.active, .product-tabs button.active');
+        const titleText = ((pageTitle ? pageTitle.childNodes[0]?.textContent : '') + (activeTab ? ' - ' + activeTab.textContent : '')).replace(/[▣↪⇄↶♣⚒☷]/g, '').trim() || 'Relatório do Sistema';
+        window.openPiremaxxPrintDocument(titleText, cloneTable.outerHTML);
+        return;
+      }
+      return nativePrint();
+    };
+  }
 })();

@@ -267,8 +267,11 @@ document.addEventListener('DOMContentLoaded',function(){
       if(sel.length!==1){alert('Selecione um contato para abrir o WhatsApp.');return}
       var name=(sel[0].cells[2]&&sel[0].cells[2].textContent||'').trim();
       var phone=(sel[0].cells[3]&&sel[0].cells[3].textContent||'').replace(/\D/g,'');
-      var url=phone?('https://wa.me/55'+phone+'?text='+encodeURIComponent('Olá '+name+', tudo bem? Somos da Piremaxx Pneus.')):('https://wa.me/?text='+encodeURIComponent('Contato Piremaxx Pneus - '+name));
-      window.open(url,'_blank');
+      if(typeof window.openPiremaxxWhatsAppModal==='function'){
+        window.openPiremaxxWhatsAppModal({client:name,phone:phone,message:'Olá '+name+'!\nAqui é da empresa DNFX - COMERCIO DE PNEUS.\n\nComo podemos ajudar?'});
+        return;
+      }
+      window.open('https://wa.me/55'+phone,'_blank');
     };
 
     // Ação: Imprimir (selecionados ou lista visível)
