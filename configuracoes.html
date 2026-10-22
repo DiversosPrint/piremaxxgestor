@@ -1,5 +1,1091 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Configurações - egestor+</title><link rel="stylesheet" href="styles.css?v=fixed-layout"><style>body{margin:0;background:#f2f3f4;font-family:Arial;color:#496572}.config-title button{border:0;border-radius:3px;background:#00d982;color:#fff;padding:8px 14px;font-weight:bold;margin-left:8px}.config-title .tutorial{background:#f6b33f}.config-body{padding:22px}.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:0}.categories button{height:32px;border:0;background:#5e7d89;color:#fff;text-align:left;padding:0 10px;font-size:11px;font-weight:bold}.categories button.active{background:#f4bd00}.panel{background:#fff;border:1px solid #dfe3e5}.toolbar{height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid #ddd}.toolbar button{height:30px;border:1px solid #cbd4d8;background:#f8f8f8;border-radius:3px;color:#637680}.toolbar .new{background:#f4bd00;color:#fff;border-color:#f4bd00;font-weight:bold;padding:0 14px}.toolbar input{height:30px;width:230px;border:1px solid #cbd4d8;padding:0 10px}.user-table{width:100%;border-collapse:collapse;font-size:12px}.user-table th{height:42px;text-align:left;color:#587383}.user-table td{padding:9px 13px;border-bottom:1px solid #eee}.user-table tbody tr:nth-child(odd){background:#eee}.yes{color:#27b86b}.account-modal{display:none;position:fixed;inset:0;background:#fff;z-index:200}.account-modal.open{display:block}.modal-head{height:42px;background:#59b957;color:#fff;padding:0 12px;display:flex;align-items:center;justify-content:space-between;font-weight:bold}.modal-head button{background:transparent;border:0;color:#d3ead3;font-size:18px}.account-card{margin:38px 6%;padding:24px 30px;background:#eee;border:1px solid #ddd;border-radius:4px}.avatar{width:48px;height:48px;margin:0 auto 80px;border-radius:50%;background:linear-gradient(#ddd,#777);border:4px solid #fff}.account-card label{display:block;font-size:11px;color:#71808a;margin:9px 0}.account-card input{height:28px;box-sizing:border-box;border:1px solid #cbd4d8;border-radius:3px;padding:0 8px}.file{width:100%}.account-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;background:#eee;padding:10px 20px}.account-grid input{width:100%}.modal-actions{position:absolute;right:6%;bottom:12px}.modal-actions button{height:31px;border:0;border-radius:3px;padding:0 15px;font-weight:bold}.save{background:#35a968;color:#fff}.close{background:#eee;color:#777;border:1px solid #d5d5d5!important}</style></head><body><aside class="sidebar"></aside><main><header class="topbar"><div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="search">Digite sua busca <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div></header><div class="titlebar config-title"><span>Configurações</span><div><button class="tutorial">▣ Tutoriais</button><button class="new">⊞ Novo⌄</button></div></div><div class="config-body"><nav class="categories"><button class="active">⚙ GERAL</button><button>▣ PLANO DE CONTAS</button><button>▥ CONTAS CAIXA</button><button>⚑ OPERAÇÕES</button><button>▣ FORMAS PGTO</button><button>▥ BOLETOS</button><button>▤ COBRANÇAS</button><button>▣ FISCAL</button><button>▤ DADOS TRIBUTÁRIOS</button><button>▣ CONTÁBIL</button><button class="active" onclick="location.href='usuarios.html'">♟ USUÁRIOS</button><button>♟ API</button></nav><section class="panel"><div class="toolbar"><button class="new" onclick="location.href='usuarios.html#novo'">⊞ Novo</button><button>▣</button><input placeholder="Buscar usuários"><button>⌕</button></div><table class="user-table"><thead><tr><th>□</th><th>Cód</th><th>Nome</th><th>E-mail</th><th>Login</th><th>Palavras-chave</th><th>Permissão</th><th>Acesso?</th></tr></thead><tbody><tr><td>□</td><td>4</td><td>CLAUDEMIR NOGUEIRA</td><td>claudemir.nogueira@piremaxx.com.br</td><td>claudemirnogueira</td><td>claudemir nogueira</td><td>Acesso completo</td><td class="yes">Sim</td></tr><tr><td>□</td><td>1</td><td>Diego Miranda</td><td>diego.miranda@piremaxx.com.br</td><td>diego</td><td></td><td>Acesso completo</td><td class="yes">Sim</td></tr><tr><td>□</td><td>2</td><td>Katia Maria</td><td>katia.castilho@piremaxx.com.br</td><td>katiacastilho</td><td>KATIA CASTILHO</td><td>Acesso completo</td><td class="yes">Sim</td></tr><tr><td>□</td><td>5</td><td>ODIMAN COSTA</td><td>adoraroro@gmail.com</td><td>odiman</td><td>ODIMAN COSTA</td><td>Acesso completo</td><td class="yes">Sim</td></tr><tr><td>□</td><td>3</td><td>Viviane Martins</td><td>administrativo@piremaxx.com.br</td><td>vivianemartins</td><td>viviane</td><td>Acesso completo</td><td class="yes">Sim</td></tr></tbody></table></section></div></main><div class="account-modal" id="accountModal"><div class="modal-head"><span>Configurações da minha conta</span><button onclick="closeAccount()">×</button></div><div class="account-card"><div class="avatar"></div><label>Minha foto</label><input class="file" type="file"><div class="account-grid"><label>Login usuário<input value="odiman"></label><label>Senha atual<input type="password" value="123456789"></label><label>Nova senha<input type="password"></label><label>Repita a nova senha<input type="password"></label></div><label><input type="checkbox"> Habilitar modo Alto Contraste</label></div><div class="modal-actions"><button class="save">Salvar</button><button class="close" onclick="closeAccount()">Fechar</button></div></div><script>function openAccount(){document.getElementById('accountModal').classList.add('open')}function closeAccount(){document.getElementById('accountModal').classList.remove('open')}</script>
-<script>if(location.hash==='#conta'){setTimeout(function(){if(typeof openAccount==='function')openAccount()},30)}</script>
-<script>(function(){window.closeAccount=function(){var modal=document.getElementById('accountModal');if(modal)modal.classList.remove('open');if(location.hash==='#conta')history.replaceState(null,'',location.pathname+location.search)};document.addEventListener('keydown',function(event){if(event.key==='Escape')window.closeAccount()})})();</script>
-<script src="menu-lateral.js?v=layout-fixed"></script>
-</body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Configurações e Usuários — Gestão Piremaxx</title>
+  <link rel="stylesheet" href="styles.css?v=fixed-layout">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f2f3f4; font-family: Arial, Helvetica, sans-serif; color: #496572; }
+    .config-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+    }
+    .config-title button {
+      border: 0;
+      border-radius: 3px;
+      background: #00d982;
+      color: #fff;
+      padding: 8px 14px;
+      font-weight: bold;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+    .config-title .tutorial { background: #f6b33f; }
+    .config-body { padding: 22px; }
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-bottom: 0;
+    }
+    .categories button {
+      height: 34px;
+      border: 0;
+      background: #5e7d89;
+      color: #fff;
+      text-align: left;
+      padding: 0 12px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .categories button:hover { background: #4d6974; }
+    .categories button.active { background: #f4bd00; color: #fff; }
+    .panel {
+      background: #fff;
+      border: 1px solid #dfe3e5;
+      border-top: 3px solid #f4bd00;
+    }
+    .toolbar {
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .toolbar button {
+      height: 32px;
+      border: 1px solid #cbd4d8;
+      background: #f8f8f8;
+      border-radius: 3px;
+      color: #4f6672;
+      padding: 0 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .toolbar button:hover { background: #eef2f4; }
+    .toolbar .new {
+      background: #f4bd00;
+      color: #fff;
+      border-color: #e0ad00;
+      font-weight: bold;
+      padding: 0 16px;
+    }
+    .toolbar .new:hover { background: #e0ad00; }
+    .toolbar .btn-danger {
+      color: #c0392b;
+      border-color: #e6b8b5;
+    }
+    .toolbar .btn-danger:hover { background: #fdf0ef; }
+    .toolbar input {
+      height: 32px;
+      width: 260px;
+      border: 1px solid #cbd4d8;
+      border-radius: 3px;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .user-table th {
+      height: 40px;
+      text-align: left;
+      padding: 0 12px;
+      color: #587383;
+      border-bottom: 2px solid #dfe5e8;
+      background: #fafbfc;
+    }
+    .user-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e9eef0;
+      vertical-align: middle;
+    }
+    .user-table tbody tr {
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .user-table tbody tr:nth-child(odd) { background: #f7f9fa; }
+    .user-table tbody tr:hover { background: #eaf4f6; }
+    .user-table tbody tr.selected-row { background: #e2f3f2 !important; }
+    .badge-role {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .badge-role.admin { background: #e3f2fd; color: #1565c0; }
+    .badge-role.comercial { background: #e8f5e9; color: #2e7d32; }
+    .badge-role.financeiro { background: #fff8e1; color: #ef6c00; }
+    .badge-role.operacional { background: #f3e5f5; color: #6a1b9a; }
+    .badge-role.personalizado { background: #eceff1; color: #455a64; }
+    .yes { color: #27b86b; font-weight: bold; }
+    .no { color: #d9534f; font-weight: bold; }
+    .row-actions {
+      display: inline-flex;
+      gap: 5px;
+    }
+    .row-actions button {
+      height: 26px;
+      padding: 0 8px;
+      border: 1px solid #cfd8dc;
+      background: #fff;
+      border-radius: 3px;
+      font-size: 11px;
+      color: #496572;
+      cursor: pointer;
+    }
+    .row-actions button:hover {
+      background: #209b98;
+      color: #fff;
+      border-color: #209b98;
+    }
+
+    /* Modal de Cadastro de Usuário e Permissões */
+    .user-modal-overlay {
+      display: none;
+      position: fixed;
+      left: 143px;
+      top: 49px;
+      right: 0;
+      bottom: 0;
+      background: rgba(30, 45, 52, 0.45);
+      z-index: 190;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .user-modal-overlay.open { display: flex; }
+    .user-modal-card {
+      width: 100%;
+      max-width: 860px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      overflow: hidden;
+      border: 1px solid #cfd8dc;
+    }
+    .user-modal-head {
+      height: 46px;
+      background: #209b98;
+      color: #fff;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .user-modal-head button {
+      background: transparent;
+      border: 0;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .user-modal-body {
+      padding: 20px 24px;
+    }
+    .user-form-section-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #2c444e;
+      border-bottom: 2px solid #209b98;
+      padding-bottom: 5px;
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .user-form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .user-form-grid label {
+      display: block;
+      font-size: 11px;
+      font-weight: bold;
+      color: #587383;
+    }
+    .user-form-grid input, .user-form-grid select {
+      width: 100%;
+      height: 32px;
+      margin-top: 4px;
+      border: 1px solid #cbd4d8;
+      border-radius: 3px;
+      padding: 0 9px;
+      font-size: 12px;
+      color: #344955;
+      background: #fff;
+    }
+    .perm-presets {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      background: #f5f8f9;
+      padding: 10px 12px;
+      border-radius: 4px;
+      border: 1px solid #e1e8eb;
+    }
+    .perm-presets span {
+      font-size: 12px;
+      font-weight: bold;
+      color: #496572;
+      margin-right: 4px;
+    }
+    .preset-btn {
+      height: 28px;
+      padding: 0 11px;
+      border: 1px solid #c5d1d6;
+      border-radius: 14px;
+      background: #fff;
+      color: #496572;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .preset-btn.active, .preset-btn:hover {
+      background: #209b98;
+      color: #fff;
+      border-color: #209b98;
+    }
+    .perm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .perm-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 9px 11px;
+      border: 1px solid #dce4e7;
+      border-radius: 4px;
+      background: #fafcfd;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .perm-item:hover {
+      border-color: #209b98;
+      background: #f0f9f8;
+    }
+    .perm-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      accent-color: #209b98;
+      cursor: pointer;
+    }
+    .perm-item div strong {
+      display: block;
+      color: #344955;
+      font-size: 12px;
+    }
+    .perm-item div small {
+      display: block;
+      color: #788e99;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+    .user-modal-footer {
+      padding: 14px 24px;
+      background: #f4f6f7;
+      border-top: 1px solid #dfe5e8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .user-modal-footer .right-btns {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-save-user {
+      height: 34px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 3px;
+      background: #35a968;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-save-user:hover { background: #2c9158; }
+    .btn-cancel-user {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid #cbd4d8;
+      border-radius: 3px;
+      background: #fff;
+      color: #587383;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Modal Minha Conta */
+    .account-modal { display: none; position: fixed; inset: 0; background: #fff; z-index: 200; }
+    .account-modal.open { display: block; }
+    .modal-head { height: 42px; background: #59b957; color: #fff; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; font-weight: bold; }
+    .modal-head button { background: transparent; border: 0; color: #fff; font-size: 20px; cursor: pointer; }
+    .account-card { margin: 38px 6%; padding: 24px 30px; background: #eee; border: 1px solid #ddd; border-radius: 4px; }
+    .avatar { width: 54px; height: 54px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(#209b98, #263840); border: 4px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 20px; }
+    .account-card label { display: block; font-size: 11px; color: #587383; margin: 9px 0; font-weight: bold; }
+    .account-card input { height: 32px; box-sizing: border-box; border: 1px solid #cbd4d8; border-radius: 3px; padding: 0 10px; width: 100%; margin-top: 4px; background: #fff; }
+    .account-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; background: #eee; padding: 10px 0; }
+    .modal-actions { margin: 0 6%; display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-actions button { height: 34px; border: 0; border-radius: 3px; padding: 0 18px; font-weight: bold; cursor: pointer; }
+    .save { background: #35a968; color: #fff; }
+    .close { background: #eee; color: #555; border: 1px solid #ccc !important; }
+    .toast-feedback {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      background: #263840;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 4px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      font-size: 12px;
+      z-index: 300;
+      display: none;
+      border-left: 4px solid #35b96f;
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar shared-sidebar" data-rendered="1"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav><a class="dashboard-link " href="index.html" data-menu-key="home"><img src="public/icons/icons8-home-48.png" alt=""><b>Indicadores</b></a><a class="finance-link " href="financeiro.html" data-menu-key="financeiro"><img src="public/icons/icons8-financial-64.png" alt=""><b>Financeiro</b></a><a class=" " href="vendas.html" data-menu-key="vendas"><img src="public/icons/icons8-buy-for-cash-48.png" alt=""><b>Vendas</b></a><a class=" " href="compras.html" data-menu-key="compras"><img src="public/icons/icons8-buy-48.png" alt=""><b>Compras</b></a><a class=" " href="frota.html" data-menu-key="frota"><img src="public/icons/icons8-shipped-48.png" alt=""><b>Frota</b></a><a class=" " href="clientes.html" data-menu-key="clientes"><img src="public/icons/icons8-budget-48.png" alt=""><b>Contatos</b></a><a class=" " href="produtos.html" data-menu-key="produtos"><img src="public/icons/icons8-product-48.png" alt=""><b>Produtos</b></a><a class=" " href="#" data-menu-key="boletos"><img src="public/icons/icons8-boleto-bancário-48.png" alt=""><b>Boletos</b></a><a class=" " href="#" data-menu-key="cobrancas"><img src="public/icons/icons8-billing-32.png" alt=""><b>Cobranças</b></a><a class=" " href="#" data-menu-key="pix"><img src="public/icons/icons8-pix-48.png" alt=""><b>Pix</b></a><a class=" " href="#" data-menu-key="fiscal"><img src="public/icons/icons8-fiscal-50.png" alt=""><b>NF-e / Fiscal</b></a><a class=" " href="relatorios.html" data-menu-key="relatorios"><img src="public/icons/icons8-business-report-94.png" alt=""><b>Relatórios</b></a><a class="active" href="configuracoes.html" data-menu-key="configuracoes"><img src="public/icons/icons8-settings-48.png" alt=""><b>Configurações</b></a><a href="#" data-menu-key="suporte"><span>❔</span><b>Suporte online</b></a></nav></aside>
+  <main>
+    <header class="topbar">
+      <div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div>
+      <div class="search">Digite sua busca <button>⌕</button></div>
+      <div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div>
+    </header>
+    <div class="titlebar config-title">
+      <span>Configurações — Gestão de Usuários e Permissões</span>
+      <div>
+        <button type="button" class="tutorial" onclick="openAccount()">▣ Minha Conta</button>
+        <button type="button" class="new" id="topNewUserBtn">⊞ Novo Usuário</button>
+      </div>
+    </div>
+    <div class="config-body">
+      <nav class="categories">
+        <button type="button" data-cat="usuarios" class="active">♟ USUÁRIOS E PERMISSÕES</button>
+        <button type="button" data-cat="conta" onclick="openAccount()">▣ MINHA CONTA</button>
+        <button type="button" data-cat="empresa" id="btnSwitchLogin" onclick="location.href='login.html'">🔒 TELA DE LOGIN / TROCAR USUÁRIO</button>
+        <button type="button" data-cat="auditoria" onclick="location.href='index.html'">▤ INDICADORES E AUDITORIA</button>
+      </nav>
+      <section class="panel">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button type="button" class="new" id="btnNewUser">⊞ Novo usuário</button>
+            <button type="button" id="btnEditUser">✎ Editar / Permissões</button>
+            <button type="button" id="btnToggleAccess">🔑 Liberar / Bloquear acesso</button>
+            <button type="button" class="btn-danger" id="btnDeleteUser">🗑 Excluir</button>
+          </div>
+          <div class="toolbar-right">
+            <input id="searchUsersInput" placeholder="Buscar por nome, login, e-mail ou permissão...">
+          </div>
+        </div>
+        <table class="user-table">
+          <thead>
+            <tr>
+              <th style="width:38px"><input type="checkbox" id="selectAllUsers" title="Selecionar todos"></th>
+              <th style="width:55px">Cód</th>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Login</th>
+              <th>Palavras-chave</th>
+              <th>Perfil / Permissões</th>
+              <th style="width:85px">Acesso?</th>
+              <th style="width:190px">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal de Cadastro / Edição de Usuário e Matriz de Permissões -->
+  <div class="user-modal-overlay" id="userFormModal">
+    <form class="user-modal-card" id="userForm">
+      <div class="user-modal-head">
+        <span id="userModalTitle">Novo Usuário e Permissões</span>
+        <button type="button" id="closeUserModalBtn">×</button>
+      </div>
+      <div class="user-modal-body">
+        <div class="user-form-section-title">
+          <span>1. Dados de Identificação e Acesso</span>
+          <small id="userCodeBadge" style="color:#6d828d;font-weight:normal"></small>
+        </div>
+        <div class="user-form-grid">
+          <label>Nome completo *
+            <input id="ufNome" required placeholder="Ex.: João Silva">
+          </label>
+          <label>E-mail *
+            <input id="ufEmail" type="email" required placeholder="usuario@piremaxx.com.br">
+          </label>
+          <label>Login de acesso *
+            <input id="ufLogin" required placeholder="Ex.: joaosilva" autocomplete="off">
+          </label>
+          <label>Senha de acesso *
+            <input id="ufSenha" type="text" required placeholder="Mínimo 4 caracteres" value="123456">
+          </label>
+          <label>Palavras-chave / Cargo
+            <input id="ufKeywords" placeholder="Ex.: Vendas, Caixa, Gerência">
+          </label>
+          <label>Acesso ao sistema liberado?
+            <select id="ufAtivo">
+              <option value="true">Sim — Acesso liberado</option>
+              <option value="false">Não — Acesso bloqueado</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="user-form-section-title">
+          <span>2. Perfil e Permissões de Módulos</span>
+          <div>
+            <button type="button" class="preset-btn" id="btnCheckAllPerms">Marcar tudo</button>
+            <button type="button" class="preset-btn" id="btnUncheckAllPerms">Desmarcar tudo</button>
+          </div>
+        </div>
+        <div class="perm-presets">
+          <span>Perfil rápido:</span>
+          <button type="button" class="preset-btn active" data-preset="admin">👑 Administrador (Completo)</button>
+          <button type="button" class="preset-btn" data-preset="comercial">🛒 Comercial / Vendas</button>
+          <button type="button" class="preset-btn" data-preset="financeiro">💰 Financeiro</button>
+          <button type="button" class="preset-btn" data-preset="operacional">🚚 Operacional / Frota e Compras</button>
+          <button type="button" class="preset-btn" data-preset="personalizado">⚙ Personalizado</button>
+        </div>
+
+        <div class="perm-grid" id="permissionsGrid">
+          <label class="perm-item">
+            <input type="checkbox" data-perm="home" checked>
+            <div><strong>Indicadores</strong><small>Painel geral, gráficos e auditoria</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="financeiro" checked>
+            <div><strong>Financeiro</strong><small>Recebimentos, pagamentos e fluxo de caixa</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="vendas" checked>
+            <div><strong>Vendas e Orçamentos</strong><small>Pedidos de venda, orçamentos e devoluções</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="compras" checked>
+            <div><strong>Compras</strong><small>Gestão de compras e entradas</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="frota" checked>
+            <div><strong>Frota e Coletas</strong><small>Controle de veículos e coletas</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="clientes" checked>
+            <div><strong>Contatos</strong><small>Clientes, compradores, fornecedores e transp.</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="produtos" checked>
+            <div><strong>Produtos e Estoque</strong><small>Catálogo de pneus, serviços e estoque</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="relatorios" checked>
+            <div><strong>Relatórios</strong><small>Relatórios financeiros, vendas e estoque</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="configuracoes" checked>
+            <div><strong>Configurações e Usuários (Admin)</strong><small>Cadastrar usuários e alterar permissões</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="excluir" checked>
+            <div><strong>Excluir Registros</strong><small>Permite apagar vendas, contatos e contas</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="descontos" checked>
+            <div><strong>Descontos e Preços</strong><small>Permite alterar valor unitário e descontos</small></div>
+          </label>
+          <label class="perm-item">
+            <input type="checkbox" data-perm="custos" checked>
+            <div><strong>Visualizar Custos e Lucro</strong><small>Exibe margens e custos de aquisição</small></div>
+          </label>
+        </div>
+      </div>
+      <div class="user-modal-footer">
+        <span id="adminPermissionNotice" style="font-size:12px;color:#587383">As permissões entram em vigor imediatamente no menu lateral e nas telas.</span>
+        <div class="right-btns">
+          <button type="button" class="btn-cancel-user" id="cancelUserModalBtn">Cancelar</button>
+          <button type="submit" class="btn-save-user">Salvar Usuário e Permissões</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal Configurações da Minha Conta -->
+  <div class="account-modal" id="accountModal">
+    <div class="modal-head">
+      <span>Configurações da minha conta</span>
+      <button type="button" onclick="closeAccount()">×</button>
+    </div>
+    <div class="account-card">
+      <div class="avatar" id="accAvatar">OC</div>
+      <div class="account-grid">
+        <label>Nome de exibição
+          <input id="accNome" value="ODIMAN COSTA">
+        </label>
+        <label>E-mail
+          <input id="accEmail" value="adoraroro@gmail.com">
+        </label>
+        <label>Login do usuário
+          <input id="accLogin" value="odiman">
+        </label>
+        <label>Senha atual
+          <input id="accSenhaAtual" type="password" value="123456">
+        </label>
+        <label>Nova senha (deixe em branco para manter)
+          <input id="accNovaSenha" type="password" placeholder="Nova senha">
+        </label>
+        <label>Repita a nova senha
+          <input id="accConfirmaSenha" type="password" placeholder="Confirme a nova senha">
+        </label>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="save" id="btnSaveMyAccount">Salvar minha conta</button>
+      <button type="button" class="close" onclick="closeAccount()">Fechar</button>
+    </div>
+  </div>
+
+  <div class="toast-feedback" id="configToast"></div>
+
+  <script src="menu-lateral.js?v=layout-fixed"></script>
+  <script>
+    (function(){
+      var DEFAULT_USERS = [
+        {
+          id: 5,
+          nome: 'ODIMAN COSTA',
+          email: 'adoraroro@gmail.com',
+          login: 'odiman',
+          senha: '123456',
+          palavrasChave: 'ODIMAN COSTA ADMIN',
+          perfil: 'admin',
+          permissaoLabel: 'Administrador (Acesso completo)',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: true, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 1,
+          nome: 'Diego Miranda',
+          email: 'diego.miranda@piremaxx.com.br',
+          login: 'diego',
+          senha: '123456',
+          palavrasChave: 'DIEGO COMERCIAL',
+          perfil: 'comercial',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: false, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 2,
+          nome: 'Katia Maria',
+          email: 'katia.castilho@piremaxx.com.br',
+          login: 'katiacastilho',
+          senha: '123456',
+          palavrasChave: 'KATIA CASTILHO',
+          perfil: 'financeiro',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: false, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 3,
+          nome: 'Viviane Martins',
+          email: 'administrativo@piremaxx.com.br',
+          login: 'vivianemartins',
+          senha: '123456',
+          palavrasChave: 'viviane administrativo',
+          perfil: 'admin',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: true, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 4,
+          nome: 'CLAUDEMIR NOGUEIRA',
+          email: 'claudemir.nogueira@piremaxx.com.br',
+          login: 'claudemirnogueira',
+          senha: '123456',
+          palavrasChave: 'claudemir nogueira',
+          perfil: 'comercial',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: false, excluir: false, descontos: true, custos: false
+          }
+        }
+      ];
+
+      var PRESETS = {
+        admin: {
+          label: 'Administrador (Acesso completo)',
+          perms: { home: true, financeiro: true, vendas: true, compras: true, frota: true, clientes: true, produtos: true, relatorios: true, configuracoes: true, excluir: true, descontos: true, custos: true }
+        },
+        comercial: {
+          label: 'Comercial / Vendas',
+          perms: { home: true, financeiro: false, vendas: true, compras: false, frota: false, clientes: true, produtos: true, relatorios: false, configuracoes: false, excluir: false, descontos: true, custos: false }
+        },
+        financeiro: {
+          label: 'Financeiro',
+          perms: { home: true, financeiro: true, vendas: false, compras: true, frota: false, clientes: true, produtos: false, relatorios: true, configuracoes: false, excluir: false, descontos: false, custos: true }
+        },
+        operacional: {
+          label: 'Operacional / Frota e Compras',
+          perms: { home: false, financeiro: false, vendas: false, compras: true, frota: true, clientes: true, produtos: true, relatorios: false, configuracoes: false, excluir: false, descontos: false, custos: false }
+        }
+      };
+
+      function getUsers(){
+        try {
+          var saved = JSON.parse(localStorage.getItem('piremaxx_usuarios') || 'null');
+          if (Array.isArray(saved) && saved.length) return saved;
+        } catch(e) {}
+        localStorage.setItem('piremaxx_usuarios', JSON.stringify(DEFAULT_USERS));
+        return DEFAULT_USERS;
+      }
+
+      function saveUsers(list){
+        localStorage.setItem('piremaxx_usuarios', JSON.stringify(list));
+        // Se o usuário logado foi atualizado, sincroniza a sessão ativa
+        try {
+          var sess = JSON.parse(localStorage.getItem('piremaxx_sessao') || 'null');
+          if (sess) {
+            var current = list.find(function(u){ return Number(u.id) === Number(sess.id) || u.login === sess.login; });
+            if (current) {
+              sess.nome = current.nome;
+              sess.email = current.email;
+              sess.login = current.login;
+              sess.perfil = current.perfil;
+              sess.permissaoLabel = current.permissaoLabel;
+              sess.permissoes = current.permissoes;
+              localStorage.setItem('piremaxx_sessao', JSON.stringify(sess));
+            }
+          }
+        } catch(e) {}
+      }
+
+      function showToast(msg){
+        var t = document.getElementById('configToast');
+        if (!t) return;
+        t.textContent = msg;
+        t.style.display = 'block';
+        clearTimeout(t._timer);
+        t._timer = setTimeout(function(){ t.style.display = 'none'; }, 3200);
+      }
+
+      var editingUserId = null;
+      var currentPreset = 'admin';
+      var tbody = document.getElementById('usersTableBody');
+      var searchInput = document.getElementById('searchUsersInput');
+      var modal = document.getElementById('userFormModal');
+
+      function summarizePermissions(u){
+        var p = u.permissoes || {};
+        var modules = ['home','financeiro','vendas','compras','frota','clientes','produtos','relatorios','configuracoes'];
+        var enabledCount = modules.filter(function(k){ return p[k] !== false; }).length;
+        if (u.perfil === 'admin' || enabledCount === modules.length) {
+          return '<span class="badge-role admin">👑 Administrador (Acesso completo)</span>';
+        }
+        var roleClass = u.perfil || 'personalizado';
+        var label = u.permissaoLabel || 'Personalizado';
+        return '<span class="badge-role ' + roleClass + '">' + label + ' (' + enabledCount + '/9 módulos)</span>';
+      }
+
+      function renderTable(){
+        var list = getUsers();
+        var q = (searchInput.value || '').trim().toLowerCase();
+        var filtered = list.filter(function(u){
+          if (!q) return true;
+          return [u.id, u.nome, u.email, u.login, u.palavrasChave, u.permissaoLabel].join(' ').toLowerCase().includes(q);
+        });
+
+        tbody.innerHTML = filtered.map(function(u){
+          var activeBadge = u.ativo !== false ? '<span class="yes">Sim</span>' : '<span class="no">Bloqueado</span>';
+          return '<tr data-user-id="' + u.id + '">' +
+            '<td><input type="checkbox" class="user-row-check" value="' + u.id + '"></td>' +
+            '<td>' + u.id + '</td>' +
+            '<td><b>' + (u.nome || '') + '</b></td>' +
+            '<td>' + (u.email || '') + '</td>' +
+            '<td><code>' + (u.login || '') + '</code></td>' +
+            '<td>' + (u.palavrasChave || '') + '</td>' +
+            '<td>' + summarizePermissions(u) + '</td>' +
+            '<td>' + activeBadge + '</td>' +
+            '<td><div class="row-actions">' +
+              '<button type="button" data-action="edit" data-id="' + u.id + '">Editar / Permissões</button>' +
+              '<button type="button" data-action="toggle" data-id="' + u.id + '">' + (u.ativo !== false ? 'Bloquear' : 'Liberar') + '</button>' +
+            '</div></td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      function setFormPermissions(perms){
+        document.querySelectorAll('#permissionsGrid input[data-perm]').forEach(function(cb){
+          var key = cb.dataset.perm;
+          cb.checked = perms[key] !== false;
+        });
+      }
+
+      function getFormPermissions(){
+        var perms = {};
+        document.querySelectorAll('#permissionsGrid input[data-perm]').forEach(function(cb){
+          perms[cb.dataset.perm] = cb.checked;
+        });
+        return perms;
+      }
+
+      function highlightPreset(presetName){
+        currentPreset = presetName;
+        document.querySelectorAll('.perm-presets .preset-btn').forEach(function(btn){
+          btn.classList.toggle('active', btn.dataset.preset === presetName);
+        });
+      }
+
+      function openUserModal(userId){
+        var list = getUsers();
+        var user = userId ? list.find(function(u){ return Number(u.id) === Number(userId); }) : null;
+        editingUserId = user ? user.id : null;
+
+        document.getElementById('userModalTitle').textContent = user
+          ? 'Editar Usuário e Permissões — ' + user.nome
+          : 'Novo Usuário e Permissões';
+        document.getElementById('userCodeBadge').textContent = user ? 'Código #' + user.id : 'Novo cadastro';
+
+        document.getElementById('ufNome').value = user ? user.nome : '';
+        document.getElementById('ufEmail').value = user ? user.email : '';
+        document.getElementById('ufLogin').value = user ? user.login : '';
+        document.getElementById('ufSenha').value = user ? (user.senha || '123456') : '123456';
+        document.getElementById('ufKeywords').value = user ? (user.palavrasChave || '') : '';
+        document.getElementById('ufAtivo').value = (!user || user.ativo !== false) ? 'true' : 'false';
+
+        if (user && user.permissoes) {
+          setFormPermissions(user.permissoes);
+          highlightPreset(user.perfil || 'personalizado');
+        } else {
+          setFormPermissions(PRESETS.comercial.perms);
+          highlightPreset('comercial');
+        }
+
+        modal.classList.add('open');
+        document.getElementById('ufNome').focus();
+      }
+
+      function closeUserModal(){
+        modal.classList.remove('open');
+        editingUserId = null;
+        if (location.hash === '#novo') {
+          history.replaceState(null, '', location.pathname + location.search);
+        }
+      }
+
+      // Eventos dos botões de Preset
+      document.querySelectorAll('.perm-presets .preset-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var presetKey = btn.dataset.preset;
+          highlightPreset(presetKey);
+          if (PRESETS[presetKey]) {
+            setFormPermissions(PRESETS[presetKey].perms);
+          }
+        });
+      });
+
+      document.getElementById('btnCheckAllPerms').addEventListener('click', function(){
+        document.querySelectorAll('#permissionsGrid input[data-perm]').forEach(function(cb){ cb.checked = true; });
+        highlightPreset('admin');
+      });
+
+      document.getElementById('btnUncheckAllPerms').addEventListener('click', function(){
+        document.querySelectorAll('#permissionsGrid input[data-perm]').forEach(function(cb){ cb.checked = false; });
+        highlightPreset('personalizado');
+      });
+
+      document.getElementById('permissionsGrid').addEventListener('change', function(){
+        var perms = getFormPermissions();
+        var allChecked = Object.keys(perms).every(function(k){ return perms[k]; });
+        highlightPreset(allChecked ? 'admin' : 'personalizado');
+      });
+
+      // Salvar Usuário e Permissões
+      document.getElementById('userForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        var nome = document.getElementById('ufNome').value.trim();
+        var email = document.getElementById('ufEmail').value.trim();
+        var login = document.getElementById('ufLogin').value.trim().toLowerCase().replace(/\s+/g, '');
+        var senha = document.getElementById('ufSenha').value.trim() || '123456';
+        var palavrasChave = document.getElementById('ufKeywords').value.trim();
+        var ativo = document.getElementById('ufAtivo').value === 'true';
+        var permissoes = getFormPermissions();
+
+        if (!nome || !login) {
+          alert('Preencha o nome e o login do usuário.');
+          return;
+        }
+
+        var list = getUsers();
+        var duplicate = list.find(function(u){
+          return u.login.toLowerCase() === login && Number(u.id) !== Number(editingUserId);
+        });
+        if (duplicate) {
+          alert('Já existe um usuário com o login "' + login + '". Escolha outro login.');
+          return;
+        }
+
+        var label = (PRESETS[currentPreset] && PRESETS[currentPreset].label) ||
+                    (permissoes.configuracoes ? 'Administrador (Acesso completo)' : 'Personalizado');
+
+        if (editingUserId) {
+          var idx = list.findIndex(function(u){ return Number(u.id) === Number(editingUserId); });
+          if (idx >= 0) {
+            list[idx] = Object.assign({}, list[idx], {
+              nome: nome,
+              email: email,
+              login: login,
+              senha: senha,
+              palavrasChave: palavrasChave,
+              ativo: ativo,
+              perfil: permissoes.configuracoes ? 'admin' : currentPreset,
+              permissaoLabel: label,
+              permissoes: permissoes
+            });
+          }
+          if (window.piremaxxAudit) {
+            window.piremaxxAudit.log({
+              module: 'Usuários',
+              action: 'Atualizou permissões/cadastro de usuário',
+              detail: nome + ' (' + login + ') — ' + label
+            });
+          }
+          showToast('Usuário "' + nome + '" e permissões atualizados com sucesso!');
+        } else {
+          var nextId = Math.max(0, ...list.map(function(u){ return Number(u.id) || 0; })) + 1;
+          var newUser = {
+            id: nextId,
+            nome: nome,
+            email: email,
+            login: login,
+            senha: senha,
+            palavrasChave: palavrasChave,
+            ativo: ativo,
+            perfil: permissoes.configuracoes ? 'admin' : currentPreset,
+            permissaoLabel: label,
+            permissoes: permissoes
+          };
+          list.unshift(newUser);
+          if (window.piremaxxAudit) {
+            window.piremaxxAudit.log({
+              module: 'Usuários',
+              action: 'Cadastrou novo usuário',
+              detail: nome + ' (' + login + ') — ' + label
+            });
+          }
+          showToast('Novo usuário "' + nome + '" cadastrado com sucesso!');
+        }
+
+        saveUsers(list);
+        renderTable();
+        closeUserModal();
+      });
+
+      function getSelectedIds(){
+        return [...document.querySelectorAll('.user-row-check:checked')].map(function(c){ return Number(c.value); });
+      }
+
+      document.getElementById('btnNewUser').addEventListener('click', function(){ openUserModal(null); });
+      document.getElementById('topNewUserBtn').addEventListener('click', function(){ openUserModal(null); });
+      document.getElementById('closeUserModalBtn').addEventListener('click', closeUserModal);
+      document.getElementById('cancelUserModalBtn').addEventListener('click', closeUserModal);
+
+      document.getElementById('btnEditUser').addEventListener('click', function(){
+        var ids = getSelectedIds();
+        if (!ids.length) {
+          alert('Selecione um usuário na tabela (ou clique em "Editar / Permissões" na linha desejada).');
+          return;
+        }
+        openUserModal(ids[0]);
+      });
+
+      document.getElementById('btnToggleAccess').addEventListener('click', function(){
+        var ids = getSelectedIds();
+        if (!ids.length) {
+          alert('Selecione ao menos um usuário para liberar ou bloquear o acesso.');
+          return;
+        }
+        var list = getUsers();
+        list.forEach(function(u){
+          if (ids.includes(Number(u.id))) {
+            if (u.login === 'odiman') return;
+            u.ativo = u.ativo === false ? true : false;
+          }
+        });
+        saveUsers(list);
+        renderTable();
+        showToast('Status de acesso atualizado!');
+      });
+
+      document.getElementById('btnDeleteUser').addEventListener('click', function(){
+        var ids = getSelectedIds();
+        if (!ids.length) {
+          alert('Selecione ao menos um usuário para excluir.');
+          return;
+        }
+        var list = getUsers();
+        var targets = list.filter(function(u){ return ids.includes(Number(u.id)); });
+        if (targets.some(function(u){ return u.login === 'odiman'; })) {
+          alert('O administrador principal (ODIMAN COSTA) não pode ser excluído.');
+          return;
+        }
+        if (!confirm('Confirma a exclusão de ' + targets.length + ' usuário(s)?')) return;
+        var remaining = list.filter(function(u){ return !ids.includes(Number(u.id)); });
+        saveUsers(remaining);
+        renderTable();
+        showToast('Usuário(s) excluído(s) com sucesso.');
+      });
+
+      tbody.addEventListener('click', function(e){
+        var actionBtn = e.target.closest('button[data-action]');
+        if (actionBtn) {
+          e.stopPropagation();
+          var id = Number(actionBtn.dataset.id);
+          if (actionBtn.dataset.action === 'edit') {
+            openUserModal(id);
+          } else if (actionBtn.dataset.action === 'toggle') {
+            var list = getUsers();
+            var target = list.find(function(u){ return Number(u.id) === id; });
+            if (target) {
+              if (target.login === 'odiman') {
+                alert('O administrador principal não pode ser bloqueado.');
+                return;
+              }
+              target.ativo = target.ativo === false ? true : false;
+              saveUsers(list);
+              renderTable();
+              showToast('Acesso de ' + target.nome + (target.ativo ? ' liberado!' : ' bloqueado!'));
+            }
+          }
+          return;
+        }
+        if (e.target.closest('input[type="checkbox"]')) return;
+        var tr = e.target.closest('tr[data-user-id]');
+        if (tr) openUserModal(Number(tr.dataset.userId));
+      });
+
+      document.getElementById('selectAllUsers').addEventListener('change', function(){
+        var checked = this.checked;
+        document.querySelectorAll('.user-row-check').forEach(function(c){
+          c.checked = checked;
+          c.closest('tr').classList.toggle('selected-row', checked);
+        });
+      });
+
+      searchInput.addEventListener('input', renderTable);
+
+      // Modal Minha Conta
+      window.openAccount = function(){
+        var sess = null;
+        try { sess = JSON.parse(localStorage.getItem('piremaxx_sessao') || 'null'); } catch(e) {}
+        var list = getUsers();
+        var current = (sess && list.find(function(u){ return u.login === sess.login || Number(u.id) === Number(sess.id); })) || list[0];
+        if (current) {
+          document.getElementById('accNome').value = current.nome || '';
+          document.getElementById('accEmail').value = current.email || '';
+          document.getElementById('accLogin').value = current.login || '';
+          document.getElementById('accSenhaAtual').value = current.senha || '123456';
+          document.getElementById('accNovaSenha').value = '';
+          document.getElementById('accConfirmaSenha').value = '';
+          var initials = String(current.nome || 'U').split(' ').map(function(p){ return p[0]; }).slice(0,2).join('').toUpperCase();
+          document.getElementById('accAvatar').textContent = initials;
+        }
+        document.getElementById('accountModal').classList.add('open');
+      };
+
+      window.closeAccount = function(){
+        document.getElementById('accountModal').classList.remove('open');
+        if (location.hash === '#conta') history.replaceState(null, '', location.pathname + location.search);
+      };
+
+      document.getElementById('btnSaveMyAccount').addEventListener('click', function(){
+        var login = document.getElementById('accLogin').value.trim().toLowerCase();
+        var nome = document.getElementById('accNome').value.trim();
+        var email = document.getElementById('accEmail').value.trim();
+        var nova = document.getElementById('accNovaSenha').value.trim();
+        var conf = document.getElementById('accConfirmaSenha').value.trim();
+
+        if (nova && nova !== conf) {
+          alert('A confirmação da nova senha não confere.');
+          return;
+        }
+        var list = getUsers();
+        var sess = null;
+        try { sess = JSON.parse(localStorage.getItem('piremaxx_sessao') || 'null'); } catch(e) {}
+        var idx = list.findIndex(function(u){
+          return (sess && (u.login === sess.login || Number(u.id) === Number(sess.id))) || u.login === login;
+        });
+        if (idx >= 0) {
+          list[idx].nome = nome || list[idx].nome;
+          list[idx].email = email || list[idx].email;
+          list[idx].login = login || list[idx].login;
+          if (nova) list[idx].senha = nova;
+          saveUsers(list);
+          renderTable();
+          closeAccount();
+          showToast('Dados da sua conta atualizados com sucesso!');
+        }
+      });
+
+      renderTable();
+      if (location.hash === '#conta') setTimeout(window.openAccount, 30);
+      if (location.hash === '#novo') setTimeout(function(){ openUserModal(null); }, 30);
+    })();
+  </script>
+</body>
+</html>

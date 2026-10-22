@@ -1,1 +1,455 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Entrar - egestor+</title><link rel="stylesheet" href="styles.css"><style>body{margin:0;background:#eef1f3;font-family:Arial;color:#496572;display:grid;place-items:center;height:100vh}.login{width:360px;background:#fff;border:1px solid #d6dde0;border-radius:4px;box-shadow:0 2px 10px #0002;padding:28px}.brand{text-align:center;font-size:27px;font-weight:bold;color:#587783;margin-bottom:24px}.brand span{color:#e52632}.login h1{font-size:18px;text-align:center;font-weight:normal;margin:0 0 22px}.login label{display:block;font-size:12px;margin:12px 0 5px}.login input{box-sizing:border-box;width:100%;height:38px;border:1px solid #cbd4d8;border-radius:3px;padding:0 10px}.login button{width:100%;height:39px;border:0;border-radius:3px;background:#35b96f;color:#fff;font-weight:bold;margin-top:20px}.login a{display:block;text-align:center;color:#377fb9;font-size:12px;margin-top:16px}</style></head><body><form class="login" id="loginForm"><div class="brand">egestor<span>+</span></div><h1>Acesse sua conta</h1><label>Usuário</label><input value="od im an" autocomplete="username"><label>Senha</label><input type="password" value="123456" autocomplete="current-password"><button>Entrar</button><a href="#">Esqueci minha senha</a></form><script>document.getElementById('loginForm').addEventListener('submit',function(e){e.preventDefault();location.href='index.html'})</script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Entrar — Gestão Piremaxx</title>
+  <link rel="stylesheet" href="styles.css?v=fixed-layout">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #263840 0%, #3a525d 55%, #496572 100%);
+      font-family: Arial, Helvetica, sans-serif;
+      color: #405965;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-shell {
+      width: 100%;
+      max-width: 410px;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+      overflow: hidden;
+      border: 1px solid #d6dde0;
+    }
+    .login-brand-bar {
+      background: #eeeeee;
+      border-bottom: 1px solid #dce2e5;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .login-brand-bar img.logo-main {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+    }
+    .login-brand-divider {
+      width: 1px;
+      height: 28px;
+      background: #c7d0d5;
+    }
+    .login-brand-bar img.logo-sub {
+      height: 30px;
+      width: auto;
+      object-fit: contain;
+    }
+    .login-body {
+      padding: 26px 30px 24px;
+    }
+    .login-body h1 {
+      font-size: 18px;
+      color: #374c56;
+      text-align: center;
+      font-weight: bold;
+      margin: 0 0 6px;
+    }
+    .login-subtitle {
+      font-size: 12px;
+      color: #748892;
+      text-align: center;
+      margin: 0 0 20px;
+    }
+    .login-alert {
+      display: none;
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .login-alert.error {
+      display: block;
+      background: #fdeaea;
+      border: 1px solid #f2b8b8;
+      color: #b92d2d;
+    }
+    .login-alert.success {
+      display: block;
+      background: #e7f8ef;
+      border: 1px solid #a9e2c2;
+      color: #1f7d4c;
+    }
+    .login-field {
+      margin-bottom: 14px;
+    }
+    .login-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      color: #516a76;
+      margin-bottom: 5px;
+    }
+    .login-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .login-input-wrap input {
+      width: 100%;
+      height: 38px;
+      border: 1px solid #c3cfd4;
+      border-radius: 4px;
+      padding: 0 36px 0 11px;
+      font-size: 13px;
+      color: #324852;
+      background: #fbfcfd;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .login-input-wrap input:focus {
+      outline: none;
+      border-color: #209b98;
+      box-shadow: 0 0 0 2px rgba(32, 155, 152, 0.15);
+      background: #fff;
+    }
+    .toggle-pass {
+      position: absolute;
+      right: 6px;
+      height: 28px;
+      padding: 0 7px;
+      border: 0;
+      background: transparent;
+      color: #6d828d;
+      cursor: pointer;
+      font-size: 11px;
+      border-radius: 3px;
+    }
+    .toggle-pass:hover {
+      background: #eef3f5;
+      color: #374c56;
+    }
+    .login-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      margin: 6px 0 18px;
+    }
+    .login-options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #5d7480;
+      cursor: pointer;
+    }
+    .login-options a {
+      color: #2383b8;
+      text-decoration: none;
+    }
+    .login-options a:hover {
+      text-decoration: underline;
+    }
+    .login-submit {
+      width: 100%;
+      height: 40px;
+      border: 0;
+      border-radius: 4px;
+      background: #35b96f;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .login-submit:hover {
+      background: #2ca360;
+    }
+    .login-quick-box {
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid #e6ecef;
+    }
+    .login-quick-box small {
+      display: block;
+      font-size: 11px;
+      color: #7c909a;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .login-quick-Chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .login-chip {
+      border: 1px solid #d3dde2;
+      background: #f5f8f9;
+      color: #496572;
+      border-radius: 14px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .login-chip:hover {
+      background: #e4f3f2;
+      border-color: #209b98;
+      color: #197a77;
+    }
+    .login-chip b {
+      color: #263840;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-shell">
+    <div class="login-brand-bar">
+      <img class="logo-main" src="public/logo.webp" alt="Piremaxx">
+      <span class="login-brand-divider"></span>
+      <img class="logo-sub" src="public/logo.png" alt="Gestão">
+    </div>
+    <form class="login-body" id="loginForm" autocomplete="on">
+      <h1>Acesse sua conta</h1>
+      <p class="login-subtitle">DNFX - COMÉRCIO DE PNEUS · Sistema de Gestão</p>
+      <div id="loginAlert" class="login-alert"></div>
+      <div class="login-field">
+        <label for="loginUser">Usuário ou E-mail</label>
+        <div class="login-input-wrap">
+          <input id="loginUser" name="username" value="odiman" placeholder="Digite seu login ou e-mail" autocomplete="username" required>
+        </div>
+      </div>
+      <div class="login-field">
+        <label for="loginPass">Senha</label>
+        <div class="login-input-wrap">
+          <input id="loginPass" name="password" type="password" value="123456" placeholder="Digite sua senha" autocomplete="current-password" required>
+          <button type="button" class="toggle-pass" id="togglePassBtn">Mostrar</button>
+        </div>
+      </div>
+      <div class="login-options">
+        <label><input type="checkbox" id="rememberUser" checked> Manter conectado</label>
+        <a href="#" id="forgotPassLink">Esqueci minha senha</a>
+      </div>
+      <button type="submit" class="login-submit">Entrar no sistema</button>
+      <div class="login-quick-box">
+        <small>Acesso rápido por usuário cadastrado (senha padrão: <b>123456</b>):</small>
+        <div class="login-quick-Chips" id="quickUsersList"></div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (function(){
+      var DEFAULT_USERS = [
+        {
+          id: 5,
+          nome: 'ODIMAN COSTA',
+          email: 'adoraroro@gmail.com',
+          login: 'odiman',
+          senha: '123456',
+          palavrasChave: 'ODIMAN COSTA ADMIN',
+          perfil: 'admin',
+          permissaoLabel: 'Administrador (Acesso completo)',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: true, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 1,
+          nome: 'Diego Miranda',
+          email: 'diego.miranda@piremaxx.com.br',
+          login: 'diego',
+          senha: '123456',
+          palavrasChave: 'DIEGO COMERCIAL',
+          perfil: 'comercial',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: false, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 2,
+          nome: 'Katia Maria',
+          email: 'katia.castilho@piremaxx.com.br',
+          login: 'katiacastilho',
+          senha: '123456',
+          palavrasChave: 'KATIA CASTILHO',
+          perfil: 'financeiro',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: false, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 3,
+          nome: 'Viviane Martins',
+          email: 'administrativo@piremaxx.com.br',
+          login: 'vivianemartins',
+          senha: '123456',
+          palavrasChave: 'viviane administrativo',
+          perfil: 'admin',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: true, excluir: true, descontos: true, custos: true
+          }
+        },
+        {
+          id: 4,
+          nome: 'CLAUDEMIR NOGUEIRA',
+          email: 'claudemir.nogueira@piremaxx.com.br',
+          login: 'claudemirnogueira',
+          senha: '123456',
+          palavrasChave: 'claudemir nogueira',
+          perfil: 'comercial',
+          permissaoLabel: 'Acesso completo',
+          ativo: true,
+          permissoes: {
+            home: true, financeiro: true, vendas: true, compras: true,
+            frota: true, clientes: true, produtos: true, relatorios: true,
+            configuracoes: false, excluir: false, descontos: true, custos: false
+          }
+        }
+      ];
+
+      function getUsers(){
+        try {
+          var saved = JSON.parse(localStorage.getItem('piremaxx_usuarios') || 'null');
+          if (Array.isArray(saved) && saved.length) return saved;
+        } catch(e) {}
+        localStorage.setItem('piremaxx_usuarios', JSON.stringify(DEFAULT_USERS));
+        return DEFAULT_USERS;
+      }
+
+      var users = getUsers();
+      var userInput = document.getElementById('loginUser');
+      var passInput = document.getElementById('loginPass');
+      var alertBox = document.getElementById('loginAlert');
+      var quickList = document.getElementById('quickUsersList');
+
+      function showMessage(msg, type){
+        alertBox.textContent = msg;
+        alertBox.className = 'login-alert ' + (type || 'error');
+      }
+
+      // Render quick login chips
+      if (quickList) {
+        quickList.innerHTML = users.filter(function(u){ return u.ativo !== false; }).map(function(u){
+          var tag = u.perfil === 'admin' ? 'Admin' : 'Usuário';
+          return '<button type="button" class="login-chip" data-login="' + u.login + '"><b>' + u.login + '</b> · ' + tag + '</button>';
+        }).join('');
+        quickList.addEventListener('click', function(e){
+          var btn = e.target.closest('.login-chip');
+          if (!btn) return;
+          var found = users.find(function(u){ return u.login === btn.dataset.login; });
+          if (found) {
+            userInput.value = found.login;
+            passInput.value = found.senha || '123456';
+            alertBox.className = 'login-alert';
+          }
+        });
+      }
+
+      document.getElementById('togglePassBtn').addEventListener('click', function(){
+        var isPass = passInput.type === 'password';
+        passInput.type = isPass ? 'text' : 'password';
+        this.textContent = isPass ? 'Ocultar' : 'Mostrar';
+      });
+
+      document.getElementById('forgotPassLink').addEventListener('click', function(e){
+        e.preventDefault();
+        showMessage('Solicite ao administrador (odiman) a redefinição da sua senha em Configurações > Usuários.', 'success');
+      });
+
+      function firstAllowedPage(u){
+        var p = u.permissoes || {};
+        if (u.perfil === 'admin' || p.home !== false) return 'index.html';
+        if (p.vendas) return 'vendas.html';
+        if (p.financeiro) return 'financeiro.html';
+        if (p.compras) return 'compras.html';
+        if (p.frota) return 'frota.html';
+        if (p.clientes) return 'clientes.html';
+        if (p.produtos) return 'produtos.html';
+        if (p.relatorios) return 'relatorios.html';
+        return 'index.html';
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        users = getUsers();
+        var rawLogin = (userInput.value || '').trim().toLowerCase().replace(/\s+/g, '');
+        var rawPass = (passInput.value || '').trim();
+        var matched = users.find(function(u){
+          return String(u.login || '').toLowerCase().replace(/\s+/g, '') === rawLogin ||
+                 String(u.email || '').toLowerCase().trim() === rawLogin ||
+                 String(u.nome || '').toLowerCase().replace(/\s+/g, '') === rawLogin;
+        });
+
+        if (!matched) {
+          showMessage('Usuário não encontrado. Verifique o login ou e-mail informado.', 'error');
+          return;
+        }
+        if (matched.ativo === false) {
+          showMessage('O acesso deste usuário está bloqueado pelo administrador.', 'error');
+          return;
+        }
+        var expectedPass = String(matched.senha || '123456');
+        if (rawPass !== expectedPass && !(rawLogin === 'odiman' && rawPass === '123456789')) {
+          showMessage('Senha incorreta. Tente novamente.', 'error');
+          return;
+        }
+
+        var session = {
+          id: matched.id,
+          nome: matched.nome,
+          email: matched.email,
+          login: matched.login,
+          perfil: matched.perfil || 'comercial',
+          permissaoLabel: matched.permissaoLabel || 'Acesso completo',
+          permissoes: matched.permissoes || {},
+          loggedAt: new Date().toISOString()
+        };
+        localStorage.setItem('piremaxx_sessao', JSON.stringify(session));
+
+        // Registra no histórico de auditoria
+        try {
+          var audit = JSON.parse(localStorage.getItem('piremaxx_auditoria') || '[]');
+          var now = new Date();
+          var pad = function(n){ return String(n).padStart(2, '0'); };
+          audit.unshift({
+            id: 'aud-' + Date.now(),
+            timestamp: now.getTime(),
+            dateStr: pad(now.getDate()) + '/' + pad(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()),
+            user: matched.login,
+            module: 'Segurança',
+            action: 'Realizou login no sistema',
+            detail: matched.nome + ' (' + (matched.perfil === 'admin' ? 'Administrador' : 'Usuário') + ')',
+            value: ''
+          });
+          localStorage.setItem('piremaxx_auditoria', JSON.stringify(audit.slice(0, 80)));
+        } catch(err) {}
+
+        location.href = firstAllowedPage(matched);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -57,11 +57,16 @@
     if(searchEl)searchEl.classList.add('search');
     const userEl=topbar.querySelector('.user, .products-user');
     if(userEl){
+      let sess=null;
+      try{sess=JSON.parse(localStorage.getItem('piremaxx_sessao')||'null')}catch(e){}
+      const displayName=(sess&&sess.nome)?String(sess.nome).toUpperCase():'ODIMAN COSTA';
       userEl.classList.add('user');
       if(!userEl.querySelector('.user-menu')){
-        userEl.innerHTML='ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small><div class="user-menu"><a href="configuracoes.html#conta">▣ Minha conta</a><a href="configuracoes.html">♟ Usuários</a><a href="#">⚑ Indique e ganhe!</a><a href="configuracoes.html">⚙ Configurações</a><a href="login.html">◉ Sair</a></div><span class="user-avatar"></span>';
+        userEl.innerHTML=displayName+'<br><small>DNFX - COMERCIO DE PNEUS ◉</small><div class="user-menu"><a href="configuracoes.html#conta">▣ Minha conta</a><a href="configuracoes.html">♟ Usuários e Permissões</a><a href="configuracoes.html#novo">⊞ Novo usuário</a><a href="configuracoes.html">⚙ Configurações</a><a href="login.html" data-logout-link="1">◉ Sair / Trocar usuário</a></div><span class="user-avatar"></span>';
         const menu=userEl.querySelector('.user-menu');
         userEl.addEventListener('click',function(event){
+          const logoutLink=event.target.closest('a[data-logout-link]');
+          if(logoutLink){localStorage.removeItem('piremaxx_sessao');return;}
           if(event.target.closest('a'))return;
           menu.classList.toggle('open');
         });
@@ -71,6 +76,20 @@
         userEl.appendChild(avatar);
       }
     }
+  }
+  function applySessionPermissions(){
+    let sess=null;
+    try{sess=JSON.parse(localStorage.getItem('piremaxx_sessao')||'null')}catch(e){}
+    if(!sess||sess.perfil==='admin'||!sess.permissoes)return;
+    const perms=sess.permissoes;
+    sidebar.querySelectorAll('nav a[data-menu-key]').forEach(function(a){
+      const key=a.dataset.menuKey;
+      if(key&&Object.prototype.hasOwnProperty.call(perms,key)&&perms[key]===false){
+        a.style.setProperty('display','none','important');
+      }else{
+        a.style.removeProperty('display');
+      }
+    });
   }
   function render(){
     if(sidebar.dataset.rendered!=='1'||!sidebar.querySelector('[data-menu-key="frota"]')){
@@ -84,6 +103,7 @@
     }
     applyBrandStyles();
     normalizeTopbar();
+    applySessionPermissions();
   }
   render();
   if(path==='clientes.html'){
