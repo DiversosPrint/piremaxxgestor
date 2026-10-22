@@ -37,10 +37,10 @@
     openPayablesFromHash();
   });
   function applyMobileLayout() {
-    var mobile = window.matchMedia && window.matchMedia('(max-width: 700px)').matches;
+    var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
     document.documentElement.classList.toggle('pwa-mobile', !!mobile);
     if (!mobile) return;
-    document.querySelectorAll('main, .sidebar, main>.topbar, main>.products-topbar').forEach(function (element) {
+    document.querySelectorAll('main, .sidebar, main>.topbar, main>.products-topbar, main>.titlebar, main>.clients-title, main>.purchase-header, main>.dashboard-title, main>.finance-title, main>.fleet-title, main>.products-title, main>.reports-title, main>.config-title').forEach(function (element) {
       element.removeAttribute('style');
     });
   }

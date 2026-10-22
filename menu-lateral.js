@@ -345,10 +345,13 @@
       const old=document.getElementById(id);
       if(old)old.remove();
     });
-    if(!document.getElementById('standard-layout-first-paint')){
-      const style=document.createElement('style');
+    let style=document.getElementById('standard-layout-first-paint');
+    const isNewStyle=!style;
+    if(isNewStyle){
+      style=document.createElement('style');
       style.id='standard-layout-first-paint';
-      style.textContent=`
+    }
+    style.textContent=`
         @media (min-width: 769px) {
           .mobile-menu-toggle, .mobile-menu-backdrop { display:none!important; }
           body .sidebar.shared-sidebar,body .sidebar{position:fixed!important;top:0!important;left:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important;z-index:90!important;transform:none!important}
@@ -716,8 +719,7 @@
           }
         }
       `;
-      document.head.appendChild(style);
-    }
+    if(isNewStyle)document.head.appendChild(style);
     const isMobile=window.matchMedia('(max-width: 768px)').matches;
     const sidebar=document.querySelector('.sidebar'),main=document.querySelector('main'),topbar=document.querySelector('main>.topbar,main>.products-topbar');
     const title=document.querySelector('main>.titlebar,main>.clients-title,main>.purchase-header,main>.dashboard-title,main>.finance-title,main>.fleet-title,main>.products-title,main>.reports-title,main>.config-title');
