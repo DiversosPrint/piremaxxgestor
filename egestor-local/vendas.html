@@ -43,7 +43,7 @@
 (function(){
   function installSalesCheckboxes(){
     var table=document.querySelector('.sales-table'),head=table&&table.querySelector('thead tr'),body=document.getElementById('saleRows');
-    if(!table||!head||!body||table.dataset.returnsView==='1')return;
+    if(!table||!head||!body)return;
     var cell=head.cells[0];
     if(cell){
       var master=cell.querySelector('.sales-select-all');

@@ -31,8 +31,8 @@
     <section class="products-content">
       <div class="product-tabs"><button class="active" data-tab="products">♣ PRODUTOS</button><button data-tab="services">⚒ SERVIÇOS</button><button data-tab="stock">☷ AJUSTE DE ESTOQUE</button></div>
       <div class="product-panel" id="products-panel"><div class="product-toolbar"><button class="toolbar-button primary" id="newProduct">⊞ Novo</button><button class="toolbar-button" title="Clonar">♧</button><button class="toolbar-button" title="Arquivar">▣</button><button class="toolbar-button" title="Arquivados" id="toggleArchived">▣</button><button class="toolbar-button" title="Editar">✎⌄</button><button class="toolbar-button" title="Excluir">♜</button><button class="toolbar-button" title="Imprimir">▤</button><div class="product-filter"><input id="productSearch" placeholder="Buscar produtos"><button>⌕</button></div></div><table class="product-table"><thead><tr><th>□</th><th>Cód</th><th>Produto ↕</th><th>Categoria</th><th>Preço Venda</th><th>Estoque</th></tr></thead><tbody id="productRows"></tbody></table></div>
-      <div class="product-panel" id="services-panel" hidden><div class="product-toolbar"><button class="toolbar-button primary" id="serviceNew">⊞ Novo</button><button class="toolbar-button" title="Excluir serviço">♜</button><button class="toolbar-button" title="Imprimir serviços">▤</button><div class="product-filter"><input id="serviceSearch" placeholder="Buscar serviços"><button>⌕</button></div></div><table class="product-table service-table"><thead><tr><th>□</th><th>Cód</th><th>Serviço ↕</th><th>Palavras-chave</th><th>Preço Venda</th></tr></thead><tbody id="serviceRows"></tbody></table><div class="service-footer"><button type="button">100 linhas por página⌃</button><span id="serviceCount">0 registros encontrados</span><span>⏮　‹　 1/1　›　⏭</span></div></div>
-      <div class="product-panel stock-panel" id="stock-panel" hidden><div class="product-toolbar stock-toolbar"><button class="toolbar-button primary" id="newStockAdjustment">⊞ Novo</button><button class="toolbar-button" id="printStockAdjustments" title="Imprimir ajustes"><img src="public/icons/icons8-print.gif" alt="Imprimir"></button><div class="stock-period"><button type="button">Mês Atual</button><span>‹</span><b>Outubro 2026</b><span>›</span></div></div><table class="product-table stock-table"><thead><tr><th>□</th><th>Cód ↕</th><th>Motivo</th><th>Contato</th><th>Palavras-chave</th><th>Observações</th><th>Data</th></tr></thead><tbody id="stockRows"><tr><td colspan="7" class="empty-panel">Nenhum registro encontrado.<br><a href="#">Veja no mês anterior</a></td></tr></tbody></table></div>
+      <div class="product-panel" id="services-panel" hidden><div class="product-toolbar"><button class="toolbar-button primary" id="serviceNew">⊞ Novo</button><button class="toolbar-button" title="Clonar">♧</button><button class="toolbar-button" title="Editar">✎⌄</button><button class="toolbar-button" title="Excluir serviço">♜</button><button class="toolbar-button" title="Imprimir serviços">▤</button><div class="product-filter"><input id="serviceSearch" placeholder="Buscar serviços"><button>⌕</button></div></div><table class="product-table service-table"><thead><tr><th>□</th><th>Cód</th><th>Serviço ↕</th><th>Palavras-chave</th><th>Preço Venda</th></tr></thead><tbody id="serviceRows"></tbody></table><div class="service-footer"><button type="button">100 linhas por página⌃</button><span id="serviceCount">0 registros encontrados</span><span>⏮　‹　 1/1　›　⏭</span></div></div>
+      <div class="product-panel stock-panel" id="stock-panel" hidden><div class="product-toolbar stock-toolbar"><button class="toolbar-button primary" id="newStockAdjustment">⊞ Novo</button><button class="toolbar-button" id="deleteStockAdjustments" title="Excluir ajustes"><img src="public/icons/icons8-trash.gif" alt="Excluir"></button><button class="toolbar-button" id="printStockAdjustments" title="Imprimir ajustes"><img src="public/icons/icons8-print.gif" alt="Imprimir"></button><div class="stock-period"><button type="button">Mês Atual</button><span>‹</span><b>Outubro 2026</b><span>›</span></div></div><table class="product-table stock-table"><thead><tr><th>□</th><th>Cód ↕</th><th>Motivo</th><th>Contato</th><th>Palavras-chave</th><th>Observações</th><th>Data</th></tr></thead><tbody id="stockRows"><tr><td colspan="7" class="empty-panel">Nenhum registro encontrado.<br><a href="#">Veja no mês anterior</a></td></tr></tbody></table></div>
     </section>
   </main>
   <script src="vendas-importadas.js?v=produtos-1"></script>
@@ -185,19 +185,39 @@
     codes.forEach(function(code){if(!deleted.includes(String(code)))deleted.push(String(code))});
     localStorage.setItem('deletedProductCodes',JSON.stringify(deleted));localStorage.setItem('localProducts',JSON.stringify(saved.filter(function(item){return !codes.includes(String(item.code))})));location.reload();
   });
-  action('Imprimir',function(){
+  action('Excluir serviço',function(){
+    var codes=selectedCodes();if(!codes.length){alert('Selecione ao menos um serviço para excluir.');return}
+    if(!confirm('Excluir os serviços selecionados?'))return;
+    var saved=[];try{saved=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}
+    var deleted=[];try{deleted=JSON.parse(localStorage.getItem('deletedProductCodes')||'[]')}catch(e){}
+    codes.forEach(function(code){if(!deleted.includes(String(code)))deleted.push(String(code))});
+    localStorage.setItem('deletedProductCodes',JSON.stringify(deleted));localStorage.setItem('localProducts',JSON.stringify(saved.filter(function(item){return !codes.includes(String(item.code))})));location.reload();
+  });
+  function printItemsOrList(isService){
     var codes=selectedCodes();
-    if(!codes.length){alert('Selecione ao menos um produto para imprimir.');return}
-    var items=catalog().filter(function(item){return codes.includes(String(item.code))});
     function esc(value){return String(value??'').replace(/[&<>\"']/g,function(char){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[char]})}
     function money(value){return Number(value||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
-    var pages=items.map(function(item){return '<section class="product-sheet"><h1>Ficha do produto</h1><table><tr><th>Nome</th><td>'+esc(item.name||'-')+'</td></tr><tr><th>Código</th><td>'+esc(item.code||'-')+'</td></tr><tr><th>Categoria</th><td>'+esc(item.category||'-')+'</td></tr><tr><th>Tipo de uso</th><td>'+esc(item.usage||'-')+'</td></tr><tr><th>Preço de custo</th><td>'+money(item.cost)+'</td></tr><tr><th>Preço de venda</th><td>'+money(item.price)+'</td></tr><tr><th>Estoque atual</th><td>'+esc(item.stock??0)+'</td></tr><tr><th>Estoque mínimo</th><td>'+esc(item.minStock??0)+'</td></tr><tr><th>Palavras-chave</th><td>'+esc(item.keywords||'-')+'</td></tr><tr><th>Observações</th><td>'+esc(item.notes||'-')+'</td></tr></table></section>'}).join('');
+    if(!codes.length){
+      var panel=document.querySelector('.product-panel:not([hidden])');
+      var visibleRows=panel?[].slice.call(panel.querySelectorAll('tbody tr')).filter(function(r){return !r.querySelector('.empty-panel')&&r.style.display!=='none'}):[];
+      if(!visibleRows.length){alert('Nenhum item encontrado para imprimir.');return}
+      var trs=visibleRows.map(function(r){var c=r.cells;return '<tr><td>'+esc(c[1]?.textContent.trim())+'</td><td>'+esc(c[2]?.textContent.trim())+'</td><td>'+esc(c[3]?.textContent.trim())+'</td><td>'+esc(c[4]?.textContent.trim())+'</td>'+(isService?'':('<td>'+esc(c[5]?.textContent.trim())+'</td>'))+'</tr>'}).join('');
+      var wList=window.open('','_blank','width=900,height=800');
+      if(!wList){alert('Permita pop-ups para imprimir o relatório.');return}
+      wList.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Listagem de '+(isService?'Serviços':'Produtos')+'</title><style>body{font:12px Arial;color:#243746}h1{color:#1b2886;border-bottom:2px solid #1b2886;padding-bottom:10px;text-transform:uppercase;font-size:18px}table{width:100%;border-collapse:collapse}th{background:#1b2886;color:#fff;text-align:left;padding:8px}td{padding:8px;border-bottom:1px solid #d8dee1}</style></head><body><h1>Relatório de '+(isService?'Serviços':'Produtos')+'</h1><table><thead><tr><th>Cód</th><th>Nome</th><th>'+(isService?'Palavras-chave':'Categoria')+'</th><th>Preço Venda</th>'+(isService?'':'<th>Estoque</th>')+'</tr></thead><tbody>'+trs+'</tbody></table><script>window.onload=function(){window.print()}<\/script></body></html>');
+      wList.document.close();
+      return;
+    }
+    var items=catalog().filter(function(item){return codes.includes(String(item.code))});
+    var pages=items.map(function(item){return '<section class="product-sheet"><h1>Ficha d'+(isService?'o serviço':'o produto')+'</h1><table><tr><th>Nome</th><td>'+esc(item.name||'-')+'</td></tr><tr><th>Código</th><td>'+esc(item.code||'-')+'</td></tr><tr><th>Categoria</th><td>'+esc(item.category||'-')+'</td></tr><tr><th>Tipo de uso</th><td>'+esc(item.usage||'-')+'</td></tr><tr><th>Preço de custo</th><td>'+money(item.cost)+'</td></tr><tr><th>Preço de venda</th><td>'+money(item.price)+'</td></tr><tr><th>Estoque atual</th><td>'+esc(item.stock??0)+'</td></tr><tr><th>Estoque mínimo</th><td>'+esc(item.minStock??0)+'</td></tr><tr><th>Palavras-chave</th><td>'+esc(item.keywords||'-')+'</td></tr><tr><th>Observações</th><td>'+esc(item.notes||'-')+'</td></tr></table></section>'}).join('');
     var w=window.open('','_blank','width=900,height=800');
     if(!w){alert('Permita pop-ups para imprimir o relatório.');return}
-    w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Ficha de produtos</title><style>@page{size:A4;margin:15mm}body{font:12px Arial;color:#405967}.product-sheet{page-break-after:always}.product-sheet:last-child{page-break-after:auto}h1{color:#209b98;border-bottom:3px solid #209b98;padding-bottom:10px}table{width:100%;border-collapse:collapse}th{width:28%;background:#dce6e9;text-align:left}td,th{padding:10px;border:1px solid #c8d3d7}td{background:#fff}</style></head><body>'+pages+'</body></html>');
+    w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Ficha de '+(isService?'serviços':'produtos')+'</title><style>@page{size:A4;margin:0}body{font:12px Arial;color:#243746}.product-sheet{page-break-after:always}.product-sheet:last-child{page-break-after:auto}h1{color:#1b2886;border-bottom:2px solid #1b2886;padding-bottom:10px;text-transform:uppercase;font-size:18px}table{width:100%;border-collapse:collapse}th{width:28%;background:#dce6e9;text-align:left}td,th{padding:10px;border:1px solid #c8d3d7}</style></head><body>'+pages+'</body></html>');
     w.document.close();
     w.onload=function(){w.focus();w.print()};
-  });
+  }
+  action('Imprimir',function(){printItemsOrList(false)});
+  action('Imprimir serviços',function(){printItemsOrList(true)});
 })();
 </script>
 <script>(function(){var b=document.getElementById('serviceNew');if(!b||b.querySelector('img'))return;b.textContent='';var i=document.createElement('img');i.src='public/icons/icons8-add-48.png';i.alt='';i.style.cssText='width:16px;height:16px;object-fit:contain;margin-right:5px';b.append(i,document.createTextNode('Novo'));b.style.display='inline-flex';b.style.alignItems='center';b.style.background='#a52b91';b.style.borderColor='#a52b91';})();</script>
@@ -219,6 +239,51 @@
     modal.querySelector('.stock-adjust-next').onclick=function(){var changes=Array.from(rows.querySelectorAll('input[data-code]')).map(function(input){var product=products.find(function(x){return String(x.code||'')===String(input.dataset.code)}),oldStock=Number(input.dataset.old)||0,newStock=Number(input.value)||0;return {code:input.dataset.code,name:product&&product.name||'',oldStock:oldStock,newStock:newStock,change:newStock-oldStock}}).filter(function(x){return x.newStock!==x.oldStock});if(!changes.length){alert('Informe pelo menos uma alteração de estoque.');return}modal.querySelector('.stock-adjust-body').innerHTML='<div class="stock-step-two"><div class="stock-form-grid"><label>Motivo do ajuste<select id="stockReason"><option>Ajuste geral</option><option>Entrada de mercadoria</option><option>Saída de mercadoria</option><option>Inventário</option></select></label><label>Participação no DRE<select id="stockDre"><option value="">Selecione...</option><option>Sim</option><option>Não</option></select></label><label>Contato<input id="stockContact"></label><label>Observações gerais<textarea id="stockNotes"></textarea></label><label>Palavras-chave<input id="stockKeywords"></label></div><table class="stock-summary-table"><thead><tr><th>Cód</th><th>Produto</th><th>Estoque antigo</th><th>Alteração</th><th>Estoque novo</th></tr></thead><tbody>'+changes.map(function(x){return '<tr><td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.oldStock)+'</td><td class="'+(x.change<0?'negative':'positive')+'">'+(x.change>0?'+':'')+esc(x.change)+'</td><td>'+esc(x.newStock)+'</td></tr>'}).join('')+'</tbody></table></div><div class="stock-adjust-actions"><button type="button" class="stock-adjust-save">Salvar</button><button type="button" class="stock-adjust-back">Voltar</button></div>';modal.querySelector('.stock-adjust-head').querySelector('.stock-adjust-close').onclick=close;modal.querySelector('.stock-adjust-back').onclick=close;modal.querySelector('.stock-adjust-save').onclick=function(){var record={id:String(Date.now()),date:new Date().toISOString().slice(0,10),reason:modal.querySelector('#stockReason').value,dre:modal.querySelector('#stockDre').value,contact:modal.querySelector('#stockContact').value,notes:modal.querySelector('#stockNotes').value,keywords:modal.querySelector('#stockKeywords').value,changes:changes};var saved=[];try{saved=JSON.parse(localStorage.getItem('piremaxx_ajustes_estoque')||'[]')}catch(e){}saved.unshift(record);localStorage.setItem('piremaxx_ajustes_estoque',JSON.stringify(saved));var local=[];try{local=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}changes.forEach(function(change){var item=local.find(function(x){return String(x.code)===String(change.code)});if(item)item.stock=change.newStock});localStorage.setItem('localProducts',JSON.stringify(local));close();var toast=document.createElement('div');toast.className='stock-success-toast';toast.textContent='Ajuste de estoque salvo com sucesso.';document.body.appendChild(toast);setTimeout(function(){toast.remove()},2800)}};
   }
   button.addEventListener('click',open);
+  function renderStockAdjustments(){
+    var stockTable=document.querySelector('#stock-panel .stock-table'),stockRows=document.getElementById('stockRows');
+    if(!stockTable||!stockRows)return;
+    var head=stockTable.querySelector('thead th:first-child');
+    if(head&&!head.querySelector('input')){
+      head.textContent='';
+      var master=document.createElement('input');
+      master.type='checkbox';master.className='stock-select-all';master.title='Selecionar todos';
+      master.style.cssText='width:14px;height:14px;accent-color:#0b4f93;cursor:pointer';
+      head.appendChild(master);
+      master.addEventListener('change',function(){stockRows.querySelectorAll('input[type=checkbox]').forEach(function(b){b.checked=master.checked})});
+    }
+    var saved=[];try{saved=JSON.parse(localStorage.getItem('piremaxx_ajustes_estoque')||'[]')}catch(e){}
+    if(!saved.length){
+      stockRows.innerHTML='<tr><td colspan="7" class="empty-panel">Nenhum registro encontrado.<br><a href="#">Veja no mês anterior</a></td></tr>';
+      return;
+    }
+    stockRows.innerHTML=saved.map(function(item){
+      var dt=String(item.date||'').split('-').reverse().join('/');
+      return '<tr data-id="'+esc(item.id)+'"><td><input type="checkbox" class="stock-select" data-id="'+esc(item.id)+'" style="width:14px;height:14px;accent-color:#0b4f93;cursor:pointer"></td><td>'+esc(String(item.id).slice(-5))+'</td><td>'+esc(item.reason||'Ajuste geral')+'</td><td>'+esc(item.contact||'-')+'</td><td>'+esc(item.keywords||'-')+'</td><td>'+esc(item.notes||'-')+'</td><td>'+esc(dt)+'</td></tr>';
+    }).join('');
+  }
+  renderStockAdjustments();
+  document.addEventListener('click',function(e){if(e.target.closest('.stock-adjust-save'))setTimeout(renderStockAdjustments,60)});
+  var delStockBtn=document.getElementById('deleteStockAdjustments');
+  if(delStockBtn)delStockBtn.onclick=function(){
+    var checked=Array.from(document.querySelectorAll('#stockRows .stock-select:checked')).map(function(b){return b.dataset.id});
+    if(!checked.length){alert('Selecione ao menos um ajuste para excluir.');return}
+    if(!confirm('Excluir '+checked.length+' ajuste(s) selecionado(s)?'))return;
+    var saved=[];try{saved=JSON.parse(localStorage.getItem('piremaxx_ajustes_estoque')||'[]')}catch(e){}
+    localStorage.setItem('piremaxx_ajustes_estoque',JSON.stringify(saved.filter(function(x){return !checked.includes(String(x.id))})));
+    renderStockAdjustments();
+  };
+  var printStockBtn=document.getElementById('printStockAdjustments');
+  if(printStockBtn)printStockBtn.onclick=function(){
+    var saved=[];try{saved=JSON.parse(localStorage.getItem('piremaxx_ajustes_estoque')||'[]')}catch(e){}
+    var checked=Array.from(document.querySelectorAll('#stockRows .stock-select:checked')).map(function(b){return b.dataset.id});
+    var list=checked.length?saved.filter(function(x){return checked.includes(String(x.id))}):saved;
+    if(!list.length){alert('Nenhum ajuste de estoque encontrado para imprimir.');return}
+    var trs=list.map(function(x){var dt=String(x.date||'').split('-').reverse().join('/');return '<tr><td>'+esc(String(x.id).slice(-5))+'</td><td>'+esc(x.reason||'')+'</td><td>'+esc(x.contact||'-')+'</td><td>'+esc(x.keywords||'-')+'</td><td>'+esc(x.notes||'-')+'</td><td>'+esc(dt)+'</td></tr>'}).join('');
+    var w=window.open('','_blank','width=900,height=800');
+    if(!w)return;
+    w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Ajustes de Estoque</title><style>body{font:12px Arial;color:#243746}h1{color:#1b2886;border-bottom:2px solid #1b2886;padding-bottom:10px;text-transform:uppercase;font-size:18px}table{width:100%;border-collapse:collapse}th{background:#1b2886;color:#fff;text-align:left;padding:8px}td{padding:8px;border-bottom:1px solid #d8dee1}</style></head><body><h1>Relatório de Ajustes de Estoque</h1><table><thead><tr><th>Cód</th><th>Motivo</th><th>Contato</th><th>Palavras-chave</th><th>Observações</th><th>Data</th></tr></thead><tbody>'+trs+'</tbody></table><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+  };
 })();
 </script>
 </html>

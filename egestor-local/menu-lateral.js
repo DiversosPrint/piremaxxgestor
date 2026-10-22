@@ -285,8 +285,10 @@
       all.concat(button).forEach(function(item){item.classList.remove('active')});
       button.classList.add('active');
       const body=table.querySelector('tbody');
-      const records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(item){return Array.isArray(item.tipos)&&item.tipos.includes('comprador')});
-      if(body)body.innerHTML=records.length?records.map(function(item){return '<tr><td>□</td><td>'+String(item.id||'')+'</td><td>'+String(item.nome||'')+'</td><td>'+String(item.telefone||'')+'</td><td></td><td>'+String(item.cidade||'')+(item.uf?'/'+String(item.uf):'')+'</td></tr>'}).join(''):'<tr><td colspan="6" class="empty">Nenhum comprador encontrado.</td></tr>';
+      const deleted=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
+      const records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(item){return Array.isArray(item.tipos)&&item.tipos.includes('comprador')&&!deleted.has(String(item.id))&&!deleted.has(String(item.nome||'').trim())});
+      if(body)body.innerHTML=records.length?records.map(function(item){return '<tr><td><input type="checkbox" class="client-select" data-code="'+String(item.id||'')+'" data-name="'+String(item.nome||'').replace(/"/g,'&quot;')+'"></td><td>'+String(item.id||'')+'</td><td>'+String(item.nome||'')+'</td><td>'+String(item.telefone||'')+'</td><td></td><td>'+String(item.cidade||'')+(item.uf?'/'+String(item.uf):'')+'</td></tr>'}).join(''):'<tr><td colspan="7" class="empty">Nenhum comprador encontrado.</td></tr>';
+      if(window.installClientCheckboxes)window.installClientCheckboxes();
       const search=document.querySelector('.client-search input');
       if(search)search.placeholder='Buscar compradores';
       const novo=document.querySelector('.client-toolbar button');

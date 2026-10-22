@@ -561,4 +561,244 @@ document.addEventListener('DOMContentLoaded',function(){
   setTimeout(applyHashRoute,0);
 })();
 </script>
+<style id="finance-unified-checkboxes-style">
+.finance-panel table th:first-child,.finance-panel table td:first-child{width:42px!important;text-align:center!important;vertical-align:middle!important}
+.finance-panel table input.finance-list-check,.finance-panel table input.finance-select-all{width:15px!important;height:15px!important;margin:0!important;accent-color:#35b96f;cursor:pointer;vertical-align:middle}
+.finance-panel table tbody tr.finance-row-selected{background:#eaf8f0!important;box-shadow:inset 3px 0 #35b96f}
+.finance-receipts-list .receipt-print{cursor:pointer;color:#1b2886;font-weight:bold;margin-left:4px;font-size:14px}
+</style>
+<script id="finance-unified-actions-script">
+(function(){
+  function installFinanceCheckboxesAll(){
+    var panel=document.querySelector('.finance-panel');
+    if(!panel)return;
+    panel.querySelectorAll('table').forEach(function(table){
+      var head=table.querySelector('thead tr th:first-child');
+      if(head){
+        var master=head.querySelector('.finance-select-all');
+        if(!master){
+          head.textContent='';
+          master=document.createElement('input');
+          master.type='checkbox';
+          master.className='finance-select-all';
+          master.title='Selecionar todos os registros visíveis';
+          master.setAttribute('aria-label','Selecionar todos os registros visíveis');
+          head.appendChild(master);
+          master.addEventListener('change',function(){
+            table.querySelectorAll('tbody tr').forEach(function(row){
+              if(row.querySelector('td[colspan]')||row.style.display==='none'||row.hidden)return;
+              var box=row.querySelector('input[type="checkbox"]');
+              if(box){
+                box.checked=master.checked;
+                row.classList.toggle('finance-row-selected',box.checked);
+              }
+            });
+            master.indeterminate=false;
+          });
+        }
+      }
+      table.querySelectorAll('tbody tr').forEach(function(row){
+        if(row.querySelector('td[colspan]')||row.cells.length<3)return;
+        var first=row.cells[0];
+        if(!first)return;
+        var box=first.querySelector('input[type="checkbox"]');
+        if(!box){
+          first.textContent='';
+          box=document.createElement('input');
+          box.type='checkbox';
+          first.appendChild(box);
+        }
+        box.classList.add('finance-list-check','finance-row-check');
+        box.onchange=function(){
+          row.classList.toggle('finance-row-selected',box.checked);
+          var master=table.querySelector('.finance-select-all');
+          if(!master)return;
+          var allBoxes=[].slice.call(table.querySelectorAll('tbody input.finance-list-check'));
+          var checked=allBoxes.filter(function(b){return b.checked});
+          master.checked=allBoxes.length>0&&checked.length===allBoxes.length;
+          master.indeterminate=checked.length>0&&checked.length<allBoxes.length;
+        };
+      });
+    });
+  }
+
+  function getVisibleTable(){
+    var panel=document.querySelector('.finance-panel');
+    if(!panel)return null;
+    return Array.from(panel.querySelectorAll('table')).find(function(t){return t.offsetParent!==null})||null;
+  }
+
+  function getSelectedRows(){
+    var table=getVisibleTable();
+    if(!table)return [];
+    return Array.from(table.querySelectorAll('tbody tr')).filter(function(row){
+      return !row.querySelector('td[colspan]')&&row.querySelector('input.finance-list-check:checked');
+    });
+  }
+
+  function getActiveTabTitle(){
+    var active=document.querySelector('.finance-tabs button.active');
+    return (active&&active.textContent||'RECEBIMENTOS').replace(/[^A-ZÁÉÍÓÚÃÕÇÊ ]/gi,'').trim()||'RECEBIMENTOS';
+  }
+
+  function printFinanceRows(onlySelected){
+    var table=getVisibleTable();
+    if(!table){alert('Nenhuma tabela ativa para imprimir.');return}
+    var rows=onlySelected?getSelectedRows():Array.from(table.querySelectorAll('tbody tr')).filter(function(r){return !r.querySelector('td[colspan]')&&r.style.display!=='none'});
+    if(!rows.length){alert(onlySelected?'Selecione ao menos um registro para imprimir.':'Nenhum registro encontrado nesta aba para imprimir.');return}
+    var headers=Array.from(table.querySelectorAll('thead th')).slice(1).map(function(th){return '<th>'+(th.textContent||'').replace('↕','').trim()+'</th>'}).join('');
+    var bodyHtml=rows.map(function(r){
+      var cells=Array.from(r.querySelectorAll('td')).slice(1);
+      return '<tr>'+cells.map(function(td){return '<td>'+(td.textContent||'').replace('♨','').trim()+'</td>'}).join('')+'</tr>';
+    }).join('');
+    var title=getActiveTabTitle();
+    var w=window.open('','_blank','width=900,height=800');
+    if(!w){alert('Permita pop-ups para imprimir.');return}
+    w.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Financeiro - '+title+'</title><style>body{font:12px Arial;color:#243746}h1{color:#1b2886;border-bottom:2px solid #1b2886;padding-bottom:10px;text-transform:uppercase;font-size:18px}table{width:100%;border-collapse:collapse}th{background:#1b2886;color:#fff;text-align:left;padding:8px}td{padding:8px;border-bottom:1px solid #d8dee1}.summary{margin-top:14px;text-align:right;font-weight:bold;color:#1b2886}</style></head><body><h1>Relatório Financeiro - '+title+'</h1><table><thead><tr>'+headers+'</tr></thead><tbody>'+bodyHtml+'</tbody></table><div class="summary">Quantidade de registros: '+rows.length+'</div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+  }
+
+  function printSingleReceipt(row){
+    var c=row.querySelectorAll('td');
+    var code=(c[1]?.textContent||'').replace('♨','').trim();
+    var contact=(c[2]?.textContent||'').trim();
+    var ref=(c[3]?.textContent||'').trim();
+    var dt=(c[4]?.textContent||'').trim();
+    var val=(c[5]?.textContent||'').trim();
+    var w=window.open('','_blank','width=900,height=700');
+    if(!w)return;
+    w.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Recibo #'+code+'</title><style>body{font:14px Arial;color:#243746}.receipt-box{border:2px solid #1b2886;border-radius:6px;padding:24px;margin-top:12px}h1{color:#1b2886;margin:0 0 16px;display:flex;justify-content:space-between;font-size:20px;border-bottom:2px solid #1b2886;padding-bottom:10px}p{line-height:1.7;font-size:14px}.sig{margin-top:48px;text-align:center;border-top:1px solid #243746;width:280px;margin-left:auto;margin-right:auto;padding-top:8px}</style></head><body><div class="receipt-box"><h1><span>RECIBO Nº '+code+'</span><span>'+val+'</span></h1><p>Recebemos de <b>'+contact+'</b> a importância de <b>'+val+'</b>, referente a <b>'+ref+'</b>.</p><p>Data do recebimento: <b>'+dt+'</b></p><div class="sig">PIREMAXX PNEUS</div></div><script>window.onload=function(){window.print()}<\/script></body></html>');
+    w.document.close();
+  }
+
+  document.addEventListener('click',function(e){
+    // Imprimir recibo individual clicando no ícone ♨
+    var recPrint=e.target.closest('.receipt-print');
+    if(recPrint){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var tr=recPrint.closest('tr');
+      if(tr)printSingleReceipt(tr);
+      return;
+    }
+
+    // Botão Excluir na barra do Financeiro
+    var delBtn=e.target.closest('.finance-toolbar button[title="Excluir"]');
+    if(delBtn){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var sel=getSelectedRows();
+      if(!sel.length){alert('Selecione pelo menos um item para excluir.');return}
+      if(!confirm('Deseja excluir '+sel.length+' item(ns) selecionado(s)?'))return;
+      var codes=new Set(sel.map(function(r){return (r.cells[1]?.textContent||'').replace('♨','').trim()}));
+      ['piremaxx_contas_receber','piremaxx_contas_pagar'].forEach(function(k){
+        try{
+          var arr=JSON.parse(localStorage.getItem(k)||'[]');
+          if(Array.isArray(arr))localStorage.setItem(k,JSON.stringify(arr.filter(function(x){return !codes.has(String(x.id||x.code))})));
+        }catch(err){}
+      });
+      sel.forEach(function(r){r.remove()});
+      var table=getVisibleTable();
+      var master=table&&table.querySelector('.finance-select-all');
+      if(master){master.checked=false;master.indeterminate=false;}
+      return;
+    }
+
+    // Botão Calendário / Emitir recibo
+    var calBtn=e.target.closest('.finance-toolbar button[title="Calendário"]');
+    if(calBtn){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var sel=getSelectedRows();
+      var rcOverlay=document.getElementById('finance-receipt-form');
+      if(!rcOverlay)return;
+      if(sel.length){
+        var cells=sel[0].querySelectorAll('td');
+        var inputs=rcOverlay.querySelectorAll('.receipt-field input');
+        if(inputs[0])inputs[0].value=(cells[3]?.textContent||'').trim();
+        if(inputs[2])inputs[2].value=(cells[7]?.textContent||cells[6]?.textContent||'').replace('R$','').trim();
+        if(inputs[3]){
+          var dt=(cells[5]?.textContent||'').trim().split('/');
+          if(dt.length===3)inputs[3].value=dt[2]+'-'+dt[1]+'-'+dt[0];
+        }
+        if(inputs[4])inputs[4].value=(cells[2]?.textContent||'').trim();
+      }
+      rcOverlay.classList.add('open');
+      document.body.style.overflow='hidden';
+      return;
+    }
+
+    // Opção "Receber selecionado(s)" no menu Receber ($⌄)
+    var recMenuBtn=e.target.closest('.finance-receive-menu button:first-child');
+    if(recMenuBtn){
+      var sel=getSelectedRows();
+      if(!sel.length){alert('Selecione ao menos um lançamento para baixar/receber.');return}
+      if(sel.length>1){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        sel.forEach(function(r){
+          var st=r.cells[6];
+          if(st){st.textContent='Recebida';st.className='received';}
+        });
+        document.querySelector('.finance-receive-menu')?.classList.remove('open');
+      }
+      return;
+    }
+
+    // Opção "Reabrir selecionado(s)" no menu Editar
+    var editOpt=e.target.closest('.finance-edit-options button');
+    if(editOpt&&editOpt.textContent.includes('Reabrir')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var sel=getSelectedRows();
+      if(!sel.length){alert('Selecione ao menos um item para reabrir.');return}
+      sel.forEach(function(r){
+        var st=r.cells[6];
+        if(st){st.textContent='A Receber';st.className='receive';}
+      });
+      document.querySelector('.finance-edit-menu')?.classList.remove('open');
+      return;
+    }
+
+    // Botão Imprimir em qualquer aba ou no modal de impressão do Financeiro
+    var printBtn=e.target.closest('.finance-toolbar button[title="Imprimir"]');
+    if(printBtn){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var dialog=document.querySelector('.finance-print-dialog');
+      if(dialog){
+        dialog.classList.add('open');
+      } else {
+        var sel=getSelectedRows();
+        printFinanceRows(sel.length>0);
+      }
+      return;
+    }
+    var printSelBtn=e.target.closest('.finance-print-actions .selected');
+    if(printSelBtn){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      document.querySelector('.finance-print-dialog')?.classList.remove('open');
+      printFinanceRows(true);
+      return;
+    }
+    var printAllBtn=e.target.closest('.finance-print-actions .all');
+    if(printAllBtn){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      document.querySelector('.finance-print-dialog')?.classList.remove('open');
+      printFinanceRows(false);
+      return;
+    }
+  },true);
+
+  document.addEventListener('DOMContentLoaded',function(){
+    installFinanceCheckboxesAll();
+    var panel=document.querySelector('.finance-panel');
+    if(panel)new MutationObserver(installFinanceCheckboxesAll).observe(panel,{childList:true,subtree:true});
+    setTimeout(installFinanceCheckboxesAll,120);
+  });
+  installFinanceCheckboxesAll();
+})();
+</script>
 <script src="menu-lateral.js?v=layout-fixed"></script>
