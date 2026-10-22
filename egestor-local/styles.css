@@ -440,3 +440,192 @@ html body .toolbar-icon{
   max-height:18px!important;
   object-fit:contain!important;
 }
+
+/* ==========================================================================
+   SISTEMA FLUIDO E ADAPTÁVEL PARA TABLETS E DISPOSITIVOS MÓVEIS (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  html, body {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  html body,
+  html body.standard-layout {
+    display: block !important;
+  }
+
+  /* Gaveta lateral deslizante (Off-Canvas Menu) */
+  html body .sidebar,
+  html body .sidebar.shared-sidebar,
+  html body.standard-layout .sidebar,
+  html body:has(.sales-content) .sidebar,
+  html body:has(.purchase-content) .sidebar,
+  html body:has(.clients) .sidebar,
+  html body:has(.finance-page) .sidebar,
+  html body:has(.products-topbar) .sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 82vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    z-index: 220 !important;
+    transform: translateX(-105%) !important;
+    transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow-y: auto !important;
+  }
+  html body.mobile-menu-open .sidebar,
+  html body.mobile-menu-open .sidebar.shared-sidebar {
+    transform: translateX(0) !important;
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.35) !important;
+  }
+  html body .sidebar>.brand,
+  html body .sidebar.shared-sidebar .brand {
+    width: 100% !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+  }
+  html body .sidebar nav a,
+  html body .sidebar.shared-sidebar nav a {
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    padding: 0 16px !important;
+    font-size: 13px !important;
+  }
+
+  /* Container Principal ocupando 100% da largura */
+  html body main,
+  html body.standard-layout main,
+  html body:has(.sales-content) main,
+  html body:has(.purchase-content) main,
+  html body:has(.clients) main,
+  html body:has(.finance-page) main,
+  html body:has(.products-topbar) main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-top: 0 !important;
+  }
+
+  /* Topbar Mobile Fixa */
+  html body main>.topbar,
+  html body main>.products-topbar,
+  html body:has(.sales-content) main>.topbar,
+  html body:has(.purchase-content) main>.topbar,
+  html body:has(.clients) main>.topbar,
+  html body:has(.finance-page) main>.topbar {
+    position: sticky !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    padding: 0 10px !important;
+    z-index: 120 !important;
+  }
+
+  /* Barra de Título Fluida */
+  html body main>.titlebar,
+  html body main>.clients-title,
+  html body main>.purchase-header,
+  html body main>.dashboard-title,
+  html body main>.finance-title,
+  html body main>.fleet-title,
+  html body main>.products-title,
+  html body main>.reports-title,
+  html body main>.config-title,
+  html body .product-top,
+  html body .service-top,
+  html body .buyer-head {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 10px 12px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    z-index: 40 !important;
+  }
+
+  /* Abas e Toolbars de Vendas, Financeiro, Contatos e Compras */
+  html body:has(.sales-content) main>.sales-content:before {
+    display: none !important;
+  }
+  html body:has(.sales-content) main>.sales-content {
+    padding: 10px !important;
+  }
+  html body:has(.sales-content) main>.sales-content>.tabs,
+  html body .client-tabs,
+  html body .finance-tabs,
+  html body .purchase-tabs,
+  html body .product-tabs,
+  html body .categories {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 38px !important;
+    max-height: none !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 4px !important;
+  }
+  html body:has(.sales-content) main>.sales-content>.toolbar,
+  html body .toolbar,
+  html body .client-toolbar,
+  html body .finance-toolbar,
+  html body .purchase-toolbar,
+  html body .product-toolbar {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 48px !important;
+    max-height: none !important;
+    padding: 10px 12px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Sobreposições e Modais em Tela Cheia no Mobile */
+  html body .finance-form-overlay,
+  html body .transfer-form-overlay,
+  html body .recurrence-form-overlay,
+  html body .receipt-form-overlay,
+  html body .receipt-history-overlay,
+  html body .conciliation-upload-overlay,
+  html body .new-purchase,
+  html body .stock-adjust-modal,
+  html body .account-modal,
+  html body .user-modal-overlay,
+  html body .collection-modal,
+  html body .finance-print-dialog,
+  html body .contact-sheet,
+  html body .whatsapp-sale-modal,
+  html body .return-detail-modal,
+  html body .category-modal {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    z-index: 230 !important;
+  }
+}
