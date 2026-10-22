@@ -405,3 +405,38 @@ html body .buyer-head{
   width:calc(100% - 143px)!important;
   z-index:80!important;
 }
+html body .sales-content>.tabs .tab,
+html body .finance-tabs button,
+html body .purchase-tabs .purchase-tab,
+html body .client-tabs button,
+html body .product-tabs button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  white-space:nowrap!important;
+}
+html body .sales-tab-icon,
+html body .finance-tab-icon,
+html body .purchase-tab-icon,
+html body .client-tabs button img,
+html body .product-tabs button img{
+  display:inline-block!important;
+  width:15px!important;
+  height:15px!important;
+  max-width:15px!important;
+  max-height:15px!important;
+  object-fit:contain!important;
+  flex:0 0 15px!important;
+  pointer-events:none!important;
+}
+html body .local-action-icon,
+html body .finance-action-icon,
+html body .purchase-action-icon,
+html body .toolbar-icon{
+  width:18px!important;
+  height:18px!important;
+  max-width:18px!important;
+  max-height:18px!important;
+  object-fit:contain!important;
+}
