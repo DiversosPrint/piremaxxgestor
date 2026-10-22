@@ -20,7 +20,7 @@ const types = {
 };
 
 const menuItems = [
-  ['home', 'Home', 'index.html', 'icons8-home-48.png', 'dashboard-link'],
+  ['home', 'Indicadores', 'index.html', 'icons8-home-48.png', 'dashboard-link'],
   ['financeiro', 'Financeiro', 'financeiro.html', 'icons8-financial-64.png', 'finance-link'],
   ['vendas', 'Vendas', 'vendas.html', 'icons8-buy-for-cash-48.png', ''],
   ['compras', 'Compras', 'compras.html', 'icons8-buy-48.png', ''],

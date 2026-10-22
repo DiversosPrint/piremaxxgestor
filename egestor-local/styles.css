@@ -1,0 +1,442 @@
+:root{--nav:#344750;--head:#5e7d89;--teal:#299c9a;--blue:#359fe0;--bg:#f2f3f4;--text:#416276}*{box-sizing:border-box}body{margin:0;background:var(--bg);font:12px Arial,sans-serif;color:var(--text);display:flex}.sidebar{width:143px;min-height:100vh;background:var(--nav);color:#fff;position:fixed;left:0;top:0}.brand{height:49px;background:#eee;color:#68717a;padding:13px 9px 4px;font-size:18px}.brand span,.brand-mini span{color:#e22}.brand small{display:block;font-size:9px;text-align:center;margin-top:-3px}.sidebar nav a{height:31px;display:block;color:#fff;text-decoration:none;padding:9px 13px;font-size:12px}.sidebar nav a.active,.sidebar nav a:hover{background:#263840}.sidebar nav a b{margin-left:8px}main{margin-left:143px;width:calc(100% - 143px)}.topbar{height:49px;background:#eee;display:flex;align-items:center;padding:0 10px}.brand-mini{width:120px;font-size:16px;font-weight:bold;color:#65717a}.brand-mini small{display:block;font-size:9px;font-weight:normal}.search{height:32px;background:#fff;width:270px;color:#a0a0a0;padding:9px 12px;margin-left:8px}.search button{float:right;border:0;background:#06b8bb;color:#fff;height:32px;width:67px;margin:-9px -12px 0 0;font-size:22px}.user{margin-left:auto;text-align:right;color:#496170}.user small{font-size:9px;color:#78878f}.titlebar{height:49px;background:var(--head);color:#fff;padding:11px;font-size:16px;display:flex;justify-content:space-between}.titlebar button{border:0;color:white;padding:8px 14px;border-radius:3px;margin-left:8px}.tutorial{background:#f6b33f}.new{background:#00d982}.content{padding:17px 22px}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.metric{height:69px;background:#fff;border:1px solid;padding:10px 15px;position:relative}.metric.green{border-color:#42c782}.metric.red{border-color:#ff6068}.metric>strong{font-size:21px;color:#4ac47e;margin-right:9px}.metric.red>strong{color:#fa5961}.metric span{display:inline-block;color:#63727b;vertical-align:top;line-height:15px}.metric em{font-style:normal;color:#3fc47a}.metric.red em{color:#ff5d65}.metric i{position:absolute;right:10px;top:8px;font-size:36px;color:#d9f4e7}.metric.red i{color:#ffe0e1}.metric footer{position:absolute;bottom:0;left:0;width:100%;text-align:center;background:#48c47d;color:#fff;padding:3px}.metric.red footer{background:#fb5d63}.columns{display:grid;grid-template-columns:1.45fr 1fr;gap:22px;margin-top:22px}.panel{background:#fff;border:1px solid #dfe3e5;margin-bottom:22px}.panel h3{margin:0;background:#587783;color:#fff;font-size:13px;padding:9px 10px;font-weight:bold}.panel h3 small{float:right;font-weight:normal}.alerts{height:103px}.alerts p{margin:12px 14px 0;color:#4f6772}.chart{height:546px;position:relative}.legend{text-align:center;padding:15px}.bar,.line{display:inline-block;width:31px;height:11px;background:#48c0bc;margin:0 4px}.line{background:#3b9fe0}.bars{height:430px;margin:0 30px;border-bottom:1px solid #ddd;display:flex;align-items:end;justify-content:space-around;background:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,#e8ecee 48px)}.bars>div{height:100%;width:12%;display:flex;flex-direction:column;justify-content:end;align-items:center}.bars i{display:block;width:72%;background:#399fe0}.bars>div:last-child i{background:#93a9bb}.bars small{margin:8px 0;color:#687983}.pie{height:399px;text-align:center}.pie-shape{width:300px;height:300px;border-radius:50%;background:conic-gradient(#369fe1 0 87%,#4bb9bb 87%);margin:36px auto 0}.pie-legend{margin-top:-330px;font-size:9px}.result{padding-bottom:3px}.result p{margin:10px;color:#496779}.result p b{float:right;color:#3dbd77;font-weight:normal}.lower{margin-top:0}.products{min-height:264px}.products table{width:100%;border-collapse:collapse;margin:11px}.products th,.products td{text-align:left;padding:8px 14px;font-weight:normal}.products th{text-align:center}.products tr:nth-child(even){background:#eee}.products td:last-child{text-align:right}.report{display:block;text-align:right;padding:8px 15px;color:#2879c2}.files{height:182px;text-align:center}.files p{margin-top:48px}.activities{min-height:205px}.activities p{padding:5px 12px;color:#5e7680}.activities p b{float:right}.activities p small{float:right;clear:right;color:#9caab0}@media(max-width:1000px){.metric-grid{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}.sidebar{width:120px}main{margin-left:120px;width:calc(100% - 120px)}}
+:root{--home-icon-size:16px}.side-icon,.purchase-side-icon{width:16px!important;height:16px!important;max-width:16px;max-height:16px;object-fit:contain;vertical-align:-3px;margin-right:8px}
+/* Menu lateral compartilhado: mesmas medidas em todas as páginas. */
+:root{--shared-sidebar-width:143px;--shared-top-height:49px}
+body .sidebar.shared-sidebar,body .sidebar{width:var(--shared-sidebar-width)!important;min-width:var(--shared-sidebar-width)!important;position:fixed!important;left:0!important;top:0!important;height:100vh!important;min-height:100vh!important;overflow:hidden!important;z-index:50!important}
+body .sidebar.shared-sidebar .brand,body .sidebar .brand{height:var(--shared-top-height)!important;min-height:var(--shared-top-height)!important;box-sizing:border-box!important}
+body .sidebar.shared-sidebar nav,body .sidebar nav{display:block!important;width:100%!important;margin:0!important;padding:0!important}
+body .sidebar.shared-sidebar nav a,body .sidebar nav a{height:31px!important;min-height:31px!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;padding:9px 13px!important;margin:0!important;line-height:13px!important;font-size:12px!important;white-space:nowrap!important}
+body .sidebar.shared-sidebar nav a>img,body .sidebar nav a>img{width:16px!important;height:16px!important;max-width:16px!important;max-height:16px!important;object-fit:contain!important;flex:0 0 16px!important;margin:0 8px 0 0!important}
+body .sidebar.shared-sidebar nav a>span,body .sidebar nav a>span{width:16px!important;flex:0 0 16px!important;margin:0 8px 0 0!important;text-align:center!important}
+body .sidebar.shared-sidebar nav a b,body .sidebar nav a b{margin:0!important;line-height:13px!important}
+body main{margin-left:var(--shared-sidebar-width)!important;width:calc(100% - var(--shared-sidebar-width))!important;min-width:0!important}
+body main>.topbar{height:var(--shared-top-height)!important;min-height:var(--shared-top-height)!important;box-sizing:border-box!important;position:sticky!important;top:0!important;z-index:40!important}
+
+/* Estrutura padrão unificada e fixa em todas as guias do sistema */
+.client-tabs button,.purchase-tab,.tabs .tab{border-radius:4px 4px 0 0!important}
+.sales-pagination{display:none;align-items:center;justify-content:flex-end;gap:8px;padding:10px 0;color:#496a79;font-size:12px}.sales-pagination button{border:1px solid #cbd4d8;background:#fff;color:#496a79;border-radius:3px;min-width:28px;height:28px}.sales-pagination button:disabled{opacity:.45;cursor:default}
+
+html body,
+html body.standard-layout,
+html body:has(.clients),
+html body:has(.purchase-content),
+html body:has(.sales-content),
+html body:has(.finance-page),
+html body:has(.products-topbar){font-size:12px!important}
+
+/* Menu lateral fixo e idêntico em todas as telas */
+html body .sidebar,
+html body .sidebar.shared-sidebar,
+html body.standard-layout .sidebar,
+html body:has(.sales-content) .sidebar,
+html body:has(.purchase-content) .sidebar,
+html body:has(.clients) .sidebar,
+html body:has(.finance-page) .sidebar,
+html body:has(.products-topbar) .sidebar,
+html body.standard-layout:has(.sales-content) .sidebar,
+html body.standard-layout:has(.purchase-content) .sidebar,
+html body.standard-layout:has(.clients) .sidebar{
+  position:fixed!important;
+  left:0!important;
+  top:0!important;
+  width:143px!important;
+  min-width:143px!important;
+  max-width:143px!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  background:#344750!important;
+  overflow:hidden!important;
+  z-index:90!important;
+}
+
+/* Logo 1 (topo da barra lateral) fixa e idêntica */
+html body .sidebar>.brand,
+html body .sidebar.shared-sidebar .brand,
+html body.standard-layout .sidebar .brand,
+html body:has(.sales-content) .sidebar .brand,
+html body:has(.purchase-content) .sidebar .brand,
+html body:has(.clients) .sidebar .brand,
+html body:has(.finance-page) .sidebar .brand,
+html body:has(.products-topbar) .sidebar .brand,
+html body.standard-layout:has(.sales-content) .sidebar .brand,
+html body.standard-layout:has(.purchase-content) .sidebar .brand,
+html body.standard-layout:has(.clients) .sidebar .brand{
+  display:block!important;
+  visibility:visible!important;
+  width:143px!important;
+  height:49px!important;
+  min-height:49px!important;
+  max-height:49px!important;
+  margin:0!important;
+  padding:0!important;
+  background-color:#eee!important;
+  background-image:url('public/logo.webp')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:auto 26px!important;
+  font-size:0!important;
+  color:transparent!important;
+  box-sizing:border-box!important;
+}
+html body .sidebar>.brand strong,
+html body .sidebar>.brand small{display:none!important}
+
+/* Itens do menu lateral */
+html body .sidebar nav,
+html body .sidebar.shared-sidebar nav,
+html body.standard-layout .sidebar nav{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+html body .sidebar nav a,
+html body .sidebar.shared-sidebar nav a,
+html body.standard-layout .sidebar nav a,
+html body:has(.sales-content) .sidebar nav a,
+html body:has(.purchase-content) .sidebar nav a,
+html body:has(.clients) .sidebar nav a,
+html body.standard-layout:has(.sales-content) .sidebar nav a,
+html body.standard-layout:has(.purchase-content) .sidebar nav a,
+html body.standard-layout:has(.clients) .sidebar nav a{
+  height:31px!important;
+  min-height:31px!important;
+  max-height:31px!important;
+  padding:9px 13px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  font-size:12px!important;
+  line-height:13px!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  box-sizing:border-box!important;
+}
+html body .sidebar nav a.active,
+html body .sidebar nav a:hover{background:#263840!important}
+
+/* Container principal alinhado ao menu e ao topo fixo */
+html body main,
+html body.standard-layout main,
+html body:has(.sales-content) main,
+html body:has(.purchase-content) main,
+html body:has(.clients) main,
+html body:has(.finance-page) main,
+html body:has(.products-topbar) main,
+html body .products-page,
+html body.standard-layout:has(.sales-content) main,
+html body.standard-layout:has(.purchase-content) main,
+html body.standard-layout:has(.clients) main{
+  margin-left:143px!important;
+  width:calc(100% - 143px)!important;
+  min-width:0!important;
+  padding-top:98px!important;
+  box-sizing:border-box!important;
+}
+
+/* Barra superior (topbar) fixa e idêntica em todas as guias */
+html body main>.topbar,
+html body main>.products-topbar,
+html body .products-page>.products-topbar,
+html body.standard-layout main>.topbar,
+html body.standard-layout main>.products-topbar,
+html body:has(.sales-content) main>.topbar,
+html body:has(.purchase-content) main>.topbar,
+html body:has(.clients) main>.topbar,
+html body:has(.finance-page) main>.topbar,
+html body:has(.products-topbar) main>.products-topbar,
+html body.standard-layout:has(.sales-content) main>.topbar,
+html body.standard-layout:has(.purchase-content) main>.topbar,
+html body.standard-layout:has(.clients) main>.topbar{
+  position:fixed!important;
+  left:143px!important;
+  top:0!important;
+  width:calc(100% - 143px)!important;
+  height:49px!important;
+  min-height:49px!important;
+  max-height:49px!important;
+  padding:0 10px!important;
+  margin:0!important;
+  background:#eee!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  box-sizing:border-box!important;
+  z-index:85!important;
+}
+
+/* Logo 2 (barra superior) fixa na mesma posição e tamanho em todas as guias */
+html body .topbar .brand-mini,
+html body .products-topbar .brand-mini,
+html body.standard-layout .brand-mini,
+html body:has(.dashboard) .brand-mini,
+html body:has(.sales-content) .brand-mini,
+html body:has(.purchase-content) .brand-mini,
+html body:has(.clients) .brand-mini,
+html body:has(.finance-page) .brand-mini,
+html body.finance-page .topbar .brand-mini,
+html body:has(.products-topbar) .brand-mini{
+  display:block!important;
+  width:133px!important;
+  min-width:133px!important;
+  max-width:133px!important;
+  height:49px!important;
+  min-height:49px!important;
+  max-height:49px!important;
+  flex:0 0 133px!important;
+  margin:0!important;
+  padding:0!important;
+  background-color:transparent!important;
+  background-image:url('public/logo.png')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:auto 26px!important;
+  font-size:0!important;
+  color:transparent!important;
+  box-sizing:border-box!important;
+}
+html body .brand-mini strong,
+html body .brand-mini small{display:none!important}
+
+/* Caixa de pesquisa fixa na mesma posição e medida em todas as guias */
+html body .topbar .search,
+html body .products-topbar .products-search,
+html body.standard-layout .search{
+  width:288px!important;
+  min-width:288px!important;
+  max-width:288px!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  flex:0 0 288px!important;
+  margin:0 0 0 8px!important;
+  padding:0 0 0 12px!important;
+  background:#fff!important;
+  color:#a0a0a0!important;
+  font:12px/32px Arial,sans-serif!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  box-sizing:border-box!important;
+}
+html body .topbar .search button,
+html body .products-topbar .products-search button{
+  float:none!important;
+  width:67px!important;
+  min-width:67px!important;
+  max-width:67px!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  flex:0 0 67px!important;
+  margin:0 0 0 auto!important;
+  padding:0!important;
+  border:0!important;
+  background:#06b8bb!important;
+  color:#fff!important;
+  font:22px/32px Arial,sans-serif!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  cursor:pointer!important;
+}
+
+/* Usuário no topo direito */
+html body .topbar .user,
+html body .products-topbar .products-user,
+html body .products-topbar .user{
+  margin-left:auto!important;
+  text-align:right!important;
+  color:#496170!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:center!important;
+  min-width:225px!important;
+  padding:6px 46px 6px 8px!important;
+  position:relative!important;
+  line-height:15px!important;
+  font-size:12px!important;
+  cursor:pointer!important;
+}
+html body .topbar .user small,
+html body .products-topbar .products-user small,
+html body .products-topbar .user small{
+  display:block!important;
+  font-size:9px!important;
+  color:#78878f!important;
+}
+html body .topbar .user:before,
+html body .products-topbar .products-user:before{display:none!important}
+html body .topbar .user-avatar,
+html body .products-topbar .user-avatar{
+  position:absolute!important;
+  right:12px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:32px!important;
+  height:32px!important;
+  border-radius:50%!important;
+  background:linear-gradient(#f8f8f8 0 38%,#c9c9c9 39% 58%,#707070 59%)!important;
+  box-shadow:0 0 0 1px #bfc5c8!important;
+}
+html body .topbar .user:after,
+html body .products-topbar .products-user:after,
+html body .products-topbar .user:after{
+  content:'⌄'!important;
+  position:absolute!important;
+  right:2px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  color:#66777d!important;
+  font-size:12px!important;
+}
+html body .topbar .user-menu,
+html body .products-topbar .user-menu{
+  display:none;
+  position:absolute;
+  right:0;
+  top:44px;
+  width:190px;
+  background:#344952;
+  color:#fff;
+  z-index:180;
+  box-shadow:0 2px 5px #0004;
+  text-align:left;
+}
+html body .topbar .user-menu.open,
+html body .products-topbar .user-menu.open{display:block}
+html body .topbar .user-menu a,
+html body .products-topbar .user-menu a{
+  display:block;
+  color:#fff;
+  text-decoration:none;
+  padding:10px 12px;
+  border-bottom:1px solid #53666d;
+  font-size:12px;
+}
+html body .topbar .user-menu a:hover,
+html body .products-topbar .user-menu a:hover{background:#263840}
+
+/* Barra de título da página fixa logo abaixo da topbar */
+html body main>.titlebar,
+html body main>.dashboard-title,
+html body main>.finance-title,
+html body main>.purchase-header,
+html body main>.fleet-title,
+html body main>.clients-title,
+html body main>.products-title,
+html body main>.reports-title,
+html body main>.config-title{
+  position:fixed!important;
+  left:143px!important;
+  top:49px!important;
+  width:calc(100% - 143px)!important;
+  height:49px!important;
+  min-height:49px!important;
+  max-height:49px!important;
+  padding:0 14px!important;
+  margin:0!important;
+  background-color:#5e7d89!important;
+  background-image:none!important;
+  color:#fff!important;
+  font-size:16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  box-sizing:border-box!important;
+  opacity:1!important;
+  z-index:80!important;
+}
+
+html body:has(.sales-content) .sales-content>.tabs,html body:has(.sales-content) .sales-content>.toolbar{opacity:1!important;background-color:#f2f3f4!important;background-image:none!important;isolation:isolate!important}
+html body .client-tabs{display:flex!important;align-items:flex-start!important;height:38px!important;min-height:38px!important;border-bottom:1px solid #20a9a8!important;margin:0!important}
+html body .client-tabs button{height:38px!important;min-height:38px!important;box-sizing:border-box!important;padding:10px 16px!important;margin:0 4px 0 0!important;border:0!important;border-radius:4px 4px 0 0!important;font-size:12px!important;line-height:18px!important}
+.sidebar nav a.finance-link,.sidebar nav a[href="financeiro.html"]{position:relative!important;z-index:2!important;display:flex!important;width:100%!important;min-width:100%!important;box-sizing:border-box!important;align-items:center!important;cursor:pointer!important;pointer-events:auto!important}
+.sidebar nav a.finance-link>*,.sidebar nav a[href="financeiro.html"]>*{pointer-events:none!important}
+html body .products-page .products-content{padding-top:24px!important}
+html body .products-page .product-tabs{position:relative!important;z-index:60!important;overflow:visible!important}
+
+/* Formulários e modais abertos nunca ocultam o menu lateral (143px) nem o topo fixo (49px) */
+html body .finance-form-overlay,
+html body .transfer-form-overlay,
+html body .recurrence-form-overlay,
+html body .receipt-form-overlay,
+html body .receipt-history-overlay,
+html body .conciliation-upload-overlay,
+html body .new-purchase,
+html body .stock-adjust-modal,
+html body .account-modal{
+  left:143px!important;
+  top:49px!important;
+  right:0!important;
+  bottom:0!important;
+  width:calc(100% - 143px)!important;
+  height:calc(100vh - 49px)!important;
+  z-index:82!important;
+}
+html body .finance-form-overlay .finance-form-body,
+html body .finance-form-overlay.payment-mode .finance-form-body{
+  padding:28px 6% 32px!important;
+  min-height:calc(100vh - 190px)!important;
+  box-sizing:border-box!important;
+}
+html body .collection-modal,
+html body .finance-print-dialog,
+html body .contact-sheet,
+html body .whatsapp-sale-modal,
+html body .return-detail-modal,
+html body .category-modal{
+  left:143px!important;
+  top:49px!important;
+  right:0!important;
+  bottom:0!important;
+  width:calc(100% - 143px)!important;
+  height:calc(100vh - 49px)!important;
+  z-index:84!important;
+}
+html body .product-top,
+html body .service-top,
+html body .buyer-head{
+  position:fixed!important;
+  left:143px!important;
+  top:49px!important;
+  width:calc(100% - 143px)!important;
+  z-index:80!important;
+}
+html body .sales-content>.tabs .tab,
+html body .finance-tabs button,
+html body .purchase-tabs .purchase-tab,
+html body .client-tabs button,
+html body .product-tabs button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  white-space:nowrap!important;
+}
+html body .sales-tab-icon,
+html body .finance-tab-icon,
+html body .purchase-tab-icon,
+html body .client-tabs button img,
+html body .product-tabs button img{
+  display:inline-block!important;
+  width:15px!important;
+  height:15px!important;
+  max-width:15px!important;
+  max-height:15px!important;
+  object-fit:contain!important;
+  flex:0 0 15px!important;
+  pointer-events:none!important;
+}
+html body .local-action-icon,
+html body .finance-action-icon,
+html body .purchase-action-icon,
+html body .toolbar-icon{
+  width:18px!important;
+  height:18px!important;
+  max-width:18px!important;
+  max-height:18px!important;
+  object-fit:contain!important;
+}

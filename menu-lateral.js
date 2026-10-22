@@ -8,7 +8,7 @@
   const path=(location.pathname.split('/').pop()||'index.html').toLowerCase();
   const active=(path==='financeiro.html'||path==='financeiro-pagamentos.html')?'financeiro':path==='frota.html'?'frota':path==='vendas.html'?'vendas':path==='compras.html'?'compras':(path==='clientes.html'||path==='novo-cliente.html'||path==='novo-comprador.html')?'clientes':(path==='produtos.html'||path==='novo-produto.html'||path==='novo-servico.html')?'produtos':path==='relatorios.html'?'relatorios':(path==='configuracoes.html'||path==='usuarios.html')?'configuracoes':'home';
   const items=[
-    ['home','Home','index.html','icons8-home-48.png','dashboard-link'],
+    ['home','Indicadores','index.html','icons8-home-48.png','dashboard-link'],
     ['financeiro','Financeiro','financeiro.html','icons8-financial-64.png','finance-link'],
     ['vendas','Vendas','vendas.html','icons8-buy-for-cash-48.png',''],
     ['compras','Compras','compras.html','icons8-buy-48.png',''],
@@ -79,6 +79,7 @@
     }else{
       sidebar.querySelectorAll('nav a[data-menu-key]').forEach(function(a){
         a.classList.toggle('active',a.dataset.menuKey===active);
+        if(a.dataset.menuKey==='home'){const b=a.querySelector('b');if(b)b.textContent='Indicadores';}
       });
     }
     applyBrandStyles();

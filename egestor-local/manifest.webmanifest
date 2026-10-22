@@ -1,0 +1,26 @@
+{
+  "name": "Piremaxx Gestor",
+  "short_name": "Piremaxx",
+  "description": "Gestão comercial Piremaxx",
+  "lang": "pt-BR",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f2f3f4",
+  "theme_color": "#5e7d89",
+  "icons": [
+    {
+      "src": "/public/pwa-icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/public/pwa-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
