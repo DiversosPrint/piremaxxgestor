@@ -5,56 +5,1208 @@
 <title>Gestão Piremaxx - Novo produto</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f5f5f5;color:#526e7b;font:12px Arial,sans-serif}.product-page{margin-left:143px;min-height:100vh;padding-top:42px}.product-top{position:fixed;z-index:40;left:143px;right:0;top:0;height:43px;background:#18a99f;color:#fff;padding:14px 12px;font-size:14px;font-weight:bold}.product-top .attachment{float:right;background:#fff;color:#54636a;padding:8px 12px;margin-top:-14px;height:43px;font-weight:normal}.product-top .close{float:right;margin:0 10px;color:#087d78;font-size:16px}.product-body{padding:40px 64px 70px}.product-tabs{display:flex;height:42px;border:2px solid #ddd;border-radius:4px;background:#eee;margin-bottom:16px}.product-tabs button{flex:1;border:0;background:transparent;color:#08a9a8;font-weight:bold}.product-tabs button.active{margin:5px;background:#19a99f;color:#fff;border-radius:3px}.box{background:#eee;border:1px solid #e0e0e0;border-radius:4px;padding:28px 32px;margin-bottom:20px}.box h3{font-size:14px;font-weight:normal;color:#5b7d8a;margin:0 0 26px}.grid-main{display:grid;grid-template-columns:1.55fr 1fr 1.45fr;gap:16px 24px}.grid-main .name{grid-column:1 / span 2}.field{position:relative}.field label{display:block;margin-bottom:5px;color:#55707c}.field input,.field textarea,.field select{width:100%;height:28px;border:1px solid #c9d0d3;border-radius:3px;background:#fff;padding:0 10px;color:#55707c}.field input:focus,.field textarea:focus{outline:1px solid #11aaa8;border-color:#11aaa8}.combo{display:flex}.combo input{border-radius:3px 0 0 3px}.combo button{width:34px;border:1px solid #c9d0d3;border-left:0;border-radius:0 3px 3px 0;background:#f7f7f7;color:#526e7b;cursor:pointer}.combo-menu{position:absolute;z-index:70;left:0;right:0;top:48px;background:#fff;border:1px solid #aaa;box-shadow:0 3px 8px #0002;max-height:180px;overflow:auto}.combo-menu button{display:block;width:100%;height:30px;border:0;background:#fff;text-align:left;padding:0 10px;color:#526e7b}.combo-menu button:hover,.combo-menu button.selected{background:#2776c9;color:#fff}.edit-category{margin-left:5px;border:1px solid #bbb;background:#fafafa;border-radius:3px;color:#526e7b;font-size:11px;padding:2px 6px}.switch{height:28px;background:#ddd;border:1px solid #c8c8c8;border-radius:4px;position:relative;cursor:pointer;text-align:center;line-height:26px;color:#66747a}.switch.on{background:#377fb9;color:#fff}.switch i{position:absolute;right:2px;top:2px;width:10px;height:22px;background:#fff;border-radius:2px}.switch.off i{left:2px;right:auto}.money{display:flex}.money span{width:29px;height:28px;border:1px solid #c9d0d3;border-radius:3px 0 0 3px;text-align:center;line-height:26px}.money input{border-radius:0 3px 3px 0}.stock-grid{display:grid;grid-template-columns:140px 1.5fr 1.5fr;gap:24px;align-items:end}.notes{margin:0 12px 18px}.notes textarea{height:44px;resize:vertical}.footer-actions{position:fixed;z-index:50;bottom:0;left:143px;right:0;height:57px;background:#fff;border-top:1px solid #ddd;text-align:right;padding:12px 64px}.footer-actions button{height:31px;border:0;border-radius:3px;padding:0 16px;margin-left:5px}.save{background:#35a858;color:#fff;font-weight:bold}.back{background:#e5e5e5;color:#666}.hidden{display:none!important}@media(max-width:900px){.product-body{padding:40px 22px 70px}.grid-main{grid-template-columns:1fr 1fr}.grid-main .name{grid-column:1 / -1}.stock-grid{grid-template-columns:1fr 1fr}.product-page{margin-left:143px}}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f5f5;color:#526e7b;font:12px Arial,sans-serif}
+.product-page{margin-left:143px;min-height:100vh;padding-top:42px}
+.product-top{position:fixed;z-index:40;left:143px;right:0;top:0;height:43px;background:#18a99f;color:#fff;padding:12px 16px;font-size:14px;font-weight:bold;display:flex;align-items:center;justify-content:space-between}
+.product-top-left{display:flex;align-items:center;gap:10px}
+.product-top-right{display:flex;align-items:center;gap:12px}
+.product-top .attachment{background:#fff;color:#54636a;padding:6px 14px;border-radius:3px;font-size:12px;font-weight:normal;cursor:pointer;border:0;display:inline-flex;align-items:center;gap:6px}
+.product-top .attachment:hover{background:#f0f0f0}
+.product-top .close{color:#fff;font-size:22px;line-height:20px;cursor:pointer;text-decoration:none;font-weight:normal}
+.product-top .close:hover{color:#d4f3f0}
+
+.product-body{padding:30px 64px 80px}
+.product-tabs{display:flex;height:42px;border:2px solid #ddd;border-radius:4px;background:#eee;margin-bottom:20px}
+.product-tabs button{flex:1;border:0;background:transparent;color:#08a9a8;font-weight:bold;font-size:12px;cursor:pointer;transition:all .15s}
+.product-tabs button.active{margin:5px;background:#19a99f;color:#fff;border-radius:3px}
+.product-tabs button:hover:not(.active){color:#067574}
+
+.box{background:#eee;border:1px solid #e0e0e0;border-radius:4px;padding:24px 30px;margin-bottom:20px}
+.box h3{font-size:13px;font-weight:bold;color:#5b7d8a;margin:0 0 20px}
+
+.grid-main{display:grid;grid-template-columns:1.55fr 1fr 1.45fr;gap:16px 24px}
+.grid-main .name{grid-column:1 / span 2}
+
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px 20px}
+
+.field{position:relative}
+.field label{display:block;margin-bottom:5px;color:#55707c;font-size:12px}
+.field input,.field textarea,.field select{width:100%;height:28px;border:1px solid #c9d0d3;border-radius:3px;background:#fff;padding:0 10px;color:#55707c;font-size:12px}
+.field input:focus,.field textarea:focus,.field select:focus{outline:1px solid #11aaa8;border-color:#11aaa8}
+
+.combo{display:flex}
+.combo input{border-radius:3px 0 0 3px}
+.combo button{width:34px;border:1px solid #c9d0d3;border-left:0;border-radius:0 3px 3px 0;background:#f7f7f7;color:#526e7b;cursor:pointer}
+.combo-menu{position:absolute;z-index:70;left:0;right:0;top:48px;background:#fff;border:1px solid #aaa;box-shadow:0 3px 8px #0002;max-height:180px;overflow:auto}
+.combo-menu button{display:block;width:100%;height:30px;border:0;background:#fff;text-align:left;padding:0 10px;color:#526e7b;cursor:pointer}
+.combo-menu button:hover,.combo-menu button.selected{background:#2776c9;color:#fff}
+
+.input-with-icon{display:flex;align-items:stretch}
+.input-with-icon .input-addon{width:32px;background:#f7f7f7;border:1px solid #c9d0d3;border-right:0;border-radius:3px 0 0 3px;display:flex;align-items:center;justify-content:center;color:#55707c;font-size:13px;user-select:none;flex-shrink:0}
+.input-with-icon input,.input-with-icon select{border-radius:0 3px 3px 0!important;flex:1}
+
+.edit-category{margin-left:5px;border:1px solid #bbb;background:#fafafa;border-radius:3px;color:#526e7b;font-size:11px;padding:2px 6px;cursor:pointer}
+.switch{height:28px;background:#ddd;border:1px solid #c8c8c8;border-radius:4px;position:relative;cursor:pointer;text-align:center;line-height:26px;color:#66747a;user-select:none;padding:0 10px}
+.switch.on{background:#377fb9;color:#fff}
+.switch i{position:absolute;right:3px;top:2px;width:12px;height:22px;background:#fff;border-radius:2px;box-shadow:0 1px 3px #0003}
+.switch.off i{left:3px;right:auto}
+
+.money{display:flex}
+.money span{width:29px;height:28px;border:1px solid #c9d0d3;border-radius:3px 0 0 3px;text-align:center;line-height:26px;background:#f7f7f7;color:#55707c;flex-shrink:0}
+.money input{border-radius:0 3px 3px 0}
+
+.stock-grid{display:grid;grid-template-columns:140px 1.5fr 1.5fr;gap:24px;align-items:end}
+.notes{margin:0 0 18px}
+.notes textarea{height:54px;resize:vertical}
+
+.fiscal-tax-card{background:#fff;border:1px solid #dce2e5;border-radius:4px;padding:16px 20px;font-size:12px;color:#55707c}
+.fiscal-tax-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:13px}
+.fiscal-tax-header strong{color:#375362}
+.fiscal-tax-header a{color:#2776c9;text-decoration:none;font-weight:bold;cursor:pointer}
+.fiscal-tax-header a:hover{text-decoration:underline}
+.fiscal-tax-info{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 20px;line-height:1.7}
+.fiscal-tax-info b{color:#445f6d}
+
+/* Tab 3: Fotos e integração */
+.photo-uploader{border:2px dashed #b9c9d0;background:#fafbfc;border-radius:6px;padding:26px;text-align:center;cursor:pointer;transition:all .2s;color:#55707c}
+.photo-uploader:hover{border-color:#18a99f;background:#f0faf9}
+.photo-uploader-icon{font-size:32px;color:#18a99f;margin-bottom:8px}
+.photo-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;margin-top:18px}
+.photo-card{position:relative;background:#fff;border:1px solid #c9d0d3;border-radius:4px;padding:6px;display:flex;flex-direction:column;align-items:center}
+.photo-card img{width:100%;height:100px;object-fit:cover;border-radius:3px}
+.photo-card .photo-badge{position:absolute;top:10px;left:10px;background:#18a99f;color:#fff;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:3px}
+.photo-card-actions{display:flex;justify-content:space-between;width:100%;margin-top:6px;gap:4px}
+.photo-card-actions button{flex:1;border:0;border-radius:3px;font-size:11px;padding:4px;cursor:pointer}
+.photo-card-actions .btn-main{background:#e7f3f3;color:#0d7a73}
+.photo-card-actions .btn-del{background:#ffebee;color:#c62828;max-width:26px}
+
+.footer-actions{position:fixed;z-index:50;bottom:0;left:143px;right:0;height:57px;background:#fff;border-top:1px solid #ddd;padding:12px 64px;display:flex;justify-content:space-between;align-items:center}
+.footer-actions button{height:31px;border:0;border-radius:3px;padding:0 18px;font-size:12px;cursor:pointer}
+.history-btn{background:#eef1f3;color:#55707c;border:1px solid #ccd4d7!important;display:inline-flex;align-items:center;gap:6px}
+.history-btn:hover{background:#e2e6e9}
+.save{background:#35a858;color:#fff;font-weight:bold;margin-left:8px}
+.save:hover{background:#2e964e}
+.back{background:#e5e5e5;color:#666;margin-left:8px}
+.back:hover{background:#dadada}
+
+.hidden{display:none!important}
+
+/* Modais */
+.modal-overlay{position:fixed;z-index:100;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:center;padding-top:40px}
+.modal-card{width:560px;max-width:92vw;background:#fff;border-radius:4px;box-shadow:0 4px 18px rgba(0,0,0,.25);overflow:hidden}
+.modal-header{height:42px;background:#5e7d89;color:#fff;font-weight:bold;font-size:14px;padding:12px 18px;display:flex;justify-content:space-between;align-items:center}
+.modal-header.danger{background:#df5755}
+.modal-header button{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer;line-height:1}
+.modal-body{padding:20px 24px;max-height:75vh;overflow-y:auto;color:#55707c;font-size:12px}
+.modal-footer{border-top:1px solid #eee;text-align:right;padding:12px 18px;background:#fafafa}
+.modal-footer button{border:1px solid #ddd;background:#fff;border-radius:3px;padding:6px 14px;color:#666;cursor:pointer;margin-left:6px}
+.modal-footer button.primary{background:#18a99f;border-color:#18a99f;color:#fff;font-weight:bold}
+
+.tax-group-item{border:1px solid #dce2e5;border-radius:4px;padding:12px 14px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.tax-group-item:hover{border-color:#18a99f;background:#f5faf9}
+.tax-group-item.selected{border-color:#18a99f;background:#e8f7f5;box-shadow:inset 3px 0 #18a99f}
+.tax-group-item strong{display:block;margin-bottom:4px;color:#334d5b}
+.tax-group-item small{color:#778b95}
+
+@media(max-width:960px){
+  .product-body{padding:24px 20px 80px}
+  .grid-main,.grid-4,.grid-3{grid-template-columns:1fr 1fr}
+  .grid-main .name{grid-column:1 / -1}
+  .stock-grid{grid-template-columns:1fr 1fr}
+  .product-page{margin-left:143px}
+}
 </style>
-<style>.category-modal{position:fixed;z-index:100;inset:0;background:#0005;display:flex;align-items:flex-start;justify-content:center;padding-top:8px}.category-dialog{width:480px;background:#fff;border-radius:4px;box-shadow:0 3px 12px #0006;overflow:hidden}.category-dialog header{height:42px;background:#df5755;color:#fff;font-weight:bold;font-size:14px;padding:13px}.category-dialog header button{float:right;border:0;background:transparent;color:#a72d2d;font-size:18px;line-height:14px}.category-list{padding:12px 42px 25px;color:#777}.category-list>div{height:38px;display:flex;align-items:center;gap:5px}.category-delete{width:28px;height:30px;border:0;border-radius:3px;background:#df5755;color:#fff}.category-pick{border:0;background:transparent;color:#777;font-size:12px;padding:0}.category-pick:hover{color:#2677b4;text-decoration:underline}.category-list span{font-size:12px}.category-dialog footer{border-top:1px solid #eee;text-align:right;padding:12px}.category-dialog footer button{border:1px solid #ddd;border-radius:3px;padding:6px 12px;color:#666}</style>
 </head>
-<body><aside class="sidebar"></aside><main class="product-page">
-<header class="product-top">Novo produto <span class="close">×</span><span class="attachment">⌕ Nenhum arquivo anexado</span></header>
-<section class="product-body"><nav class="product-tabs"><button class="active">DADOS DO PRODUTO</button><button>DADOS FISCAIS</button><button>FOTOS / INTEGRAÇÃO</button></nav>
-<div class="box"><div class="grid-main">
-<div class="field name"><label for="productName">Nome</label><input id="productName" autofocus></div><div class="field"><label for="customCode">Código próprio</label><input id="customCode" placeholder="Código personalizado"></div>
-<div class="field"><label>Categoria <button class="edit-category" id="editCategory" type="button">editar</button></label><div class="combo"><input id="category" autocomplete="off"><button type="button" data-open="category">⌕</button><div class="combo-menu hidden" id="categoryMenu"></div></div></div>
-<div class="field"><label for="keywords">Palavras-chave</label><input id="keywords"></div>
-<div class="field"><label for="usage">Tipo de uso</label><select id="usage"><option>Mercadoria para revenda</option><option>Matéria-prima</option><option>Embalagem</option><option>Produto em processo</option><option>Produto final (produção)</option><option>Outros insumos</option><option>Uso e consumo</option></select></div>
-<div class="field"><label>Arquivar (ocultar)</label><div class="switch" id="archiveSwitch">Não<i></i></div></div>
-</div></div>
-<div class="box"><h3>Valores unitários</h3><div class="grid-main"><div class="field"><label>Preço de custo</label><div class="money"><span>$</span><input id="cost" inputmode="decimal"></div></div><div class="field"><label>Preço de venda</label><div class="money"><span>$</span><input id="salePrice" inputmode="decimal"></div></div><div class="field"><label>Margem de contribuição (o que é isso?)</label><div class="money"><span>%</span><input id="margin" inputmode="decimal"></div></div></div></div>
-<div class="box"><h3>Estoque</h3><div class="stock-grid"><div class="field"><label>Controlar estoque</label><div class="switch on" id="stockSwitch">Sim<i></i></div></div><div class="field"><label>Estoque Atual</label><div class="combo"><button type="button">☷</button><input id="stock" inputmode="numeric"></div></div><div class="field"><label>Estoque mínimo</label><div class="combo"><button type="button">☷</button><input id="minStock" inputmode="numeric"></div></div></div></div>
-<div class="field notes"><label for="notes">Anotações internas</label><textarea id="notes"></textarea></div></section>
-<footer class="footer-actions"><button type="button" class="save" id="saveProduct">Salvar</button><button type="button" class="back" id="backProducts">Voltar</button></footer></main>
-<script src="vendas-importadas.js?v=produto-form-1"></script><script src="menu-lateral.js?v=produto-form-1"></script>
+<body>
+<aside class="sidebar"></aside>
+
+<main class="product-page">
+  <header class="product-top">
+    <div class="product-top-left">
+      <span id="productPageTitle">Novo produto</span>
+    </div>
+    <div class="product-top-right">
+      <button type="button" class="attachment" id="attachmentBtn">📎 Nenhum arquivo anexado</button>
+      <a href="produtos.html" class="close" title="Fechar">×</a>
+    </div>
+  </header>
+
+  <script>
+  function switchProductTab(index) {
+    var b0 = document.getElementById('tabBtn0');
+    var b1 = document.getElementById('tabBtn1');
+    var b2 = document.getElementById('tabBtn2');
+    var p0 = document.getElementById('tabProductPanel');
+    var p1 = document.getElementById('tabFiscalPanel');
+    var p2 = document.getElementById('tabPhotosPanel');
+    var btns = [b0, b1, b2];
+    var panels = [p0, p1, p2];
+
+    btns.forEach(function(b, i) {
+      if (!b) return;
+      if (i === index) {
+        b.className = 'active';
+        b.style.setProperty('background', '#19a99f', 'important');
+        b.style.setProperty('color', '#ffffff', 'important');
+      } else {
+        b.className = '';
+        b.style.setProperty('background', 'transparent', 'important');
+        b.style.setProperty('color', '#08a9a8', 'important');
+      }
+    });
+
+    panels.forEach(function(p, i) {
+      if (!p) return;
+      if (i === index) {
+        p.classList.remove('hidden');
+        p.style.setProperty('display', 'block', 'important');
+      } else {
+        p.classList.add('hidden');
+        p.style.setProperty('display', 'none', 'important');
+      }
+    });
+
+    var hashes = ['#dados', '#fiscal', '#fotos'];
+    if (hashes[index]) {
+      try {
+        history.replaceState(null, '', location.pathname + location.search + hashes[index]);
+      } catch(e) {}
+    }
+  }
+  window.switchProductTab = switchProductTab;
+  </script>
+
+  <section class="product-body">
+    <nav class="product-tabs" style="display:flex;height:42px;border:2px solid #ddd;border-radius:4px;background:#eee;margin-bottom:20px;padding:3px;box-sizing:border-box;">
+      <button type="button" class="active" id="tabBtn0" onclick="switchProductTab(0)" data-tab="0" style="flex:1;border:0;background:#19a99f;color:#fff;font-weight:bold;font-size:12px;border-radius:3px;cursor:pointer;">DADOS DO PRODUTO</button>
+      <button type="button" id="tabBtn1" onclick="switchProductTab(1)" data-tab="1" style="flex:1;border:0;background:transparent;color:#08a9a8;font-weight:bold;font-size:12px;border-radius:3px;cursor:pointer;">DADOS FISCAIS</button>
+      <button type="button" id="tabBtn2" onclick="switchProductTab(2)" data-tab="2" style="flex:1;border:0;background:transparent;color:#08a9a8;font-weight:bold;font-size:12px;border-radius:3px;cursor:pointer;">FOTOS / INTEGRAÇÃO</button>
+    </nav>
+
+    <!-- ABA 1: DADOS DO PRODUTO -->
+    <div id="tabProductPanel" class="tab-panel">
+      <div class="box">
+        <div class="grid-main">
+          <div class="field name">
+            <label for="productName">Nome</label>
+            <input id="productName" autofocus placeholder="Nome do produto">
+          </div>
+          <div class="field">
+            <label for="customCode">Código próprio</label>
+            <input id="customCode" placeholder="Código personalizado">
+          </div>
+          <div class="field">
+            <label>Categoria <button class="edit-category" id="editCategory" type="button">editar</button></label>
+            <div class="combo">
+              <input id="category" autocomplete="off" placeholder="Selecione ou digite">
+              <button type="button" data-open="category">⌕</button>
+              <div class="combo-menu hidden" id="categoryMenu"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="keywords">Palavras-chave</label>
+            <input id="keywords" placeholder="Palavras-chave separadas por vírgula">
+          </div>
+          <div class="field">
+            <label for="usage">Tipo de uso</label>
+            <select id="usage">
+              <option>Mercadoria para revenda</option>
+              <option>Matéria-prima</option>
+              <option>Embalagem</option>
+              <option>Produto em processo</option>
+              <option>Produto final (produção)</option>
+              <option>Outros insumos</option>
+              <option>Uso e consumo</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Arquivar (ocultar)</label>
+            <div class="switch" id="archiveSwitch">Não<i></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>Valores unitários</h3>
+        <div class="grid-main">
+          <div class="field">
+            <label for="cost">Preço de custo</label>
+            <div class="money"><span>$</span><input id="cost" inputmode="decimal" placeholder="0,00"></div>
+          </div>
+          <div class="field">
+            <label for="salePrice">Preço de venda</label>
+            <div class="money"><span>$</span><input id="salePrice" inputmode="decimal" placeholder="0,00"></div>
+          </div>
+          <div class="field">
+            <label for="margin">Margem de contribuição (o que é isso?)</label>
+            <div class="money"><span>%</span><input id="margin" inputmode="decimal" placeholder="0,00"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>Estoque</h3>
+        <div class="stock-grid">
+          <div class="field">
+            <label>Controlar estoque</label>
+            <div class="switch on" id="stockSwitch">Sim<i></i></div>
+          </div>
+          <div class="field">
+            <label for="stock">Estoque Atual</label>
+            <div class="combo">
+              <button type="button" tabindex="-1">☷</button>
+              <input id="stock" inputmode="numeric" placeholder="0">
+            </div>
+          </div>
+          <div class="field">
+            <label for="minStock">Estoque mínimo</label>
+            <div class="combo">
+              <button type="button" tabindex="-1">☷</button>
+              <input id="minStock" inputmode="numeric" placeholder="0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field notes">
+        <label for="notes">Anotações internas</label>
+        <textarea id="notes" placeholder="Observações e anotações internas"></textarea>
+      </div>
+    </div>
+
+    <!-- ABA 2: DADOS FISCAIS -->
+    <div id="tabFiscalPanel" class="tab-panel hidden">
+      <div class="box">
+        <!-- Linha 1: Origem -->
+        <div class="field" style="margin-bottom:16px;">
+          <label for="fiscalOrigem">Origem</label>
+          <div class="input-with-icon">
+            <span class="input-addon">☰</span>
+            <select id="fiscalOrigem">
+              <option value="0">0 - Nacional, exceto as indicadas nos códigos de 3, 4, 5 e 8</option>
+              <option value="1">1 - Estrangeira - Importação direta, exceto a indicada no código 6</option>
+              <option value="2">2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7</option>
+              <option value="3">3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40% e inferior ou igual a 70%</option>
+              <option value="4">4 - Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos de que tratam as legislações citadas nos Ajustes</option>
+              <option value="5">5 - Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%</option>
+              <option value="6">6 - Estrangeira - Importação direta, sem similar nacional, constante em lista da CAMEX e gás natural</option>
+              <option value="7">7 - Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista da CAMEX e gás natural</option>
+              <option value="8">8 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Linha 2: 4 colunas -->
+        <div class="grid-4" style="margin-bottom:16px;">
+          <div class="field">
+            <label for="fiscalEan">Referência EAN/GTIN</label>
+            <input id="fiscalEan" placeholder="Referência EAN/GTIN">
+          </div>
+          <div class="field">
+            <label for="fiscalNetWeight">Peso unitário líquido (kg)</label>
+            <div class="input-with-icon">
+              <span class="input-addon">☰</span>
+              <input id="fiscalNetWeight" value="0,000" inputmode="decimal">
+            </div>
+          </div>
+          <div class="field">
+            <label for="fiscalGrossWeight">Peso unitário bruto (kg)</label>
+            <div class="input-with-icon">
+              <span class="input-addon">☰</span>
+              <input id="fiscalGrossWeight" value="0,000" inputmode="decimal">
+            </div>
+          </div>
+          <div class="field">
+            <label for="fiscalNcm">NCM</label>
+            <div class="input-with-icon">
+              <span class="input-addon">☰</span>
+              <input id="fiscalNcm" placeholder="Buscar NCMs">
+            </div>
+          </div>
+        </div>
+
+        <!-- Linha 3: 4 colunas -->
+        <div class="grid-4" style="margin-bottom:16px;">
+          <div class="field">
+            <label for="fiscalUnit">Unidade comercial</label>
+            <input id="fiscalUnit" placeholder="Exemplo: UN, PC...">
+          </div>
+          <div class="field">
+            <label for="fiscalIpiException">Exceção tabela IPI</label>
+            <div class="input-with-icon">
+              <span class="input-addon">☰</span>
+              <select id="fiscalIpiException">
+                <option value="">Nenhuma</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="fiscalCest">Código CEST</label>
+            <div class="input-with-icon">
+              <span class="input-addon">☰</span>
+              <input id="fiscalCest" placeholder="Código CEST">
+            </div>
+          </div>
+          <div class="field">
+            <label for="fiscalBenef">Código Benef. Fiscal na UF</label>
+            <input id="fiscalBenef" placeholder="Código Benefício Fiscal">
+          </div>
+        </div>
+
+        <!-- Linha 4: 2 colunas -->
+        <div class="grid-2">
+          <div class="field">
+            <label>Unidade tributada diferente</label>
+            <div class="switch" id="fiscalDiffTaxUnit">Não<i></i></div>
+          </div>
+          <div class="field">
+            <label for="fiscalIgnoreTrib">Ignorar trib no preço compra/venda</label>
+            <div class="input-with-icon">
+              <span class="input-addon">☰</span>
+              <select id="fiscalIgnoreTrib">
+                <option value="nao">Não ignorar tributos</option>
+                <option value="todos">Ignorar todos os tributos</option>
+                <option value="credito">Ignorar tributos de crédito tributário</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anotações para NFe -->
+      <div class="box">
+        <div class="field">
+          <label for="fiscalNfeNotes">Anotações para Nota Fiscal eletrônica</label>
+          <input id="fiscalNfeNotes" placeholder="Informações adicionais para NFe">
+        </div>
+      </div>
+
+      <!-- Grupo tributário vinculado -->
+      <div class="box">
+        <div class="fiscal-tax-card">
+          <div class="fiscal-tax-header">
+            <strong>Grupo tributário vinculado</strong>
+            <a href="#" id="changeTaxGroupBtn">Alterar</a>
+          </div>
+          <div class="fiscal-tax-info" id="fiscalTaxSummary">
+            <div><b>Código interno:</b> <span id="taxInternalCode">1</span></div>
+            <div><b>Descrição:</b> <span id="taxDescription">Tributação padrão</span></div>
+            <div><b>CFOP de venda:</b> <span id="taxCfop">x102</span></div>
+            <div><b>ICMS:</b> <span id="taxIcms">101: Com permissão de crédito</span></div>
+            <div><b>IPI:</b> <span id="taxIpi">Sem IPI</span></div>
+            <div><b>PIS:</b> <span id="taxPis">99: Outras operações</span></div>
+            <div><b>COFINS:</b> <span id="taxCofins">99: Outras operações</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 3: FOTOS / INTEGRAÇÃO -->
+    <div id="tabPhotosPanel" class="tab-panel hidden">
+      <!-- Fotos do Produto -->
+      <div class="box">
+        <h3>Fotos do produto</h3>
+        <input type="file" id="productPhotoInput" accept="image/*" multiple style="display:none">
+        <div class="photo-uploader" id="photoDropZone">
+          <div class="photo-uploader-icon">📷</div>
+          <strong style="font-size:13px;color:#18a99f;">Clique para selecionar fotos</strong> ou arraste para cá
+          <div style="font-size:11px;color:#8c9ea6;margin-top:4px;">Suporta PNG, JPG, GIF e WEBP. Defina a foto principal com facilidade.</div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <input id="photoUrlInput" placeholder="Ou cole o link (URL) de uma imagem na internet" style="flex:1;height:28px;border:1px solid #c9d0d3;border-radius:3px;padding:0 10px;color:#55707c;font-size:12px;">
+          <button type="button" id="addPhotoUrlBtn" style="border:0;background:#18a99f;color:#fff;border-radius:3px;padding:0 14px;font-size:12px;cursor:pointer;">+ Adicionar por link</button>
+        </div>
+
+        <div class="photo-gallery" id="productPhotoGallery"></div>
+      </div>
+
+      <!-- Informações para Integração / E-commerce -->
+      <div class="box">
+        <h3>Informações para integração (E-commerce / Mercado Livre / Nuvemshop)</h3>
+        <div class="grid-3" style="margin-bottom:16px;">
+          <div class="field">
+            <label for="integrationTitle">Título para anúncio / loja virtual</label>
+            <input id="integrationTitle" placeholder="Título para exibição no e-commerce">
+          </div>
+          <div class="field">
+            <label for="integrationBrand">Marca</label>
+            <input id="integrationBrand" placeholder="Ex: Pirelli, Goodyear...">
+          </div>
+          <div class="field">
+            <label for="integrationModel">Modelo</label>
+            <input id="integrationModel" placeholder="Ex: Scorpion, EfficientGrip...">
+          </div>
+        </div>
+
+        <div class="grid-4" style="margin-bottom:16px;">
+          <div class="field">
+            <label for="packageWidth">Largura da embalagem (cm)</label>
+            <input id="packageWidth" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="packageHeight">Altura da embalagem (cm)</label>
+            <input id="packageHeight" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="packageLength">Comprimento da embalagem (cm)</label>
+            <input id="packageLength" type="number" min="0" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="packageWarranty">Garantia (meses)</label>
+            <input id="packageWarranty" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+
+        <div class="field notes" style="margin-bottom:16px;">
+          <label for="integrationDescription">Descrição detalhada / Ficha técnica</label>
+          <textarea id="integrationDescription" placeholder="Descrição completa exibida nos canais de integração"></textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Sincronizar estoque automaticamente</label>
+            <div class="switch on" id="syncStockSwitch">Sim<i></i></div>
+          </div>
+          <div class="field">
+            <label>Sincronizar preço automaticamente</label>
+            <div class="switch on" id="syncPriceSwitch">Sim<i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer-actions">
+    <button type="button" class="history-btn" id="viewProductHistory">▤ Ver histórico</button>
+    <div>
+      <button type="button" class="save" id="saveProduct">Salvar</button>
+      <button type="button" class="back" id="backProducts">Voltar</button>
+    </div>
+  </footer>
+</main>
+
+<!-- Modal Categorias -->
+<div id="categoryModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header danger">
+      <span>Categorias cadastradas</span>
+      <button type="button" class="close-category-modal">×</button>
+    </div>
+    <div class="modal-body" id="categoryListContainer"></div>
+    <div class="modal-footer">
+      <button type="button" class="close-category-modal">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Alterar Grupo Tributário -->
+<div id="taxGroupModal" class="modal-overlay hidden">
+  <div class="modal-card" style="width:620px;">
+    <div class="modal-header">
+      <span>Selecionar Grupo Tributário</span>
+      <button type="button" id="closeTaxGroupModal">×</button>
+    </div>
+    <div class="modal-body" id="taxGroupOptionsContainer"></div>
+    <div class="modal-footer">
+      <button type="button" id="cancelTaxGroupModal">Cancelar</button>
+      <button type="button" class="primary" id="confirmTaxGroupModal">Selecionar Grupo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Histórico -->
+<div id="historyModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span>Histórico do Produto</span>
+      <button type="button" id="closeHistoryModal">×</button>
+    </div>
+    <div class="modal-body" id="historyContent"></div>
+    <div class="modal-footer">
+      <button type="button" id="okHistoryModal">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Anexos -->
+<div id="attachmentModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span>Anexos do Produto</span>
+      <button type="button" id="closeAttachmentModal">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="file" id="productAttachmentFileInput" style="display:none">
+      <div class="photo-uploader" id="attachmentDropZone">
+        <div class="photo-uploader-icon">📎</div>
+        <strong style="color:#18a99f;">Clique para anexar um documento</strong> (PDF, XML, Planilhas, Imagens)
+      </div>
+      <div id="attachmentList" style="margin-top:16px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" id="okAttachmentModal">Concluído</button>
+    </div>
+  </div>
+</div>
+
+<script src="vendas-importadas.js?v=produto-form-2"></script>
+<script src="menu-lateral.js?v=produto-form-2"></script>
+
 <script>
 (function(){
- const usageOptions=['Mercadoria para revenda','Matéria-prima','Embalagem','Produto em processo','Produto final (produção)','Outros insumos','Uso e consumo'];
- const categories=['TABELA A','TABELA B','TABELA VAREJO','USADOS'];
- function combo(inputId,menuId,options){const input=document.getElementById(inputId),menu=document.getElementById(menuId);function draw(){const q=input.value.toLowerCase();menu.innerHTML=options.filter(x=>x.toLowerCase().includes(q)).map(x=>'<button type="button">'+x+'</button>').join('')||'<span style="display:block;padding:10px;color:#888">Nenhuma opção encontrada</span>';menu.classList.remove('hidden')}input.addEventListener('focus',draw);input.addEventListener('input',draw);document.querySelector('[data-open="'+inputId+'"]')?.addEventListener('click',()=>menu.classList.toggle('hidden'));menu.addEventListener('click',e=>{if(e.target.tagName==='BUTTON'){input.value=e.target.textContent;menu.classList.add('hidden')}});document.addEventListener('click',e=>{if(!e.target.closest('#'+inputId+',#'+menuId+' ,[data-open="'+inputId+'"]'))menu.classList.add('hidden')})}
- combo('category','categoryMenu',categories);
- const categoryEditor=document.querySelector('.edit-category');
- categoryEditor.addEventListener('click',function(){let modal=document.getElementById('categoryModal');if(modal){modal.classList.remove('hidden');return}modal=document.createElement('div');modal.id='categoryModal';modal.className='category-modal';modal.innerHTML='<div class="category-dialog"><header>Categorias cadastradas <button type="button" class="category-close">×</button></header><div class="category-list">'+categories.map(function(name){return '<div><button type="button" class="category-delete" aria-label="Excluir">▣</button><button type="button" class="category-pick">'+name+'</button><span>(0 produtos cadastrados)</span></div>}).join('')+'</div><footer><button type="button" class="category-close">Fechar</button></footer></div>';document.body.appendChild(modal);modal.querySelectorAll('.category-close').forEach(function(b){b.onclick=function(){modal.classList.add('hidden')}});modal.querySelectorAll('.category-pick').forEach(function(b){b.onclick=function(){document.getElementById('category').value=b.textContent;modal.classList.add('hidden')}})});
- function toggle(id,on,onText,offText){const el=document.getElementById(id);el.addEventListener('click',()=>{el.classList.toggle('on');el.classList.toggle('off');el.firstChild.textContent=el.classList.contains('on')?onText:offText})}toggle('archiveSwitch',true,'Não','Sim');toggle('stockSwitch',true,'Sim','Não');
- document.querySelectorAll('.product-tabs button').forEach((b,i)=>b.addEventListener('click',()=>{if(i){alert('Esta aba será implementada na próxima etapa.')}}));
- document.getElementById('backProducts').onclick=()=>location.href='produtos.html';
- document.getElementById('saveProduct').onclick=function(){const name=document.getElementById('productName').value.trim();if(!name){document.getElementById('productName').focus();alert('Informe o nome do produto.');return}const saved=JSON.parse(localStorage.getItem('localProducts')||'[]');saved.unshift({code:document.getElementById('customCode').value||String(Date.now()).slice(-6),name,category:document.getElementById('category').value,type:'Produto',usage:document.getElementById('usage').value,price:Number(document.getElementById('salePrice').value.replace(',','.'))||0,stock:Number(document.getElementById('stock').value)||0,cost:Number(document.getElementById('cost').value.replace(',','.'))||0,keywords:document.getElementById('keywords').value,notes:document.getElementById('notes').value,archived:document.getElementById('archiveSwitch').classList.contains('on')===false});localStorage.setItem('localProducts',JSON.stringify(saved));location.href='produtos.html'};
+  // Dados de estado
+  const editCode = new URLSearchParams(location.search).get('edit');
+  const categories = ['TABELA A', 'TABELA B', 'TABELA VAREJO', 'USADOS'];
+  let productPhotos = [];
+  let productAttachments = [];
+  let currentTaxGroup = {
+    codigo: '1',
+    descricao: 'Tributação padrão',
+    cfop: 'x102',
+    icms: '101: Com permissão de crédito',
+    ipi: 'Sem IPI',
+    pis: '99: Outras operações',
+    cofins: '99: Outras operações'
+  };
+
+  const taxGroupPresets = [
+    {
+      codigo: '1',
+      descricao: 'Tributação padrão',
+      cfop: '5102 / x102',
+      icms: '101: Com permissão de crédito',
+      ipi: 'Sem IPI',
+      pis: '99: Outras operações',
+      cofins: '99: Outras operações'
+    },
+    {
+      codigo: '2',
+      descricao: 'Simples Nacional - Sem permissão de crédito',
+      cfop: '5102 / x102',
+      icms: '102: Sem permissão de crédito',
+      ipi: 'Sem IPI',
+      pis: '99: Outras operações',
+      cofins: '99: Outras operações'
+    },
+    {
+      codigo: '3',
+      descricao: 'Substituição Tributária (ICMS ST)',
+      cfop: '5405 / x405',
+      icms: '500: Cobrado anteriormente por ST',
+      ipi: 'Sem IPI',
+      pis: '99: Outras operações',
+      cofins: '99: Outras operações'
+    },
+    {
+      codigo: '4',
+      descricao: 'Regime Normal (Lucro Presumido / Real)',
+      cfop: '5102',
+      icms: '00: Tributada integralmente (18%)',
+      ipi: '53: Saída não tributada',
+      pis: '01: Tributável (0,65%)',
+      cofins: '01: Tributável (3,00%)'
+    }
+  ];
+
+  // Alternância de Abas
+  function checkHash(){
+    if(location.hash.includes('fiscal')){
+      switchProductTab(1);
+    } else if(location.hash.includes('foto') || location.hash.includes('integra')){
+      switchProductTab(2);
+    } else if(location.hash.includes('dado') || location.hash.includes('produto')){
+      switchProductTab(0);
+    }
+  }
+  checkHash();
+  window.addEventListener('hashchange', checkHash);
+
+  // Título da página
+  const pageTitleEl = document.getElementById('productPageTitle');
+  if (editCode) {
+    pageTitleEl.textContent = 'Produto código ' + editCode;
+    document.title = 'Gestão Piremaxx - Produto código ' + editCode;
+  } else {
+    pageTitleEl.textContent = 'Novo produto';
+    document.title = 'Gestão Piremaxx - Novo produto';
+  }
+
+  // Switches interativos
+  function initSwitch(id, defaultOn, onText, offText) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('role', 'switch');
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('click', function(e) {
+      e.preventDefault();
+      const on = !el.classList.contains('on');
+      el.classList.toggle('on', on);
+      el.classList.toggle('off', !on);
+      if (el.firstChild) el.firstChild.nodeValue = on ? onText : offText;
+    });
+    el.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        el.click();
+      }
+    });
+  }
+
+  initSwitch('archiveSwitch', false, 'Não', 'Sim');
+  initSwitch('stockSwitch', true, 'Sim', 'Não');
+  initSwitch('fiscalDiffTaxUnit', false, 'Sim', 'Não');
+  initSwitch('syncStockSwitch', true, 'Sim', 'Não');
+  initSwitch('syncPriceSwitch', true, 'Sim', 'Não');
+
+  // Cálculo da Margem de Contribuição
+  const costInput = document.getElementById('cost');
+  const saleInput = document.getElementById('salePrice');
+  const marginInput = document.getElementById('margin');
+
+  function updateMargin() {
+    const cost = parseFloat((costInput.value || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const sale = parseFloat((saleInput.value || '').replace(/\./g, '').replace(',', '.')) || 0;
+    if (sale > 0) {
+      const marg = ((sale - cost) / sale) * 100;
+      marginInput.value = marg.toFixed(2).replace('.', ',');
+    }
+  }
+
+  if (costInput && saleInput) {
+    costInput.addEventListener('input', updateMargin);
+    saleInput.addEventListener('input', updateMargin);
+  }
+
+  // Combo Categorias
+  const categoryInput = document.getElementById('category');
+  const categoryMenu = document.getElementById('categoryMenu');
+  const categoryTrigger = document.querySelector('[data-open="category"]');
+
+  function renderCategoryMenu() {
+    const q = (categoryInput.value || '').toLowerCase();
+    const filtered = categories.filter(x => x.toLowerCase().includes(q));
+    categoryMenu.innerHTML = filtered.map(x => '<button type="button">' + x + '</button>').join('') || '<span style="display:block;padding:8px 10px;color:#888;">Nenhuma categoria encontrada</span>';
+    categoryMenu.classList.remove('hidden');
+  }
+
+  if (categoryTrigger && categoryMenu && categoryInput) {
+    categoryTrigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      categoryMenu.innerHTML = categories.map(x => '<button type="button">' + x + '</button>').join('');
+      categoryMenu.classList.toggle('hidden');
+    });
+
+    categoryInput.addEventListener('focus', renderCategoryMenu);
+    categoryInput.addEventListener('input', renderCategoryMenu);
+
+    categoryMenu.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON') {
+        categoryInput.value = e.target.textContent;
+        categoryMenu.classList.add('hidden');
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#category, #categoryMenu, [data-open="category"]')) {
+        categoryMenu.classList.add('hidden');
+      }
+    });
+  }
+
+  // Modal Categorias
+  const editCatBtn = document.getElementById('editCategory');
+  const catModal = document.getElementById('categoryModal');
+  const catListCont = document.getElementById('categoryListContainer');
+
+  function openCategoryModal() {
+    catListCont.innerHTML = categories.map(name => `
+      <div style="height:36px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f0f0f0;">
+        <button type="button" class="cat-del-btn" data-cat="${name}" style="width:26px;height:26px;border:0;border-radius:3px;background:#df5755;color:#fff;cursor:pointer;">✕</button>
+        <button type="button" class="cat-pick-btn" data-cat="${name}" style="border:0;background:transparent;color:#2677b4;font-size:12px;font-weight:bold;cursor:pointer;text-align:left;">${name}</button>
+        <span style="font-size:11px;color:#888;margin-left:auto;">(produtos cadastrados)</span>
+      </div>
+    `).join('');
+    catModal.classList.remove('hidden');
+  }
+
+  if (editCatBtn) editCatBtn.addEventListener('click', openCategoryModal);
+
+  document.querySelectorAll('.close-category-modal').forEach(b => {
+    b.addEventListener('click', () => catModal.classList.add('hidden'));
+  });
+
+  if (catListCont) {
+    catListCont.addEventListener('click', function(e) {
+      const pick = e.target.closest('.cat-pick-btn');
+      if (pick) {
+        categoryInput.value = pick.dataset.cat;
+        catModal.classList.add('hidden');
+      }
+    });
+  }
+
+  // Grupo Tributário - Modal e Atualização
+  const taxModal = document.getElementById('taxGroupModal');
+  const changeTaxBtn = document.getElementById('changeTaxGroupBtn');
+  const closeTaxBtn = document.getElementById('closeTaxGroupModal');
+  const cancelTaxBtn = document.getElementById('cancelTaxGroupModal');
+  const confirmTaxBtn = document.getElementById('confirmTaxGroupModal');
+  const taxOptionsCont = document.getElementById('taxGroupOptionsContainer');
+  let selectedPresetIndex = 0;
+
+  function renderTaxSummary() {
+    document.getElementById('taxInternalCode').textContent = currentTaxGroup.codigo;
+    document.getElementById('taxDescription').textContent = currentTaxGroup.descricao;
+    document.getElementById('taxCfop').textContent = currentTaxGroup.cfop;
+    document.getElementById('taxIcms').textContent = currentTaxGroup.icms;
+    document.getElementById('taxIpi').textContent = currentTaxGroup.ipi;
+    document.getElementById('taxPis').textContent = currentTaxGroup.pis;
+    document.getElementById('taxCofins').textContent = currentTaxGroup.cofins;
+  }
+
+  function openTaxModal() {
+    taxOptionsCont.innerHTML = taxGroupPresets.map((preset, idx) => `
+      <div class="tax-group-item ${idx === selectedPresetIndex ? 'selected' : ''}" data-idx="${idx}">
+        <strong>Grupo ${preset.codigo}: ${preset.descricao}</strong>
+        <small>CFOP: ${preset.cfop} | ICMS: ${preset.icms} | IPI: ${preset.ipi} | PIS/COFINS: ${preset.pis}</small>
+      </div>
+    `).join('');
+    taxModal.classList.remove('hidden');
+  }
+
+  if (changeTaxBtn) {
+    changeTaxBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      openTaxModal();
+    });
+  }
+
+  if (closeTaxBtn) closeTaxBtn.addEventListener('click', () => taxModal.classList.add('hidden'));
+  if (cancelTaxBtn) cancelTaxBtn.addEventListener('click', () => taxModal.classList.add('hidden'));
+
+  if (taxOptionsCont) {
+    taxOptionsCont.addEventListener('click', function(e) {
+      const item = e.target.closest('.tax-group-item');
+      if (item) {
+        taxOptionsCont.querySelectorAll('.tax-group-item').forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        selectedPresetIndex = parseInt(item.dataset.idx, 10);
+      }
+    });
+  }
+
+  if (confirmTaxBtn) {
+    confirmTaxBtn.addEventListener('click', function() {
+      const preset = taxGroupPresets[selectedPresetIndex];
+      if (preset) {
+        currentTaxGroup = { ...preset };
+        renderTaxSummary();
+      }
+      taxModal.classList.add('hidden');
+    });
+  }
+
+  // Galeria de Fotos e Upload
+  const photoInput = document.getElementById('productPhotoInput');
+  const photoDropZone = document.getElementById('photoDropZone');
+  const photoGallery = document.getElementById('productPhotoGallery');
+  const photoUrlInput = document.getElementById('photoUrlInput');
+  const addPhotoUrlBtn = document.getElementById('addPhotoUrlBtn');
+
+  function renderPhotos() {
+    if (!productPhotos.length) {
+      photoGallery.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:16px;color:#8c9ea6;">Nenhuma foto cadastrada ainda.</div>';
+      return;
+    }
+    photoGallery.innerHTML = productPhotos.map((item, idx) => `
+      <div class="photo-card">
+        ${item.isMain ? '<span class="photo-badge">Principal</span>' : ''}
+        <img src="${item.src}" alt="Foto ${idx + 1}">
+        <div class="photo-card-actions">
+          <button type="button" class="btn-main" onclick="window.setMainProductPhoto(${idx})">${item.isMain ? '★ Principal' : 'Definir principal'}</button>
+          <button type="button" class="btn-del" onclick="window.removeProductPhoto(${idx})" title="Remover">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.setMainProductPhoto = function(index) {
+    productPhotos.forEach((p, i) => p.isMain = (i === index));
+    renderPhotos();
+  };
+
+  window.removeProductPhoto = function(index) {
+    productPhotos.splice(index, 1);
+    if (productPhotos.length && !productPhotos.some(p => p.isMain)) {
+      productPhotos[0].isMain = true;
+    }
+    renderPhotos();
+  };
+
+  if (photoDropZone && photoInput) {
+    photoDropZone.addEventListener('click', () => photoInput.click());
+    photoDropZone.addEventListener('dragover', (e) => { e.preventDefault(); photoDropZone.style.borderColor = '#18a99f'; });
+    photoDropZone.addEventListener('dragleave', () => { photoDropZone.style.borderColor = '#b9c9d0'; });
+    photoDropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      photoDropZone.style.borderColor = '#b9c9d0';
+      if (e.dataTransfer.files) handlePhotoFiles(e.dataTransfer.files);
+    });
+
+    photoInput.addEventListener('change', function() {
+      if (photoInput.files) handlePhotoFiles(photoInput.files);
+    });
+  }
+
+  function handlePhotoFiles(files) {
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const isFirst = productPhotos.length === 0;
+        productPhotos.push({ src: e.target.result, isMain: isFirst, name: file.name });
+        renderPhotos();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (addPhotoUrlBtn && photoUrlInput) {
+    addPhotoUrlBtn.addEventListener('click', function() {
+      const url = photoUrlInput.value.trim();
+      if (!url) return;
+      const isFirst = productPhotos.length === 0;
+      productPhotos.push({ src: url, isMain: isFirst, name: 'URL' });
+      photoUrlInput.value = '';
+      renderPhotos();
+    });
+  }
+
+  // Anexos
+  const attachBtn = document.getElementById('attachmentBtn');
+  const attachModal = document.getElementById('attachmentModal');
+  const closeAttachBtn = document.getElementById('closeAttachmentModal');
+  const okAttachBtn = document.getElementById('okAttachmentModal');
+  const attachDropZone = document.getElementById('attachmentDropZone');
+  const attachFileInput = document.getElementById('productAttachmentFileInput');
+  const attachList = document.getElementById('attachmentList');
+
+  function renderAttachments() {
+    attachBtn.textContent = productAttachments.length ? `📎 ${productAttachments.length} arquivo(s) anexado(s)` : '📎 Nenhum arquivo anexado';
+    if (!productAttachments.length) {
+      attachList.innerHTML = '<div style="color:#888;text-align:center;padding:10px;">Nenhum anexo adicionado.</div>';
+      return;
+    }
+    attachList.innerHTML = productAttachments.map((att, idx) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;">
+        <span>📄 <b>${att.name}</b> (${att.size || 'arquivo'})</span>
+        <button type="button" onclick="window.removeProductAttachment(${idx})" style="border:0;background:#ffebee;color:#c62828;border-radius:3px;padding:3px 8px;cursor:pointer;">Remover</button>
+      </div>
+    `).join('');
+  }
+
+  window.removeProductAttachment = function(idx) {
+    productAttachments.splice(idx, 1);
+    renderAttachments();
+  };
+
+  if (attachBtn) attachBtn.addEventListener('click', () => attachModal.classList.remove('hidden'));
+  if (closeAttachBtn) closeAttachBtn.addEventListener('click', () => attachModal.classList.add('hidden'));
+  if (okAttachBtn) okAttachBtn.addEventListener('click', () => attachModal.classList.add('hidden'));
+
+  if (attachDropZone && attachFileInput) {
+    attachDropZone.addEventListener('click', () => attachFileInput.click());
+    attachFileInput.addEventListener('change', function() {
+      Array.from(attachFileInput.files || []).forEach(f => {
+        productAttachments.push({ name: f.name, size: (f.size / 1024).toFixed(1) + ' KB', date: new Date().toLocaleDateString('pt-BR') });
+      });
+      renderAttachments();
+    });
+  }
+
+  // Ver Histórico
+  const viewHistBtn = document.getElementById('viewProductHistory');
+  const histModal = document.getElementById('historyModal');
+  const closeHistBtn = document.getElementById('closeHistoryModal');
+  const okHistBtn = document.getElementById('okHistoryModal');
+  const histContent = document.getElementById('historyContent');
+
+  if (viewHistBtn) {
+    viewHistBtn.addEventListener('click', function() {
+      const code = editCode || document.getElementById('customCode').value || 'Novo';
+      const name = document.getElementById('productName').value || 'Produto';
+      histContent.innerHTML = `
+        <div style="line-height:1.8;">
+          <p><b>Identificador:</b> ${code}</p>
+          <p><b>Produto:</b> ${name}</p>
+          <hr style="border:0;border-top:1px solid #eee;margin:12px 0;">
+          <p>✔ <b>Criado no sistema:</b> Cadastrado por <b>ODIMAN COSTA</b></p>
+          <p>✔ <b>Última atualização:</b> ${new Date().toLocaleString('pt-BR')}</p>
+          <p>✔ <b>Status atual:</b> Ativo no catálogo</p>
+        </div>
+      `;
+      histModal.classList.remove('hidden');
+    });
+  }
+
+  if (closeHistBtn) closeHistBtn.addEventListener('click', () => histModal.classList.add('hidden'));
+  if (okHistBtn) okHistBtn.addEventListener('click', () => histModal.classList.add('hidden'));
+
+  // Carregamento de Produto Existente (se editCode existir)
+  if (editCode) {
+    const allProducts = [...(window.cloneData?.products || []), ...(window.importedProducts || [])];
+    let local = [];
+    try { local = JSON.parse(localStorage.getItem('localProducts') || '[]'); } catch(e){}
+
+    const p = local.find(x => String(x.code) === String(editCode)) || allProducts.find(x => String(x.code) === String(editCode));
+    if (p) {
+      // Aba 1
+      document.getElementById('productName').value = p.name || '';
+      document.getElementById('customCode').value = p.code || '';
+      document.getElementById('category').value = p.category || '';
+      document.getElementById('keywords').value = p.keywords || '';
+      document.getElementById('usage').value = p.usage || 'Mercadoria para revenda';
+      document.getElementById('cost').value = p.cost != null ? String(p.cost).replace('.', ',') : '';
+      document.getElementById('salePrice').value = p.price != null ? String(p.price).replace('.', ',') : '';
+      document.getElementById('stock').value = p.stock != null ? p.stock : '0';
+      document.getElementById('minStock').value = p.minStock != null ? p.minStock : '0';
+      document.getElementById('notes').value = p.notes || '';
+      updateMargin();
+
+      if (p.archived) {
+        const arch = document.getElementById('archiveSwitch');
+        arch.classList.remove('on');
+        arch.classList.add('off');
+        arch.firstChild.nodeValue = 'Sim';
+      }
+
+      // Aba 2: Fiscal
+      if (p.fiscal) {
+        if (p.fiscal.origem != null) document.getElementById('fiscalOrigem').value = p.fiscal.origem;
+        if (p.fiscal.ean) document.getElementById('fiscalEan').value = p.fiscal.ean;
+        if (p.fiscal.pesoLiquido) document.getElementById('fiscalNetWeight').value = p.fiscal.pesoLiquido;
+        if (p.fiscal.pesoBruto) document.getElementById('fiscalGrossWeight').value = p.fiscal.pesoBruto;
+        if (p.fiscal.ncm) document.getElementById('fiscalNcm').value = p.fiscal.ncm;
+        if (p.fiscal.unidadeComercial) document.getElementById('fiscalUnit').value = p.fiscal.unidadeComercial;
+        if (p.fiscal.excecaoIpi != null) document.getElementById('fiscalIpiException').value = p.fiscal.excecaoIpi;
+        if (p.fiscal.cest) document.getElementById('fiscalCest').value = p.fiscal.cest;
+        if (p.fiscal.benefFiscal) document.getElementById('fiscalBenef').value = p.fiscal.benefFiscal;
+        if (p.fiscal.ignorarTrib) document.getElementById('fiscalIgnoreTrib').value = p.fiscal.ignorarTrib;
+        if (p.fiscal.anotacoesNfe) document.getElementById('fiscalNfeNotes').value = p.fiscal.anotacoesNfe;
+
+        if (p.fiscal.unidadeTributadaDiferente) {
+          const uSwitch = document.getElementById('fiscalDiffTaxUnit');
+          uSwitch.classList.add('on');
+          uSwitch.classList.remove('off');
+          uSwitch.firstChild.nodeValue = 'Sim';
+        }
+
+        if (p.fiscal.grupoTributario) {
+          currentTaxGroup = { ...p.fiscal.grupoTributario };
+        }
+      } else {
+        // Valores padrão compatíveis com as imagens
+        if (p.ncm) document.getElementById('fiscalNcm').value = p.ncm;
+        if (p.unit) document.getElementById('fiscalUnit').value = p.unit;
+      }
+
+      // Aba 3: Fotos e integração
+      if (Array.isArray(p.photos)) {
+        productPhotos = p.photos.map((item, idx) => typeof item === 'string' ? { src: item, isMain: idx === 0 } : item);
+      }
+      if (Array.isArray(p.attachments)) {
+        productAttachments = [...p.attachments];
+      }
+      if (p.integration) {
+        if (p.integration.title) document.getElementById('integrationTitle').value = p.integration.title;
+        if (p.integration.brand) document.getElementById('integrationBrand').value = p.integration.brand;
+        if (p.integration.model) document.getElementById('integrationModel').value = p.integration.model;
+        if (p.integration.width) document.getElementById('packageWidth').value = p.integration.width;
+        if (p.integration.height) document.getElementById('packageHeight').value = p.integration.height;
+        if (p.integration.length) document.getElementById('packageLength').value = p.integration.length;
+        if (p.integration.warranty) document.getElementById('packageWarranty').value = p.integration.warranty;
+        if (p.integration.description) document.getElementById('integrationDescription').value = p.integration.description;
+      }
+    }
+  }
+
+  renderTaxSummary();
+  renderPhotos();
+  renderAttachments();
+
+  // Ações do rodapé
+  document.getElementById('backProducts').onclick = () => location.href = 'produtos.html';
+
+  document.getElementById('saveProduct').onclick = function() {
+    const name = document.getElementById('productName').value.trim();
+    if (!name) {
+      alert('Informe o nome do produto.');
+      switchTab(0);
+      document.getElementById('productName').focus();
+      return;
+    }
+
+    const code = document.getElementById('customCode').value.trim() || editCode || String(Date.now()).slice(-6);
+    let local = [];
+    try { local = JSON.parse(localStorage.getItem('localProducts') || '[]'); } catch(e){}
+
+    const costVal = parseFloat((document.getElementById('cost').value || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const priceVal = parseFloat((document.getElementById('salePrice').value || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const stockVal = parseFloat((document.getElementById('stock').value || '').replace(/\./g, '').replace(',', '.')) || 0;
+    const minStockVal = parseFloat((document.getElementById('minStock').value || '').replace(/\./g, '').replace(',', '.')) || 0;
+
+    const productData = {
+      code: code,
+      name: name,
+      category: document.getElementById('category').value || 'Geral',
+      type: 'Produto',
+      usage: document.getElementById('usage').value,
+      keywords: document.getElementById('keywords').value,
+      notes: document.getElementById('notes').value,
+      cost: costVal,
+      price: priceVal,
+      stock: stockVal,
+      minStock: minStockVal,
+      archived: document.getElementById('archiveSwitch').firstChild.nodeValue === 'Sim',
+
+      // Dados Fiscais
+      fiscal: {
+        origem: document.getElementById('fiscalOrigem').value,
+        ean: document.getElementById('fiscalEan').value,
+        pesoLiquido: document.getElementById('fiscalNetWeight').value,
+        pesoBruto: document.getElementById('fiscalGrossWeight').value,
+        ncm: document.getElementById('fiscalNcm').value,
+        unidadeComercial: document.getElementById('fiscalUnit').value,
+        excecaoIpi: document.getElementById('fiscalIpiException').value,
+        cest: document.getElementById('fiscalCest').value,
+        benefFiscal: document.getElementById('fiscalBenef').value,
+        unidadeTributadaDiferente: document.getElementById('fiscalDiffTaxUnit').classList.contains('on'),
+        ignorarTrib: document.getElementById('fiscalIgnoreTrib').value,
+        anotacoesNfe: document.getElementById('fiscalNfeNotes').value,
+        grupoTributario: { ...currentTaxGroup }
+      },
+
+      // Fotos e Integração
+      photos: productPhotos,
+      attachments: productAttachments,
+      integration: {
+        title: document.getElementById('integrationTitle').value,
+        brand: document.getElementById('integrationBrand').value,
+        model: document.getElementById('integrationModel').value,
+        width: document.getElementById('packageWidth').value,
+        height: document.getElementById('packageHeight').value,
+        length: document.getElementById('packageLength').value,
+        warranty: document.getElementById('packageWarranty').value,
+        description: document.getElementById('integrationDescription').value,
+        syncStock: document.getElementById('syncStockSwitch').classList.contains('on'),
+        syncPrice: document.getElementById('syncPriceSwitch').classList.contains('on')
+      }
+    };
+
+    const existingIndex = local.findIndex(x => String(x.code) === String(code));
+    if (existingIndex >= 0) {
+      local[existingIndex] = { ...local[existingIndex], ...productData };
+    } else {
+      local.unshift(productData);
+    }
+
+    localStorage.setItem('localProducts', JSON.stringify(local));
+
+    if (window.piremaxxAudit) {
+      window.piremaxxAudit.log({
+        module: 'Produtos',
+        action: editCode ? 'Produto atualizado' : 'Novo produto cadastrado',
+        detail: `${name} (Cód: ${code})`
+      });
+    }
+
+    location.href = 'produtos.html';
+  };
 })();
-</script><script>
-/* Reforça os seletores pesquisáveis: o clique no ícone deve abrir o menu antes do fechamento global. */
-(function(){['category','usage'].forEach(function(id){var input=document.getElementById(id),menu=document.getElementById(id==='category'?'categoryMenu':'usageMenu'),trigger=document.querySelector('[data-open="'+id+'"]');if(!input||!menu||!trigger)return;var options=id==='usage'?['Mercadoria para revenda','Matéria-prima','Embalagem','Produto em processo','Produto final (produção)','Outros insumos','Uso e consumo']:[...new Set((window.cloneData?.products||[]).map(function(p){return p.category}).filter(Boolean))];if(!options.length)options=['Pneus','Serviços','Peças','Outros'];function open(){var q=(input.value||'').toLowerCase();menu.innerHTML=options.filter(function(x){return x.toLowerCase().includes(q)}).map(function(x){return '<button type="button">'+x+'</button>'}).join('')||'<span style="display:block;padding:10px;color:#888">Nenhuma opção encontrada</span>';menu.classList.remove('hidden')}trigger.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();open()},true);input.addEventListener('focus',open);input.addEventListener('input',open);menu.addEventListener('click',function(e){if(e.target.tagName==='BUTTON'){input.value=e.target.textContent;menu.classList.add('hidden')}e.stopPropagation()})})})();
-</script><script>
-(function(){var trigger=document.querySelector('[data-open="category"]'),menu=document.getElementById('categoryMenu'),input=document.getElementById('category');if(!trigger||!menu)return;trigger.addEventListener('click',function(){setTimeout(function(){menu.innerHTML=['TABELA A','TABELA B','TABELA VAREJO','USADOS'].map(function(x){return '<button type="button">'+x+'</button>'}).join('');menu.classList.remove('hidden')},0)},true);menu.addEventListener('click',function(e){if(e.target.tagName==='BUTTON')input.value=e.target.textContent},true)})();
-</script><script>
-document.getElementById('editCategory').addEventListener('click',function(){var modal=document.getElementById('categoryModal');if(!modal){modal=document.createElement('div');modal.id='categoryModal';modal.className='category-modal';modal.innerHTML='<div class="category-dialog"><header>Categorias cadastradas <button type="button" class="category-close">×</button></header><div class="category-list">'+['TABELA A','TABELA B','TABELA VAREJO','USADOS'].map(function(x){return '<div><button type="button" class="category-delete">▣</button><button type="button" class="category-pick">'+x+'</button><span>(0 produtos cadastrados)</span></div>'}).join('')+'</div><footer><button type="button" class="category-close">Fechar</button></footer></div>';document.body.appendChild(modal);modal.querySelectorAll('.category-close').forEach(function(b){b.onclick=function(){modal.classList.add('hidden')}});modal.querySelectorAll('.category-pick').forEach(function(b){b.onclick=function(){document.getElementById('category').value=b.textContent;modal.classList.add('hidden')}})}modal.classList.remove('hidden')});
-</script><script>
-(function(){var trigger=document.querySelector('[data-open="usage"]'),menu=document.getElementById('usageMenu'),input=document.getElementById('usage'),options=['Mercadoria para revenda','Matéria-prima','Embalagem','Produto em processo','Produto final (produção)','Outros insumos','Uso e consumo'];if(!trigger||!menu)return;function showAll(){menu.innerHTML=options.map(function(x){return '<button type="button">'+x+'</button>'}).join('');menu.classList.remove('hidden')}trigger.addEventListener('click',function(){setTimeout(showAll,25)});menu.addEventListener('mousedown',function(e){if(e.target.tagName==='BUTTON'){e.preventDefault();input.value=e.target.textContent;menu.classList.add('hidden')}} ,true)})();
-</script><script>
-(function(){var button=document.getElementById('saveProduct');if(!button)return;button.onclick=function(){var name=document.getElementById('productName').value.trim();if(!name){alert('Informe o nome do produto.');document.getElementById('productName').focus();return}var saved=[];try{var raw=localStorage.getItem('localProducts');var parsed=raw?JSON.parse(raw):[];saved=Array.isArray(parsed)?parsed:[]}catch(e){saved=[]}saved.unshift({code:document.getElementById('customCode').value.trim()||String(Date.now()).slice(-6),name:name,category:document.getElementById('category').value, type:'Produto',usage:document.getElementById('usage').value,price:Number((document.getElementById('salePrice').value||'').replace(',','.'))||0,stock:Number(document.getElementById('stock').value)||0,cost:Number((document.getElementById('cost').value||'').replace(',','.'))||0,keywords:document.getElementById('keywords').value,notes:document.getElementById('notes').value,archived:!document.getElementById('archiveSwitch').classList.contains('on')});localStorage.setItem('localProducts',JSON.stringify(saved));window.location.assign('produtos.html')}})();
-</script><script>
-(function(){var editCode=new URLSearchParams(location.search).get('edit');if(!editCode)return;var all=(window.cloneData?.products||[]),local=[];try{local=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}var product=local.find(function(x){return String(x.code)===String(editCode)})||all.find(function(x){return String(x.code)===String(editCode)});if(!product)return;document.getElementById('productName').value=product.name||'';document.getElementById('customCode').value=product.code||'';document.getElementById('category').value=product.category||'';document.getElementById('keywords').value=product.keywords||'';document.getElementById('usage').value=product.usage||'Mercadoria para revenda';document.getElementById('cost').value=product.cost||'';document.getElementById('salePrice').value=product.price||'';document.getElementById('stock').value=product.stock??'';document.getElementById('minStock').value=product.minStock??'';document.getElementById('notes').value=product.notes||'';if(product.archived){var archive=document.getElementById('archiveSwitch');archive.classList.remove('on');archive.classList.add('off');archive.firstChild.textContent='Sim'}})();
-(function(){var editCode=new URLSearchParams(location.search).get('edit'),button=document.getElementById('saveProduct');if(!editCode||!button)return;var original=button.onclick;button.onclick=function(){original();try{var saved=JSON.parse(localStorage.getItem('localProducts')||'[]'),index=saved.findIndex(function(x){return String(x.code)===String(editCode)});if(index>=0){saved[index].name=document.getElementById('productName').value.trim();saved[index].category=document.getElementById('category').value;saved[index].usage=document.getElementById('usage').value;saved[index].price=Number((document.getElementById('salePrice').value||'').replace(',','.'))||0;saved[index].stock=Number(document.getElementById('stock').value)||0;localStorage.setItem('localProducts',JSON.stringify(saved))}}catch(e){}}})();
-</script><script>
-(function(){var code=new URLSearchParams(location.search).get('edit'),button=document.getElementById('saveProduct');if(!code||!button)return;button.onclick=function(){var saved=[];try{saved=JSON.parse(localStorage.getItem('localProducts')||'[]');if(!Array.isArray(saved))saved=[]}catch(e){}var item=saved.find(function(x){return String(x.code)===String(code)});if(!item){item={code:code};saved.unshift(item)}item.name=document.getElementById('productName').value.trim();if(!item.name){alert('Informe o nome do produto.');return}item.category=document.getElementById('category').value;item.usage=document.getElementById('usage').value;item.keywords=document.getElementById('keywords').value;item.price=Number((document.getElementById('salePrice').value||'').replace(',','.'))||0;item.cost=Number((document.getElementById('cost').value||'').replace(',','.'))||0;item.stock=Number(document.getElementById('stock').value)||0;item.minStock=Number(document.getElementById('minStock').value)||0;item.notes=document.getElementById('notes').value;item.type='Produto';localStorage.setItem('localProducts',JSON.stringify(saved));location.href='produtos.html'}})();
-</script><script>
-(function(){['archiveSwitch','stockSwitch'].forEach(function(id){var el=document.getElementById(id);if(!el)return;el.setAttribute('role','switch');el.setAttribute('tabindex','0');el.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();var on=!el.classList.contains('on');el.classList.toggle('on',on);el.classList.toggle('off',!on);if(el.firstChild)el.firstChild.nodeValue=id==='archiveSwitch'?(on?'Não':'Sim'):(on?'Sim':'Não');el.setAttribute('aria-pressed',String(on))},true);el.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();el.click()}})})})();
-</script><script>
-(function(){var closeButton=document.querySelector('.product-top .close');if(!closeButton)return;closeButton.setAttribute('role','button');closeButton.setAttribute('title','Fechar');closeButton.style.cursor='pointer';closeButton.addEventListener('click',function(){window.location.href='produtos.html'})})();
-</script></body></html>
+</script>
+<script>
+  // Fallback de navegação das abas: mantém as três áreas independentes
+  // mesmo quando o handler inline não é processado pelo navegador.
+  (function () {
+    function bindProductTabs() {
+      var buttons = document.querySelectorAll('.product-tabs [data-tab]');
+      if (!buttons.length) return;
+
+      buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var index = Number(button.getAttribute('data-tab'));
+          var panels = [
+            document.getElementById('tabProductPanel'),
+            document.getElementById('tabFiscalPanel'),
+            document.getElementById('tabPhotosPanel')
+          ];
+
+          buttons.forEach(function (item, itemIndex) {
+            var active = itemIndex === index;
+            item.classList.toggle('active', active);
+            item.style.background = active ? '#19a99f' : 'transparent';
+            item.style.color = active ? '#fff' : '#08a9a8';
+          });
+
+          panels.forEach(function (panel, panelIndex) {
+            if (!panel) return;
+            var active = panelIndex === index;
+            panel.classList.toggle('hidden', !active);
+            panel.style.display = active ? 'block' : 'none';
+          });
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindProductTabs);
+    } else {
+      bindProductTabs();
+    }
+  })();
+</script>
+<script>
+  (function () {
+    function bindProductTabs() {
+      var buttons = document.querySelectorAll('.product-tabs [data-tab]');
+      if (!buttons.length) return;
+      buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var index = Number(button.getAttribute('data-tab'));
+          var panels = [
+            document.getElementById('tabProductPanel'),
+            document.getElementById('tabFiscalPanel'),
+            document.getElementById('tabPhotosPanel')
+          ];
+          buttons.forEach(function (item, itemIndex) {
+            var active = itemIndex === index;
+            item.classList.toggle('active', active);
+            item.style.background = active ? '#19a99f' : 'transparent';
+            item.style.color = active ? '#fff' : '#08a9a8';
+          });
+          panels.forEach(function (panel, panelIndex) {
+            if (!panel) return;
+            var active = panelIndex === index;
+            panel.classList.toggle('hidden', !active);
+            panel.style.display = active ? 'block' : 'none';
+          });
+        });
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindProductTabs);
+    } else {
+      bindProductTabs();
+    }
+  })();
+</script>
+</body>
+</html>

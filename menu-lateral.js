@@ -264,12 +264,15 @@
   function setupBuyersTab(){
     const tabs=document.querySelector('.client-tabs');
     const table=document.querySelector('.client-table');
-    if(!tabs||!table||tabs.querySelector('.buyers-tab'))return;
-    const button=document.createElement('button');
-    button.type='button';
-    button.className='buyers-tab';
-    button.textContent='▣ COMPRADORES';
-    tabs.appendChild(button);
+    if(!tabs||!table)return;
+    let button=tabs.querySelector('.buyers-tab');
+    if(!button){
+      button=document.createElement('button');
+      button.type='button';
+      button.className='buyers-tab';
+      button.textContent='▣ COMPRADORES';
+      tabs.appendChild(button);
+    }
     const all=[...tabs.querySelectorAll('button')];
     if(all[0])all[0].style.order='0';
     if(all[1])all[1].style.order='2';
@@ -278,11 +281,11 @@
     if(!document.getElementById('buyers-tab-style')){
       const style=document.createElement('style');
       style.id='buyers-tab-style';
-      style.textContent='.client-tabs .buyers-tab{background:#b17828!important}.client-tabs .buyers-tab.active{background:#d49a35!important}.client-tabs .buyers-tab:hover{background:#c1882e!important}';
+      style.textContent='.client-tabs .buyers-tab{background:#b17828!important;order:1}.client-tabs .buyers-tab.active{background:#d49a35!important}.client-tabs .buyers-tab:hover{background:#c1882e!important}';
       document.head.appendChild(style);
     }
-    button.addEventListener('click',function(){
-      all.concat(button).forEach(function(item){item.classList.remove('active')});
+    function activateBuyers(){
+      tabs.querySelectorAll('button').forEach(function(item){item.classList.remove('active')});
       button.classList.add('active');
       const body=table.querySelector('tbody');
       const deleted=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
@@ -290,20 +293,119 @@
       if(body)body.innerHTML=records.length?records.map(function(item){return '<tr><td><input type="checkbox" class="client-select" data-code="'+String(item.id||'')+'" data-name="'+String(item.nome||'').replace(/"/g,'&quot;')+'"></td><td>'+String(item.id||'')+'</td><td>'+String(item.nome||'')+'</td><td>'+String(item.telefone||'')+'</td><td></td><td>'+String(item.cidade||'')+(item.uf?'/'+String(item.uf):'')+'</td></tr>'}).join(''):'<tr><td colspan="7" class="empty">Nenhum comprador encontrado.</td></tr>';
       if(window.installClientCheckboxes)window.installClientCheckboxes();
       const search=document.querySelector('.client-search input');
-      if(search)search.placeholder='Buscar compradores';
+      if(search){
+        search.placeholder='Buscar compradores';
+        search.value='';
+      }
       const novo=document.querySelector('.client-toolbar button');
       if(novo){
+        novo.innerHTML='<img src="public/icons/icons8-add-48.png" alt=""> Novo';
         novo.style.background='#b17828';
         novo.onclick=function(){location.href='novo-cliente.html?tipo=comprador'};
       }
       document.title='Gestão Piremaxx - Compradores';
       history.replaceState(null,'','clientes.html#compradores');
-    });
-    if(location.hash==='#compradores')button.click();
+    }
+    button.onclick=function(e){
+      if(e)e.preventDefault();
+      activateBuyers();
+    };
+    window.activateBuyersTab=activateBuyers;
+    if(location.hash==='#compradores')activateBuyers();
   }
   setupBuyersTab();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupBuyersTab);
   setTimeout(setupBuyersTab,0);
+})();
+
+// Aba adicional de vendedores na tela de Contatos
+(function(){
+  if((location.pathname.split('/').pop()||'').toLowerCase()!=='clientes.html')return;
+  function setupVendorsTab(){
+    const tabs=document.querySelector('.client-tabs');
+    const table=document.querySelector('.client-table');
+    if(!tabs||!table)return;
+    let button=tabs.querySelector('.vendors-tab');
+    if(!button){
+      button=document.createElement('button');
+      button.type='button';
+      button.className='vendors-tab';
+      button.innerHTML='<img src="public/icons/icons8-budget-48.png" alt=""> VENDEDORES';
+      tabs.appendChild(button);
+    } else {
+      const img=button.querySelector('img');
+      if(!img||!img.getAttribute('src')||!img.getAttribute('src').includes('icons8-budget-48.png')){
+        button.innerHTML='<img src="public/icons/icons8-budget-48.png" alt=""> VENDEDORES';
+      }
+    }
+    const all=[...tabs.querySelectorAll('button')];
+    if(all[0])all[0].style.order='0';
+    const buyers=tabs.querySelector('.buyers-tab');
+    if(buyers)buyers.style.order='1';
+    const suppliers=[...tabs.querySelectorAll('button')].find(b=>b.textContent.includes('FORNECEDOR'));
+    if(suppliers)suppliers.style.order='2';
+    const trans=[...tabs.querySelectorAll('button')].find(b=>b.textContent.includes('TRANSPORTADOR'));
+    if(trans)trans.style.order='3';
+    button.style.order='4';
+    if(!document.getElementById('vendors-tab-style')){
+      const style=document.createElement('style');
+      style.id='vendors-tab-style';
+      style.textContent='.client-tabs .vendors-tab{background:#6f42c1!important;color:#fff!important;border-radius:4px 4px 0 0!important;padding:15px 22px;font-weight:bold;font-size:14px;border:0;cursor:pointer;order:4}.client-tabs .vendors-tab.active{background:#8453d8!important;box-shadow:inset 0 -2px 0 #fff}.client-tabs .vendors-tab:hover{background:#5e35b1!important}.clients:has(.client-tabs .vendors-tab.active) .client-tabs{border-bottom:2px solid #8453d8}.clients:has(.client-tabs .vendors-tab.active) .client-toolbar>button:first-child{background:#6f42c1!important}';
+      document.head.appendChild(style);
+    }
+    function activateVendors(){
+      tabs.querySelectorAll('button').forEach(function(item){item.classList.remove('active')});
+      button.classList.add('active');
+      const body=table.querySelector('tbody');
+      const deleted=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
+      const local=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]');
+      const localVendors=local.filter(function(item){return Array.isArray(item.tipos)&&item.tipos.includes('vendedor')&&!deleted.has(String(item.id))&&!deleted.has(String(item.nome||'').trim())});
+      
+      const defaultVendors=[
+        {id:'1',nome:'Diego Miranda',telefone:'(21) 98765-4321',cidade:'Rio de Janeiro',uf:'RJ',tipos:['vendedor']},
+        {id:'2',nome:'Katia Maria',telefone:'(21) 97654-3210',cidade:'Rio de Janeiro',uf:'RJ',tipos:['vendedor']},
+        {id:'3',nome:'Viviane Martins',telefone:'(21) 96543-2109',cidade:'Rio de Janeiro',uf:'RJ',tipos:['vendedor']},
+        {id:'4',nome:'CLAUDEMIR NOGUEIRA',telefone:'(21) 99876-5432',cidade:'Rio de Janeiro',uf:'RJ',tipos:['vendedor']},
+        {id:'5',nome:'ODIMAN COSTA',telefone:'(21) 99999-0000',cidade:'Rio de Janeiro',uf:'RJ',tipos:['vendedor']}
+      ].filter(function(dv){
+        return !deleted.has(String(dv.id))&&!deleted.has(String(dv.nome).trim())&&!local.some(function(l){return String(l.id)===String(dv.id)||String(l.nome||'').trim().toLowerCase()===dv.nome.toLowerCase()});
+      });
+
+      const records=[...localVendors,...defaultVendors];
+      if(body){
+        body.innerHTML=records.length?records.map(function(item){
+          return '<tr><td><input type="checkbox" class="client-select" data-code="'+String(item.id||'')+'" data-name="'+String(item.nome||'').replace(/"/g,'&quot;')+'"></td><td>'+String(item.id||'')+'</td><td>'+String(item.nome||'')+'</td><td>'+String(item.telefone||'')+'</td><td></td><td>'+String(item.cidade||'')+(item.uf?'/'+String(item.uf):'')+'</td></tr>';
+        }).join(''):'<tr><td colspan="7" class="empty">Nenhum vendedor encontrado.</td></tr>';
+      }
+      if(window.installClientCheckboxes)window.installClientCheckboxes();
+      const search=document.querySelector('.client-search input');
+      if(search){
+        search.placeholder='Buscar vendedores';
+        search.value='';
+      }
+      const novo=document.querySelector('.client-toolbar button');
+      if(novo){
+        novo.innerHTML='<img src="public/icons/icons8-add-48.png" alt=""> Novo';
+        novo.style.background='#6f42c1';
+        novo.onclick=function(){location.href='novo-cliente.html?tipo=vendedor'};
+      }
+      document.title='Gestão Piremaxx - Vendedores';
+      history.replaceState(null,'','clientes.html#vendedores');
+    }
+    button.onclick=function(e){
+      if(e)e.preventDefault();
+      activateVendors();
+    };
+    window.activateVendorsTab=activateVendors;
+    if(location.hash==='#vendedores')activateVendors();
+  }
+  setupVendorsTab();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupVendorsTab);
+  setTimeout(setupVendorsTab,0);
+  window.addEventListener('hashchange',function(){
+    if(location.hash==='#vendedores'&&window.activateVendorsTab)window.activateVendorsTab();
+    if(location.hash==='#compradores'&&window.activateBuyersTab)window.activateBuyersTab();
+  });
 })();
 
 // O botão Novo usa o mesmo cadastro completo em todas as categorias da guia Contatos,
@@ -316,10 +418,12 @@
     if(text.includes('fornecedor'))return 'fornecedor';
     if(text.includes('transportador'))return 'transportador';
     if(text.includes('comprador'))return 'comprador';
+    if(text.includes('vendedor'))return 'vendedor';
     const hash=location.hash.replace('#','').toLowerCase();
     if(hash==='fornecedores'||hash==='fornecedors')return 'fornecedor';
     if(hash==='transportadores')return 'transportador';
     if(hash==='compradores')return 'comprador';
+    if(hash==='vendedores')return 'vendedor';
     return 'cliente';
   }
   document.addEventListener('click',function(event){
@@ -1052,21 +1156,35 @@ Estou enviando ${escHtml(docLabel)}. Para visualizar, basta clicar no link:
         color: #1f2f3d !important;
       }
       body {
-        padding: 34mm 15mm 18mm 15mm !important;
+        padding: 0 15mm !important;
         box-sizing: border-box !important;
         position: relative !important;
         z-index: 1 !important;
       }
       body:has(> .page), body:has(> .product-sheet) {
-        padding: 0 !important;
+        padding: 0 15mm !important;
       }
       .page, .product-sheet {
-        padding: 34mm 15mm 18mm 15mm !important;
+        padding: 0 !important;
         box-sizing: border-box !important;
-        min-height: 297mm !important;
+        min-height: 0 !important;
         position: relative !important;
         z-index: 1 !important;
       }
+      /* Moldura de impressão: o thead/tfoot se repete em TODAS as páginas, reservando o espaço do cabeçalho e rodapé do papel timbrado */
+      table.pmx-print-frame { width: 100% !important; border-collapse: collapse !important; margin: 0 !important; border: 0 !important; }
+      table.pmx-print-frame > thead > tr > td,
+      table.pmx-print-frame > tfoot > tr > td,
+      table.pmx-print-frame > tbody > tr > td.pmx-frame-cell {
+        padding: 0 !important; border: 0 !important; background: transparent !important;
+        font-size: inherit !important; color: inherit !important; text-transform: none !important;
+      }
+      .pmx-frame-top { height: 34mm; }
+      .pmx-frame-bottom { height: 16mm; }
+      table.pmx-print-frame > thead { display: table-header-group; }
+      table.pmx-print-frame > tfoot { display: table-footer-group; }
+      table:not(.pmx-print-frame) tr { break-inside: avoid; page-break-inside: avoid; }
+      table:not(.pmx-print-frame) thead { display: table-header-group; }
       .piremaxx-print-bg {
         position: fixed !important;
         top: 0 !important;
@@ -1179,10 +1297,17 @@ Estou enviando ${escHtml(docLabel)}. Para visualizar, basta clicar no link:
         } else {
           content = popupLetterheadCSS + content;
         }
+        const frameOpen = '<img class="piremaxx-print-bg" src="' + BG_URL + '" alt=""><table class="pmx-print-frame"><thead><tr><td><div class="pmx-frame-top"></div></td></tr></thead><tfoot><tr><td><div class="pmx-frame-bottom"></div></td></tr></tfoot><tbody><tr><td class="pmx-frame-cell">';
+        const frameClose = '</td></tr></tbody></table>';
         if(/<body[^>]*>/i.test(content)){
-          content = content.replace(/<body[^>]*>/i, '$&<img class="piremaxx-print-bg" src="' + BG_URL + '" alt="">');
+          content = content.replace(/<body[^>]*>/i, '$&' + frameOpen);
         } else {
-          content = '<img class="piremaxx-print-bg" src="' + BG_URL + '" alt="">' + content;
+          content = frameOpen + content;
+        }
+        if(/<\/body>/i.test(content)){
+          content = content.replace(/<\/body>/i, frameClose + '</body>');
+        } else {
+          content = content + frameClose;
         }
         return nativeWrite(content);
       };
