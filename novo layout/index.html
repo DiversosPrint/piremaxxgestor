@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema Integrado de Gestão Piremaxx</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark"><span class="brand-icon">P</span><div><strong>Sistema Integrado</strong><small>de Gestão Piremaxx</small></div></div>
+      <div class="topbar-actions"><button class="icon-btn" aria-label="Pesquisar">⌕</button><button class="icon-btn" aria-label="Notificações">◌<i></i></button><div class="user-chip"><span>OC</span><div><b>ODIMAN COSTA</b><small>Administrador</small></div></div></div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="side-label">MÓDULOS</div>
+      <button class="side-link active" data-window="overview"><span>▥</span> Visão geral</button>
+      <button class="side-link" data-window="finance"><span>§</span> Financeiro</button>
+      <button class="side-link" data-window="stock"><span>▣</span> Estoque</button>
+      <button class="side-link" data-window="production"><span>⚙</span> Produção</button>
+      <button class="side-link" data-window="sales"><span>↗</span> Vendas</button>
+      <button class="side-link" data-window="customers"><span>♙</span> Clientes</button>
+      <div class="side-footer"><span class="status-dot"></span> Sistema online<br><small>Atualizado agora</small></div>
+    </aside>
+
+    <main class="workspace">
+      <div class="workspace-heading"><div><span class="eyebrow">PAINEL DE CONTROLE</span><h1 id="pageTitle">Visão Geral</h1></div><div class="view-tabs"><button class="view-tab active">Resumo</button><button class="view-tab">Relatórios</button><button class="view-tab">Atividades</button></div></div>
+
+      <section class="dashboard-grid" id="dashboard">
+        <article class="glass-card finance-card window-card" data-panel="finance">
+          <div class="card-heading"><span class="card-icon gold">§</span><div><span class="card-kicker">FINANCEIRO</span><h2>Fluxo de caixa</h2></div><button class="dots">•••</button></div>
+          <div class="mini-chart line-mini"><svg viewBox="0 0 300 92" preserveAspectRatio="none"><defs><linearGradient id="greenFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#25d78b" stop-opacity=".5"/><stop offset="1" stop-color="#25d78b" stop-opacity="0"/></linearGradient></defs><path class="area" d="M0 72 L26 62 L52 68 L78 48 L104 56 L130 38 L156 43 L182 27 L208 35 L234 17 L260 25 L300 10 L300 92 L0 92 Z"/><path class="line" d="M0 72 L26 62 L52 68 L78 48 L104 56 L130 38 L156 43 L182 27 L208 35 L234 17 L260 25 L300 10"/></svg><div class="chart-labels"><span>Receitas</span><b>R$ 150.000</b></div></div>
+          <div class="metric-row"><span>Faturamento do mês</span><strong>R$ 485.200</strong></div><div class="metric-row"><span>Lucro líquido</span><strong class="positive">R$ 150.750</strong></div>
+        </article>
+
+        <article class="glass-card overview-card window-card" data-panel="overview">
+          <div class="card-heading"><span class="card-icon cyan">▥</span><div><span class="card-kicker">CENTRAL</span><h2>Visão geral</h2></div><span class="live-pill"><i></i> Ao vivo</span></div>
+          <div class="overview-body"><div class="indicator-list"><div><span>♟</span><label>Pedidos</label><b>120</b></div><div><span>▣</span><label>Estoque</label><b class="positive">85%</b></div><div><span>⚙</span><label>Produção</label><b class="warning">75%</b></div></div><div class="donut-wrap"><div class="donut"><strong>85%</strong><small>eficiência</small></div><div class="legend"><span><i class="cyan-dot"></i>Fluxos <b>140</b></span><span><i class="green-dot"></i>Concluído <b>85%</b></span><span><i class="orange-dot"></i>Pendente <b>15%</b></span></div></div></div>
+        </article>
+
+        <article class="glass-card stock-card window-card" data-panel="stock">
+          <div class="card-heading"><span class="card-icon orange">▣</span><div><span class="card-kicker">INVENTÁRIO</span><h2>Estoque</h2></div><button class="dots">•••</button></div>
+          <div class="progress-label"><span>Nível de estoque</span><strong>85%</strong></div><div class="progress"><i style="width:85%"></i></div><div class="stock-line"><span>Produtos em falta</span><b>5 itens</b></div><div class="stock-line"><span>Itens em reposição</span><b class="warning">12 itens</b></div>
+        </article>
+
+        <article class="glass-card production-card window-card" data-panel="production">
+          <div class="card-heading"><span class="card-icon purple">⚙</span><div><span class="card-kicker">OPERAÇÃO</span><h2>Produção</h2></div><button class="dots">•••</button></div><div class="production-number"><strong>3%</strong><span>Ordens de produção abertas</span></div><div class="production-bar"><i style="width:92%"></i></div><div class="efficiency"><span>Eficiência operacional</span><b>92% <em>▲</em></b></div>
+        </article>
+
+        <article class="glass-card tasks-card window-card" data-panel="tasks">
+          <div class="card-heading"><span class="card-icon blue">▣</span><div><span class="card-kicker">ACOMPANHAMENTO</span><h2>Tarefas pendentes <b class="count-badge">8</b></h2></div><button class="dots">•••</button></div>
+          <div class="bar-chart"><div style="height:36%"><i>34</i><span>3/4</span></div><div style="height:52%"><i>49</i><span>4/4</span></div><div style="height:43%"><i>39</i><span>5/4</span></div><div style="height:72%"><i>68</i><span>6/4</span></div><div style="height:58%"><i>51</i><span>7/4</span></div><div style="height:78%"><i>76</i><span>8/4</span></div><div style="height:62%"><i>59</i><span>9/4</span></div><div style="height:83%"><i>82</i><span>10/4</span></div><div style="height:69%"><i>65</i><span>11/4</span></div><div style="height:91%"><i>91</i><span>12/4</span></div></div>
+        </article>
+      </section>
+
+      <section class="bottom-strip"><div><span class="strip-icon">♙</span><div><small>CLIENTES NOVOS</small><b>14</b></div></div><div><span class="strip-icon">♟</span><div><small>ENTREGAS PENDENTES</small><b>6</b></div></div><div><span class="strip-icon">◷</span><div><small>PERFORMANCE OPERACIONAL</small><b>92%</b></div></div><div class="updated"><span class="status-dot"></span> Última atualização: agora</div></section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

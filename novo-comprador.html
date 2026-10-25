@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -20,6 +20,14 @@
     .buyer-reference-actions{border-top:1px solid #ddd;background:#f2f2f2;padding:10px 6px;margin:18px 0 0}
     @media(max-width:800px){.buyer-inline-fields{grid-template-columns:1fr 1fr}.buyer-linked-grid{grid-template-columns:1fr}}
   </style>
+<link rel="stylesheet" href="mobile.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#5e7d89">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="public/apple-touch-icon.png">
+<script src="pwa.js" defer></script>
 </head>
 <body>
   <aside class="sidebar"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav></nav></aside>
@@ -27,6 +35,11 @@
     <header class="topbar"><div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="search">em:compradores <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS</small></div></header>
     <div class="buyer-head">Novo comprador</div>
     <section class="buyer-form">
+      <div class="buyer-tabs">
+        <button type="button" class="active">DADOS GERAIS</button>
+        <button type="button">ENDEREÇO</button>
+        <button type="button">INFORMAÇÕES ADICIONAIS</button>
+      </div>
       <div id="buyer-data" class="buyer-panel buyer-data-reference">
         <div class="buyer-step"><span class="buyer-step-number">1</span> Defina as informações gerais sobre este comprador</div>
         <div class="buyer-profile">

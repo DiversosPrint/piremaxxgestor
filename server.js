@@ -90,8 +90,8 @@ const server = http.createServer((req, res) => {
         if (baseName !== 'login.html') {
           body = body.replace(/<aside class="sidebar[^"]*">[\s\S]*?<\/aside>/i, buildCanonicalSidebar(baseName));
         }
-        const pwaTags = `${criticalFirstPaintCSS}<link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/mobile.css?v=20261021f"><meta name="theme-color" content="#5e7d89"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><script src="/pwa.js?v=20261021f" defer></script>`;
-        body = body.includes('/pwa.js') ? body : body.replace('</head>', `${pwaTags}</head>`);
+        const pwaTags = `${criticalFirstPaintCSS}<link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/mobile.css"><meta name="theme-color" content="#5e7d89"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><script src="/pwa.js" defer></script>`;
+        body = body.includes('pwa.js') ? body : body.replace('</head>', `${pwaTags}</head>`);
         res.writeHead(200, { 'Content-Type': types['.html'], 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0' });
         res.end(body);
       });

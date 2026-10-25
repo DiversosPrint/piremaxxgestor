@@ -223,7 +223,7 @@
 (function(){
   function setupMobileMenu(){
     const sidebar=document.querySelector('.sidebar');
-    const topbar=document.querySelector('main>.topbar, main>.products-topbar');
+    const topbar=document.querySelector('main>.topbar, main>.products-topbar, main>.product-top, main>.service-top, main>.buyer-head, main>.client-form-head, .topbar, main>header, main>div:first-child');
     if(!sidebar||!topbar||topbar.querySelector('.mobile-menu-toggle'))return;
     const button=document.createElement('button');
     button.type='button';
@@ -232,11 +232,14 @@
     button.setAttribute('aria-expanded','false');
     button.textContent='☰';
     topbar.insertBefore(button,topbar.firstChild);
-    const backdrop=document.createElement('button');
-    backdrop.type='button';
-    backdrop.className='mobile-menu-backdrop';
-    backdrop.setAttribute('aria-label','Fechar menu');
-    document.body.appendChild(backdrop);
+    let backdrop=document.querySelector('.mobile-menu-backdrop');
+    if(!backdrop){
+      backdrop=document.createElement('button');
+      backdrop.type='button';
+      backdrop.className='mobile-menu-backdrop';
+      backdrop.setAttribute('aria-label','Fechar menu');
+      document.body.appendChild(backdrop);
+    }
     function close(){
       document.body.classList.remove('mobile-menu-open');
       button.setAttribute('aria-expanded','false');
@@ -245,6 +248,12 @@
       const open=document.body.classList.toggle('mobile-menu-open');
       button.setAttribute('aria-expanded',String(open));
     }
+    window.piremaxxToggleMobileMenu=toggle;
+    window.piremaxxCloseMobileMenu=close;
+    window.piremaxxOpenMobileMenu=function(){
+      document.body.classList.add('mobile-menu-open');
+      button.setAttribute('aria-expanded','true');
+    };
     button.addEventListener('click',toggle);
     backdrop.addEventListener('click',close);
     sidebar.addEventListener('click',function(event){
@@ -491,7 +500,7 @@
             max-width:82vw!important;
             height:100vh!important;
             min-height:100vh!important;
-            z-index:220!important;
+            z-index:999!important;
             background:#344750!important;
             transform:translateX(-105%)!important;
             transition:transform 0.24s cubic-bezier(0.4,0,0.2,1)!important;
@@ -542,7 +551,7 @@
             position:fixed!important;
             inset:0!important;
             background:rgba(15,25,32,0.48)!important;
-            z-index:210!important;
+            z-index:998!important;
             border:0!important;
           }
           body.mobile-menu-open .mobile-menu-backdrop {

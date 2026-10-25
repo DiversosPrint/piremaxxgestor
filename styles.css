@@ -473,7 +473,7 @@ html body .toolbar-icon{
     max-width: 82vw !important;
     height: 100vh !important;
     min-height: 100vh !important;
-    z-index: 220 !important;
+    z-index: 999 !important;
     transform: translateX(-105%) !important;
     transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1) !important;
     overflow-y: auto !important;

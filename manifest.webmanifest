@@ -1,26 +1,77 @@
 {
+  "id": "/",
   "name": "Piremaxx Gestor",
   "short_name": "Piremaxx",
-  "description": "Gestão comercial Piremaxx",
+  "description": "Sistema Completo de Gestão Comercial Piremaxx",
   "lang": "pt-BR",
   "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
   "orientation": "any",
   "background_color": "#f2f3f4",
   "theme_color": "#5e7d89",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/public/pwa-icon.svg",
+      "src": "/public/pwa-icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/public/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/public/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/public/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/public/pwa-icon.svg",
-      "sizes": "512x512",
+      "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Vendas",
+      "short_name": "Vendas",
+      "description": "Consultar e emitir vendas e orçamentos",
+      "url": "/vendas.html",
+      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Financeiro",
+      "short_name": "Financeiro",
+      "description": "Contas a pagar e receber",
+      "url": "/financeiro.html",
+      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Contatos",
+      "short_name": "Contatos",
+      "description": "Clientes, compradores e fornecedores",
+      "url": "/clientes.html",
+      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Produtos",
+      "short_name": "Produtos",
+      "description": "Estoque e produtos",
+      "url": "/produtos.html",
+      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

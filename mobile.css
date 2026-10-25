@@ -40,7 +40,7 @@
     max-width: 82vw !important;
     height: 100vh !important;
     min-height: 100vh !important;
-    z-index: 250 !important;
+    z-index: 999 !important;
     background: #344750 !important;
     transform: translateX(-105%) !important;
     transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -97,7 +97,7 @@
     display: none !important;
     position: fixed !important;
     inset: 0 !important;
-    z-index: 240 !important;
+    z-index: 998 !important;
     border: 0 !important;
     background: rgba(15, 25, 32, 0.48) !important;
   }
@@ -326,7 +326,10 @@
   html body .purchase-tabs,
   html body .client-tabs,
   html body .product-tabs,
-  html body .categories {
+  html body .categories,
+  html body .buyer-tabs,
+  html body .fleet-tabs,
+  html body .service-tabs {
     position: relative !important;
     left: 0 !important;
     top: 0 !important;
@@ -335,16 +338,18 @@
     flex-wrap: nowrap !important;
     align-items: center !important;
     width: 100% !important;
-    height: 38px !important;
-    min-height: 38px !important;
-    max-height: 38px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x !important;
     scrollbar-width: none !important;
     gap: 4px !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 4px !important;
+    box-sizing: border-box !important;
   }
 
   html body .tabs::-webkit-scrollbar,
@@ -352,7 +357,10 @@
   html body .purchase-tabs::-webkit-scrollbar,
   html body .client-tabs::-webkit-scrollbar,
   html body .product-tabs::-webkit-scrollbar,
-  html body .categories::-webkit-scrollbar {
+  html body .categories::-webkit-scrollbar,
+  html body .buyer-tabs::-webkit-scrollbar,
+  html body .fleet-tabs::-webkit-scrollbar,
+  html body .service-tabs::-webkit-scrollbar {
     display: none !important;
   }
 
@@ -361,20 +369,27 @@
   html body .purchase-tab,
   html body .client-tabs button,
   html body .product-tabs button,
-  html body .categories button {
+  html body .categories button,
+  html body .buyer-tabs button,
+  html body .fleet-tabs button,
+  html body .service-tabs button {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex: 0 0 auto !important;
     width: auto !important;
-    height: 37px !important;
-    min-height: 37px !important;
-    max-height: 37px !important;
-    padding: 0 13px !important;
+    min-width: max-content !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    padding: 0 14px !important;
     margin: 0 !important;
     font-size: 11px !important;
     white-space: nowrap !important;
     border-radius: 4px 4px 0 0 !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    user-select: none !important;
   }
 
   /* 7. BARRAS DE FERRAMENTAS (TOOLBARS) PADRONIZADAS SEM ESTOURAR A LARGURA */
@@ -601,6 +616,237 @@
   html body .cart-row .product-wrap {
     grid-column: 1 / -1 !important;
   }
+
+  /* Modal de Compras Mobile (Full viewport, scroll suave, sem overflow quebrado) */
+  html body .new-purchase {
+    inset: 0 !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    z-index: 235 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  html body .new-purchase .purchase-modal-head {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+  }
+  html body .new-purchase .purchase-form {
+    padding: 12px 14px !important;
+  }
+  html body .new-purchase .purchase-section {
+    padding: 12px !important;
+    margin-top: 12px !important;
+  }
+  html body .new-purchase .purchase-section > label {
+    display: flex !important;
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+  html body .new-purchase .purchase-wide {
+    width: 100% !important;
+  }
+  html body .new-purchase .external-values {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  html body .new-purchase .external-values label {
+    width: 100% !important;
+  }
+  html body .new-purchase .products-section {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 8px !important;
+  }
+  html body .new-purchase .product-head,
+  html body .new-purchase .purchase-product {
+    min-width: 780px !important;
+  }
+  html body .new-purchase .purchase-finance {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  html body .new-purchase .finance-head-purchase,
+  html body .new-purchase .finance-row-purchase {
+    min-width: 680px !important;
+  }
+  html body .new-purchase .finance-options {
+    position: fixed !important;
+    inset: auto 12px 60px 12px !important;
+    width: auto !important;
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+  html body .new-purchase .purchase-actions {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: #f2f3f4 !important;
+    z-index: 10 !important;
+    padding: 12px 14px !important;
+  }
+
+  /* Modal de Coletas Mobile */
+  html body .collection-modal {
+    padding: 8px !important;
+    align-items: center !important;
+    z-index: 235 !important;
+  }
+  html body .collection-modal .collection-dialog {
+    max-height: 94vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  html body .collection-modal .collection-form {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px !important;
+  }
+  html body .collection-modal .collection-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  html body .collection-modal .collection-items {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  html body .collection-modal .collection-item-head,
+  html body .collection-modal .collection-item-row {
+    min-width: 560px !important;
+  }
+
+  /* 12. BARRA DE NAVEGAÇÃO INFERIOR PWA (BOTTOM NAVIGATION) */
+  html body {
+    padding-bottom: 58px !important;
+  }
+
+  .pwa-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 54px !important;
+    background: #2b3b44 !important;
+    border-top: 1px solid #3d4f59 !important;
+    z-index: 220 !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.24) !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    padding: 0 2px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+
+  .pwa-bottom-nav .pwa-nav-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 1 0 !important;
+    height: 100% !important;
+    text-decoration: none !important;
+    color: #9cb1bc !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 4px 0 2px !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    gap: 3px !important;
+    line-height: 1 !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .pwa-bottom-nav .pwa-nav-item.active {
+    color: #00d982 !important;
+  }
+
+  .pwa-bottom-nav .pwa-nav-item img,
+  .pwa-bottom-nav .pwa-nav-item .pwa-nav-icon {
+    width: 20px !important;
+    height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
+    object-fit: contain !important;
+    pointer-events: none !important;
+  }
+
+  .pwa-bottom-nav .pwa-nav-item.active img {
+    filter: drop-shadow(0 0 2px #00d982) !important;
+  }
+
+  .pwa-bottom-nav .pwa-nav-icon-text {
+    font-size: 19px !important;
+    line-height: 1 !important;
+    display: block !important;
+    height: 20px !important;
+  }
+
+  /* 13. BANNER DE INSTALAÇÃO PWA */
+  .pwa-install-banner {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 230;
+    background: #344750;
+    color: #fff;
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    font-size: 12px;
+    animation: pwaSlideDown 0.3s ease-out;
+  }
+  @keyframes pwaSlideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .pwa-install-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .pwa-install-info img {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+  }
+  .pwa-install-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pwa-install-confirm {
+    background: #00d982;
+    border: 0;
+    border-radius: 4px;
+    color: #1a3328;
+    font-weight: bold;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 11px;
+  }
+  .pwa-install-close {
+    background: transparent;
+    border: 0;
+    color: #b0c2cb;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -611,7 +857,9 @@
 
 @media (min-width: 769px) {
   .mobile-menu-toggle,
-  .mobile-menu-backdrop {
+  .mobile-menu-backdrop,
+  .pwa-bottom-nav,
+  .pwa-install-banner {
     display: none !important;
   }
 }
