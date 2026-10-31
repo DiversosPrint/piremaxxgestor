@@ -92,26 +92,58 @@ body:has(.clients) .clients-title{height:49px;padding:11px;font-size:16px}
 document.addEventListener('DOMContentLoaded',function(){
   const table=document.querySelector('.client-table'),tabs=[...document.querySelectorAll('.client-tabs button')].filter(b=>!b.classList.contains('buyers-tab')&&!b.classList.contains('vendors-tab')),novo=document.querySelector('.client-toolbar button'),search=document.querySelector('.client-search input');
   if(!table||!tabs.length)return;
-  const local=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]');
-  const deleted=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
-  const imported=(window.importedContacts||[]).map(function(c){return{id:String(c.code),nome:c.name||('Contato #'+c.code),tipos:['cliente'],telefone:c.phones||'',cidade:c.city||'',uf:c.state||'',documento:c.document||'',fantasy:c.fantasy||'',email:c.email||'',endereco:c.address||'',cep:c.zip||''}});
-  const records=[...local,...imported.filter(function(x){return !local.some(function(y){return String(y.id)===String(x.id)||String(y.nome).trim()===String(x.nome).trim()})})].filter(function(x){return !deleted.has(String(x.id))&&!deleted.has(String(x.nome).trim())});
+  function getDynamicRecords(){
+    let local=[];
+    try{local=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(e){local=[]}
+    let dedicated=[];
+    try{dedicated=JSON.parse(localStorage.getItem('piremaxx_fornecedores')||'[]')}catch(e){dedicated=[]}
+    dedicated.forEach(function(sup){
+      const nome=String(sup.nome||sup.name||'').trim();
+      if(!nome)return;
+      if(!local.some(function(y){return (sup.id&&String(y.id)===String(sup.id))||String(y.nome||'').trim().toLowerCase()===nome.toLowerCase()})){
+        local.push(Object.assign({},sup,{id:sup.id||sup.code||Date.now(),nome:nome,tipos:Array.isArray(sup.tipos)&&sup.tipos.length?sup.tipos:['fornecedor']}));
+      }
+    });
+    const deleted=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
+    const imported=(window.importedContacts||[]).map(function(c){return{id:String(c.code),nome:c.name||('Contato #'+c.code),tipos:['cliente'],telefone:c.phones||'',cidade:c.city||'',uf:c.state||'',documento:c.document||'',fantasy:c.fantasy||'',email:c.email||'',endereco:c.address||'',cep:c.zip||''}});
+    return [...local,...imported.filter(function(x){return !local.some(function(y){return String(y.id)===String(x.id)||String(y.nome||'').trim()===String(x.nome||'').trim()})})].filter(function(x){return !deleted.has(String(x.id))&&!deleted.has(String(x.nome||'').trim())});
+  }
   function show(i){
     const key=['cliente','fornecedor','transportador'][i];
     const colors=['#5b9eed','#f36f21','#4dcc00'];
     const placeholders=['Buscar clientes','Buscar fornecedores','Buscar transportadores'];
     const currentDeleted=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
-    const rows=records.filter(function(x){return Array.isArray(x.tipos)&&x.tipos.includes(key)&&!currentDeleted.has(String(x.id))&&!currentDeleted.has(String(x.nome).trim())});
+    const records=getDynamicRecords();
+    const rows=records.filter(function(x){
+      const tipos=Array.isArray(x.tipos)?x.tipos:[];
+      const tipoStr=String(x.tipo||x.categoria||'').toLowerCase();
+      return (tipos.includes(key)||tipoStr===key)&&!currentDeleted.has(String(x.id))&&!currentDeleted.has(String(x.nome||'').trim());
+    });
     document.querySelectorAll('.client-tabs button').forEach(function(b){b.classList.remove('active')});
     if(tabs[i])tabs[i].classList.add('active');
-    if(novo)novo.style.background=colors[i]||'#5b9eed';
+    if(novo){
+      novo.style.background=colors[i]||'#5b9eed';
+      novo.onclick=function(){location.href='novo-cliente.html?tipo='+encodeURIComponent(key)};
+    }
     if(search)search.placeholder=placeholders[i]||'Buscar clientes';
-    table.querySelector('tbody').innerHTML=rows.length?rows.map(function(x){return'<tr><td><input type="checkbox" class="client-select" data-code="'+String(x.id||'')+'" data-name="'+String(x.nome||'').replace(/"/g,'&quot;')+'"></td><td>'+String(x.id||'')+'</td><td>'+String(x.nome||'')+'</td><td>'+String(x.telefone||'')+'</td><td></td><td>'+String(x.cidade||'')+(x.uf?'/'+String(x.uf):'')+'</td></tr>'}).join(''):'<tr><td colspan="7" class="empty">Nenhum registro encontrado.</td></tr>';
+    table.querySelector('tbody').innerHTML=rows.length?rows.map(function(x){
+      const city=x.cidade||x.endereco?.['Cidade']||'';
+      const uf=x.uf||x.endereco?.['Estado']||'';
+      const kw=x.adicionais?.['Palavras-chave']||x.keywords||'';
+      return'<tr><td><input type="checkbox" class="client-select" data-code="'+String(x.id||'')+'" data-name="'+String(x.nome||'').replace(/"/g,'&quot;')+'"></td><td>'+String(x.id||'')+'</td><td>'+String(x.nome||'')+'</td><td>'+String(x.telefone||'')+'</td><td>'+String(kw)+'</td><td>'+String(city)+(uf?'/'+String(uf):'')+'</td></tr>';
+    }).join(''):'<tr><td colspan="7" class="empty">Nenhum registro encontrado.</td></tr>';
     const active=document.querySelector('.client-tabs button.active');
     if(active)active.setAttribute('aria-label',key);
+    localStorage.setItem('piremaxx_last_contact_tab',key);
     history.replaceState(null,'','clientes.html#'+key+'s');
     if(window.installClientCheckboxes)window.installClientCheckboxes();
   }
+  window.renderContactsTable=function(){
+    const h=location.hash.slice(1);
+    if(h!=='compradores'&&h!=='vendedores'){
+      show(h==='fornecedores'||h==='fornecedors'?1:h==='transportadores'?2:0);
+    }
+  };
   tabs.forEach(function(b,i){b.onclick=function(){show(i)}});
   const h=location.hash.slice(1);
   if(h!=='compradores'&&h!=='vendedores')show(h==='fornecedores'||h==='fornecedors'?1:h==='transportadores'?2:0);

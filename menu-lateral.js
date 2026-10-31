@@ -1376,3 +1376,172 @@ Estou enviando ${escHtml(docLabel)}. Para visualizar, basta clicar no link:
     };
   }
 })();
+
+// =========================================================================
+// SINCRONIZAÇÃO ONLINE DE DADOS (Fornecedores, Contatos, Vendas, Estoque, etc.)
+// =========================================================================
+(function(){
+  const SYNC_KEYS = [
+    'piremaxx_contatos',
+    'piremaxx_fornecedores',
+    'deletedContactCodes',
+    'localSales',
+    'localReturns',
+    'deletedSaleCodes',
+    'localProducts',
+    'deletedProductCodes',
+    'localServices',
+    'deletedServiceCodes',
+    'piremaxx_compras',
+    'piremaxx_contas_receber',
+    'piremaxx_contas_pagar',
+    'localCashBalance',
+    'localCashTransactions',
+    'returnReceivableAdjustments'
+  ];
+
+  const origSetItem = Storage.prototype.setItem.bind(localStorage);
+  const origGetItem = Storage.prototype.getItem.bind(localStorage);
+
+  function syncSupplierMirror() {
+    try {
+      const contacts = JSON.parse(origGetItem('piremaxx_contatos') || '[]');
+      const dedicated = JSON.parse(origGetItem('piremaxx_fornecedores') || '[]');
+      const deleted = new Set(JSON.parse(origGetItem('deletedContactCodes') || '[]').map(String));
+
+      let contactsChanged = false;
+      dedicated.forEach(function(sup) {
+        const id = String(sup.id || sup.code || '').trim();
+        const nome = String(sup.nome || sup.name || '').trim();
+        if (!nome || deleted.has(id) || deleted.has(nome)) return;
+        const idx = contacts.findIndex(function(c) {
+          return (id && String(c.id || c.code || '').trim() === id) ||
+                 String(c.nome || c.name || '').trim().toLowerCase() === nome.toLowerCase();
+        });
+        if (idx >= 0) {
+          const tipos = Array.isArray(contacts[idx].tipos) ? contacts[idx].tipos : ['fornecedor'];
+          if (!tipos.includes('fornecedor')) {
+            tipos.push('fornecedor');
+            contacts[idx].tipos = tipos;
+            contactsChanged = true;
+          }
+        } else {
+          contacts.unshift(Object.assign({}, sup, {
+            id: id || ('FORN-' + Date.now().toString().slice(-5)),
+            nome: nome,
+            tipos: Array.isArray(sup.tipos) && sup.tipos.includes('fornecedor') ? sup.tipos : ['fornecedor'],
+            tipo: 'fornecedor'
+          }));
+          contactsChanged = true;
+        }
+      });
+
+      if (contactsChanged) {
+        origSetItem('piremaxx_contatos', JSON.stringify(contacts));
+      }
+
+      const allSuppliers = contacts.filter(function(c) {
+        const tipos = Array.isArray(c.tipos) ? c.tipos : [];
+        const t = String(c.tipo || c.categoria || '').toLowerCase();
+        return tipos.includes('fornecedor') || t === 'fornecedor';
+      });
+      origSetItem('piremaxx_fornecedores', JSON.stringify(allSuppliers));
+    } catch (e) {}
+  }
+
+  function pushKeyToServer(key, value) {
+    if (location.protocol === 'file:') return Promise.resolve();
+    const payload = {};
+    payload[key] = value;
+    if (key === 'piremaxx_contatos') {
+      syncSupplierMirror();
+      payload['piremaxx_fornecedores'] = origGetItem('piremaxx_fornecedores') || '[]';
+    } else if (key === 'piremaxx_fornecedores') {
+      syncSupplierMirror();
+      payload['piremaxx_contatos'] = origGetItem('piremaxx_contatos') || '[]';
+    }
+    try {
+      return fetch('/api/storage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(function(){});
+    } catch (e) {
+      return Promise.resolve();
+    }
+  }
+
+  window.piremaxxSyncOnline = pushKeyToServer;
+  window.syncSupplierMirror = syncSupplierMirror;
+
+  Storage.prototype.setItem = function(key, value) {
+    origSetItem(key, value);
+    if (this === localStorage && SYNC_KEYS.includes(key)) {
+      pushKeyToServer(key, value);
+    }
+  };
+
+  syncSupplierMirror();
+
+  if (location.protocol !== 'file:') {
+    fetch('/api/storage', { cache: 'no-store' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(serverDB) {
+        if (!serverDB || typeof serverDB !== 'object') return;
+        let updatedAny = false;
+        const toPush = {};
+        SYNC_KEYS.forEach(function(k) {
+          const localVal = origGetItem(k);
+          const serverVal = serverDB[k];
+          if (serverVal && (!localVal || localVal === '[]' || localVal === '{}')) {
+            origSetItem(k, serverVal);
+            updatedAny = true;
+          } else if (localVal && localVal !== '[]' && localVal !== '{}' && !serverVal) {
+            toPush[k] = localVal;
+          } else if (serverVal && localVal && (k === 'piremaxx_contatos' || k === 'piremaxx_fornecedores')) {
+            try {
+              const localArr = JSON.parse(localVal);
+              const serverArr = JSON.parse(serverVal);
+              if (Array.isArray(localArr) && Array.isArray(serverArr)) {
+                const deleted = new Set(JSON.parse(origGetItem('deletedContactCodes') || '[]').map(String));
+                let mergedChanged = false;
+                serverArr.forEach(function(item) {
+                  const id = String(item.id || item.code || '').trim();
+                  const nome = String(item.nome || item.name || '').trim();
+                  if (!nome || deleted.has(id) || deleted.has(nome)) return;
+                  const exists = localArr.some(function(x) {
+                    return (id && String(x.id || x.code || '').trim() === id) ||
+                           String(x.nome || x.name || '').trim().toLowerCase() === nome.toLowerCase();
+                  });
+                  if (!exists) {
+                    localArr.push(item);
+                    mergedChanged = true;
+                  }
+                });
+                if (mergedChanged) {
+                  origSetItem(k, JSON.stringify(localArr));
+                  toPush[k] = JSON.stringify(localArr);
+                  updatedAny = true;
+                }
+              }
+            } catch (e) {}
+          }
+        });
+        syncSupplierMirror();
+        if (Object.keys(toPush).length) {
+          fetch('/api/storage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(toPush),
+            keepalive: true
+          }).catch(function(){});
+        }
+        if (updatedAny && typeof window.renderContactsTable === 'function') {
+          window.renderContactsTable();
+        }
+      })
+      .catch(function(){});
+  }
+})();
+

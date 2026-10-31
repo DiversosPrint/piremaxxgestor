@@ -1,4 +1,4 @@
-﻿<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gestão Piremaxx - Novo cliente</title><link rel="stylesheet" href="styles.css"><style>body{background:#f7f7f7}.new-client{min-height:100vh}.client-form-head{height:41px;background:#64a3f5;color:#fff;padding:11px;font-size:14px;font-weight:bold}.client-form{padding:40px 75px}.client-tabs{display:flex;background:#eee;border:1px solid #d8d8d8;border-radius:4px;padding:7px;margin-bottom:16px}.client-tabs button{flex:1;border:0;background:transparent;color:#5794e9;padding:9px;font-weight:bold}.client-tabs button.active{background:#64a3f5;color:#fff;border-radius:3px}.form-panel{background:#eee;border:1px solid #ddd;border-radius:3px;padding:24px 32px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px 24px}.form-panel h3{grid-column:1/-1;color:#54718a;font-size:14px;margin:0}.field{display:flex;flex-direction:column;gap:6px;color:#587083;font-size:11px}.field.wide{grid-column:1/-1}.field input,.field select,.field textarea{height:28px;border:1px solid #cbd1d4;background:#fff;padding:5px;color:#587083}.field textarea{height:70px}.toggle{height:28px;background:#367fba;color:#fff;border:0;border-radius:3px;font-weight:bold;position:relative}.toggle:after{content:'';position:absolute;right:3px;top:3px;width:21px;height:22px;background:#fff;border-radius:3px}.actions{display:flex;justify-content:flex-end;gap:6px;border-top:1px solid #ddd;padding:18px 75px}.actions button{border:0;padding:9px 17px;border-radius:3px}.save{background:#29a55d;color:#fff}.back{background:#ddd;color:#666}.delivery{grid-column:1/-1;background:#eee;border:1px solid #ddd;padding:24px;color:#fff}.delivery button{background:#29a55d;border:0;color:#fff;padding:9px 14px;border-radius:3px}.hidden{display:none!important}@media(max-width:900px){.client-form{padding:25px}.form-panel{grid-template-columns:1fr 1fr}.actions{padding:18px 25px}}</style><link rel="stylesheet" href="mobile.css">
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gestão Piremaxx - Novo cliente</title><link rel="stylesheet" href="styles.css"><style>body{background:#f7f7f7}.new-client{min-height:100vh}.client-form-head{height:41px;background:#64a3f5;color:#fff;padding:11px;font-size:14px;font-weight:bold}.client-form{padding:40px 75px}.client-tabs{display:flex;background:#eee;border:1px solid #d8d8d8;border-radius:4px;padding:7px;margin-bottom:16px}.client-tabs button{flex:1;border:0;background:transparent;color:#5794e9;padding:9px;font-weight:bold}.client-tabs button.active{background:#64a3f5;color:#fff;border-radius:3px}.form-panel{background:#eee;border:1px solid #ddd;border-radius:3px;padding:24px 32px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px 24px}.form-panel h3{grid-column:1/-1;color:#54718a;font-size:14px;margin:0}.field{display:flex;flex-direction:column;gap:6px;color:#587083;font-size:11px}.field.wide{grid-column:1/-1}.field input,.field select,.field textarea{height:28px;border:1px solid #cbd1d4;background:#fff;padding:5px;color:#587083}.field textarea{height:70px}.toggle{height:28px;background:#367fba;color:#fff;border:0;border-radius:3px;font-weight:bold;position:relative}.toggle:after{content:'';position:absolute;right:3px;top:3px;width:21px;height:22px;background:#fff;border-radius:3px}.actions{display:flex;justify-content:flex-end;gap:6px;border-top:1px solid #ddd;padding:18px 75px}.actions button{border:0;padding:9px 17px;border-radius:3px}.save{background:#29a55d;color:#fff}.back{background:#ddd;color:#666}.delivery{grid-column:1/-1;background:#eee;border:1px solid #ddd;padding:24px;color:#fff}.delivery button{background:#29a55d;border:0;color:#fff;padding:9px 14px;border-radius:3px}.hidden{display:none!important}@media(max-width:900px){.client-form{padding:25px}.form-panel{grid-template-columns:1fr 1fr}.actions{padding:18px 25px}}</style><link rel="stylesheet" href="mobile.css">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#5e7d89">
 <meta name="mobile-web-app-capable" content="yes">
@@ -339,3 +339,194 @@ document.addEventListener('DOMContentLoaded',function(){
 <script>(function(){function fix(){var link=[].slice.call(document.querySelectorAll('.sidebar nav a')).find(function(a){return a.textContent.indexOf('Financeiro')>=0});if(link)link.href='financeiro.html'}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix);else fix()})();</script>
 <style id="new-client-topbar-fix">@media screen and (min-width:769px){body:has(.new-client) main.new-client{padding-top:49px!important}body:has(.new-client) main.new-client>.topbar{position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;z-index:40!important}}html body .contact-types,html body .new-client .contact-types{display:none!important}html body .new-client .form-panel{width:100%!important;margin-left:0!important;box-sizing:border-box!important}</style><script>document.addEventListener('DOMContentLoaded',function(){var main=document.querySelector('main.new-client');if(!main||main.querySelector('.topbar'))return;var top=document.createElement('header');top.className='topbar';top.innerHTML='<div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="search">em:clientes <button>⌕</button></div><div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div>';main.insertBefore(top,main.firstChild)});</script>
 <style id="new-client-topbar-spacing-fix">@media screen and (min-width:769px){html body:has(.new-client) main.new-client>.client-form-head{margin-top:-49px!important}}</style>
+<script>
+// Handler definitivo de carregamento e salvamento (local + online) para Clientes, Fornecedores, Transportadoras e Vendedores
+(function(){
+  function getContacts(){
+    let list=[];
+    try{list=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(e){list=[]}
+    let dedicated=[];
+    try{dedicated=JSON.parse(localStorage.getItem('piremaxx_fornecedores')||'[]')}catch(e){dedicated=[]}
+    dedicated.forEach(function(sup){
+      const nome=String(sup.nome||sup.name||'').trim();
+      if(!nome)return;
+      if(!list.some(function(c){return String(c.id||'')===String(sup.id||'')||String(c.nome||'').trim().toLowerCase()===nome.toLowerCase()})){
+        list.push(Object.assign({},sup,{nome:nome,tipos:Array.isArray(sup.tipos)&&sup.tipos.length?sup.tipos:['fornecedor']}));
+      }
+    });
+    return list;
+  }
+
+  function restoreEditTypes(){
+    const params=new URLSearchParams(location.search);
+    const editKey=params.get('edit');
+    const tipoParam=params.get('tipo')||(!editKey?localStorage.getItem('piremaxx_last_contact_tab'):null);
+    const all=getContacts();
+    const existing=editKey?all.find(function(x){return String(x.nome||'').trim()===String(editKey).trim()}):null;
+    const targetTipos=tipoParam?[tipoParam]:(existing&&Array.isArray(existing.tipos)&&existing.tipos.length?existing.tipos:['cliente']);
+    const box=document.querySelector('.contact-types');
+    if(box){
+      box.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
+        cb.checked=targetTipos.includes(cb.value);
+      });
+    }
+    const head=document.querySelector('.client-form-head');
+    if(head){
+      const mainTipo=targetTipos[0]||'cliente';
+      const labelMap={cliente:'cliente',fornecedor:'fornecedor',transportador:'transportadora',vendedor:'vendedor',comprador:'comprador'};
+      head.textContent=(editKey?'Editar ':'Novo ')+(labelMap[mainTipo]||'contato');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    restoreEditTypes();
+    setTimeout(restoreEditTypes,200);
+    setTimeout(restoreEditTypes,600);
+    setTimeout(restoreEditTypes,1700);
+  });
+
+  document.addEventListener('click',async function(e){
+    const btn=e.target.closest&&e.target.closest('.actions .save');
+    if(!btn)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const params=new URLSearchParams(location.search);
+    const editKey=params.get('edit');
+    const tipoParam=params.get('tipo')||(!editKey?localStorage.getItem('piremaxx_last_contact_tab'):null);
+
+    const readField=function(panelId,labelPart){
+      const fields=[...document.querySelectorAll('#'+panelId+' .field')];
+      const f=fields.find(function(item){return item.textContent.toLowerCase().includes(labelPart.toLowerCase())});
+      if(!f)return '';
+      const input=f.querySelector('input:not([type="checkbox"]),select,textarea');
+      return input?input.value.trim():'';
+    };
+
+    const name=readField('dados','Nome / Razão Social');
+    if(!name){
+      alert('Informe o Nome / Razão Social.');
+      return;
+    }
+
+    const all=getContacts();
+    const old=editKey?all.find(function(item){return String(item.nome||'').trim()===String(editKey).trim()}):null;
+
+    let tipos=[...document.querySelectorAll('.contact-types input[type="checkbox"]:checked')].map(function(x){return x.value});
+    if(tipoParam&&!tipos.includes(tipoParam))tipos=[tipoParam];
+    if(!tipos.length&&old&&Array.isArray(old.tipos)&&old.tipos.length)tipos=old.tipos.slice();
+    if(!tipos.length)tipos=['cliente'];
+
+    const controls=function(id){
+      return [...document.querySelectorAll('#'+id+' input:not([type="checkbox"]),#'+id+' select,#'+id+' textarea')].map(function(x){return x.value});
+    };
+
+    const phones=[...document.querySelectorAll('#dados input[name="telefone"], #dados input')].filter(function(inp){
+      const lbl=inp.closest('.field');
+      return lbl&&lbl.textContent.toLowerCase().includes('telefone');
+    }).map(function(x){return x.value.trim()}).filter(Boolean);
+
+    const emails=[...document.querySelectorAll('#dados input[name="email"], #dados input')].filter(function(inp){
+      const lbl=inp.closest('.field');
+      return lbl&&lbl.textContent.toLowerCase().includes('e-mail');
+    }).map(function(x){return x.value.trim()}).filter(Boolean);
+
+    const entregas=[...document.querySelectorAll('.delivery-form')].map(function(f){
+      const o={};
+      f.querySelectorAll('input,select,textarea').forEach(function(x){if(x.name)o[x.name]=x.value});
+      return o;
+    });
+
+    const dadosObj={
+      'Nome / Razão Social':name,
+      'CPF / CNPJ':readField('dados','CPF / CNPJ'),
+      'Nome fantasia':readField('dados','Nome fantasia'),
+      'Nome do contato':readField('dados','Nome do contato'),
+      'Telefone(s)':phones[0]||readField('dados','Telefone'),
+      'E-mail(s)':emails[0]||readField('dados','E-mail')
+    };
+
+    const enderecoObj={
+      'CEP':readField('endereco','CEP'),
+      'Estado':readField('endereco','Estado'),
+      'Cidade':readField('endereco','Cidade'),
+      'Endereço':readField('endereco','Endereço'),
+      'Número':readField('endereco','Número'),
+      'Complemento':readField('endereco','Complemento'),
+      'Bairro':readField('endereco','Bairro')
+    };
+
+    const adicionaisObj={
+      'Indicador de IE':readField('adicionais','Indicador de IE'),
+      'Inscrição Estadual':readField('adicionais','Inscrição Estadual'),
+      'IE Subst. Trib.':readField('adicionais','IE Subst'),
+      'Inscrição Municipal':readField('adicionais','Inscrição Municipal'),
+      'Suframa':readField('adicionais','Suframa'),
+      'Ente governamental':readField('adicionais','Ente governamental'),
+      'Data nascimento':readField('adicionais','Data nascimento'),
+      'Palavras-chave':readField('adicionais','Palavras-chave'),
+      'Observações':readField('adicionais','Observações')
+    };
+
+    const recordId=old?.id||Date.now();
+    const obj={
+      id:recordId,
+      code:String(recordId),
+      nome:name,
+      name:name,
+      tipos:tipos,
+      tipo:tipos[0]||'cliente',
+      cpfcnpj:dadosObj['CPF / CNPJ'],
+      fantasia:dadosObj['Nome fantasia'],
+      contato:dadosObj['Nome do contato'],
+      telefone:dadosObj['Telefone(s)']||'',
+      telefones:phones,
+      email:dadosObj['E-mail(s)']||'',
+      emails:emails,
+      uf:enderecoObj['Estado']||'',
+      cidade:enderecoObj['Cidade']||'',
+      dados:dadosObj,
+      endereco:enderecoObj,
+      adicionais:adicionaisObj,
+      snap:{
+        dados:controls('dados'),
+        endereco:controls('endereco'),
+        adicionais:controls('adicionais')
+      },
+      entregas:entregas,
+      updatedAt:new Date().toISOString()
+    };
+
+    const updatedList=old
+      ?all.map(function(item){return (item.id===old.id||String(item.nome||'').trim()===String(editKey).trim())?obj:item})
+      :all.concat(obj);
+
+    localStorage.setItem('piremaxx_contatos',JSON.stringify(updatedList));
+
+    const suppliers=updatedList.filter(function(c){
+      const t=Array.isArray(c.tipos)?c.tipos:[];
+      return t.includes('fornecedor')||String(c.tipo||'').toLowerCase()==='fornecedor';
+    });
+    localStorage.setItem('piremaxx_fornecedores',JSON.stringify(suppliers));
+
+    if(typeof window.piremaxxSyncOnline==='function'){
+      try{
+        await Promise.all([
+          window.piremaxxSyncOnline('piremaxx_contatos',JSON.stringify(updatedList)),
+          window.piremaxxSyncOnline('piremaxx_fornecedores',JSON.stringify(suppliers))
+        ]);
+      }catch(err){}
+    }
+
+    const firstTipo=tipoParam||tipos[0]||'cliente';
+    const dest={
+      cliente:'clientes',
+      fornecedor:'fornecedores',
+      comprador:'compradores',
+      transportador:'transportadores',
+      vendedor:'vendedores'
+    }[firstTipo]||'clientes';
+    location.href='clientes.html#'+dest;
+  },true);
+})();
+</script>
