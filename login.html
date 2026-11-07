@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -451,11 +451,19 @@
           return;
         }
 
+        var avatarUrl = matched.avatar || '';
+        try {
+          var avMap = JSON.parse(localStorage.getItem('piremaxx_avatares') || '{}');
+          if (avMap && avMap[String(matched.login || '').toLowerCase()]) {
+            avatarUrl = avMap[String(matched.login || '').toLowerCase()];
+          }
+        } catch(e) {}
         var session = {
           id: matched.id,
           nome: matched.nome,
           email: matched.email,
           login: matched.login,
+          avatar: avatarUrl,
           perfil: matched.perfil || 'comercial',
           permissaoLabel: matched.permissaoLabel || 'Acesso completo',
           permissoes: matched.permissoes || {},

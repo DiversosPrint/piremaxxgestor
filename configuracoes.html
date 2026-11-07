@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -401,19 +401,29 @@
     }
 
     /* Modal Minha Conta */
-    .account-modal { display: none; position: fixed; inset: 0; background: #fff; z-index: 200; }
+    .account-modal { display: none; position: fixed; inset: 0; background: #e7edf9; z-index: 200; overflow-y: auto; }
     .account-modal.open { display: block; }
-    .modal-head { height: 42px; background: #59b957; color: #fff; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; font-weight: bold; }
+    .modal-head { height: 46px; background: linear-gradient(135deg, #17366f 0%, #102e67 100%); color: #fff; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; font-weight: bold; font-size: 14px; }
     .modal-head button { background: transparent; border: 0; color: #fff; font-size: 20px; cursor: pointer; }
-    .account-card { margin: 38px 6%; padding: 24px 30px; background: #eee; border: 1px solid #ddd; border-radius: 4px; }
-    .avatar { width: 54px; height: 54px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(#209b98, #263840); border: 4px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 20px; }
-    .account-card label { display: block; font-size: 11px; color: #587383; margin: 9px 0; font-weight: bold; }
-    .account-card input { height: 32px; box-sizing: border-box; border: 1px solid #cbd4d8; border-radius: 3px; padding: 0 10px; width: 100%; margin-top: 4px; background: #fff; }
-    .account-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; background: #eee; padding: 10px 0; }
-    .modal-actions { margin: 0 6%; display: flex; justify-content: flex-end; gap: 10px; }
-    .modal-actions button { height: 34px; border: 0; border-radius: 3px; padding: 0 18px; font-weight: bold; cursor: pointer; }
-    .save { background: #35a968; color: #fff; }
-    .close { background: #eee; color: #555; border: 1px solid #ccc !important; }
+    .account-card { margin: 28px 6%; padding: 24px 30px; background: #f1f5fd; border: 1px solid #c7d3e8; border-radius: 12px; box-shadow: 6px 6px 14px rgba(116,139,181,.22), -4px -4px 10px rgba(255,255,255,.8); }
+    .account-avatar-box { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 0 auto 20px; padding-bottom: 16px; border-bottom: 1px solid #d5e0f2; }
+    .avatar { width: 76px; height: 76px; border-radius: 50%; background: #fff center center/cover no-repeat; border: 3px solid #17366f; box-shadow: 0 4px 12px rgba(23,54,111,.25); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 0; cursor: pointer; }
+    .account-avatar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .btn-upload-avatar { height: 32px; padding: 0 14px; border: 1px solid #2b549a; border-radius: 7px; background: linear-gradient(135deg, #244d92 0%, #17366f 100%); color: #fff; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; box-shadow: 0 2px 6px rgba(23,54,111,.2); }
+    .btn-upload-avatar:hover { filter: brightness(1.1); }
+    .btn-reset-avatar { height: 32px; padding: 0 12px; border: 1px solid #b9cbe6; border-radius: 7px; background: #fff; color: #193b78; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .btn-reset-avatar:hover { background: #dce7f9; }
+    .account-avatar-presets { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+    .account-avatar-presets span { font-size: 11px; color: #35558a; font-weight: bold; }
+    .account-avatar-presets .avatar-preset-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; background: #fff center center/cover no-repeat; cursor: pointer; box-shadow: 0 1px 4px rgba(16,46,103,.25); padding: 0; }
+    .account-avatar-presets .avatar-preset-btn.active { border-color: #08b8bb; box-shadow: 0 0 0 2px rgba(8,184,187,.35); }
+    .account-card label { display: block; font-size: 11px; color: #193b78; margin: 9px 0; font-weight: bold; }
+    .account-card input { height: 32px; box-sizing: border-box; border: 1px solid #c7d3e8; border-radius: 6px; padding: 0 10px; width: 100%; margin-top: 4px; background: #fff; }
+    .account-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; background: transparent; padding: 10px 0; }
+    .modal-actions { margin: 0 6% 28px; display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-actions button { height: 36px; border: 0; border-radius: 7px; padding: 0 18px; font-weight: bold; cursor: pointer; }
+    .save { background: linear-gradient(135deg, #2f5a9e, #17366f); color: #fff; }
+    .close { background: #f1f5fd; color: #193b78; border: 1px solid #c7d3e8 !important; }
     .toast-feedback {
       position: fixed;
       right: 24px;
@@ -615,7 +625,24 @@
       <button type="button" onclick="closeAccount()">×</button>
     </div>
     <div class="account-card">
-      <div class="avatar" id="accAvatar">OC</div>
+      <div class="account-avatar-box">
+        <div class="avatar" id="accAvatar" title="Clique para carregar foto do perfil">OC</div>
+        <input type="file" accept="image/*" id="accAvatarInput" hidden>
+        <div class="account-avatar-actions">
+          <button type="button" class="btn-upload-avatar" id="btnAccUploadAvatar">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Carregar foto do perfil
+          </button>
+          <button type="button" class="btn-reset-avatar" id="btnAccResetAvatar">Restaurar padrão</button>
+        </div>
+        <div class="account-avatar-presets" id="accAvatarPresets">
+          <span>Ou escolha um avatar:</span>
+          <button type="button" class="avatar-preset-btn" data-avatar-preset="default" title="Avatar Executivo 1"></button>
+          <button type="button" class="avatar-preset-btn" data-avatar-preset="navy" title="Avatar Executivo 2"></button>
+          <button type="button" class="avatar-preset-btn" data-avatar-preset="female" title="Avatar Executiva"></button>
+          <button type="button" class="avatar-preset-btn" data-avatar-preset="tire" title="Mascote Piremaxx"></button>
+        </div>
+      </div>
       <div class="account-grid">
         <label>Nome de exibição
           <input id="accNome" value="ODIMAN COSTA">
@@ -1115,11 +1142,43 @@
           document.getElementById('accSenhaAtual').value = current.senha || '123456';
           document.getElementById('accNovaSenha').value = '';
           document.getElementById('accConfirmaSenha').value = '';
-          var initials = String(current.nome || 'U').split(' ').map(function(p){ return p[0]; }).slice(0,2).join('').toUpperCase();
-          document.getElementById('accAvatar').textContent = initials;
+        }
+        if (window.piremaxxAvatar) {
+          document.querySelectorAll('#accAvatarPresets .avatar-preset-btn').forEach(function(btn){
+            var key = btn.dataset.avatarPreset;
+            if (window.piremaxxAvatar.presets[key]) {
+              btn.style.backgroundImage = 'url("' + window.piremaxxAvatar.presets[key] + '")';
+            }
+          });
+          window.piremaxxAvatar.applyEverywhere();
         }
         document.getElementById('accountModal').classList.add('open');
       };
+
+      var accAvatarInput = document.getElementById('accAvatarInput');
+      document.getElementById('btnAccUploadAvatar').addEventListener('click', function(){ accAvatarInput.click(); });
+      document.getElementById('accAvatar').addEventListener('click', function(){ accAvatarInput.click(); });
+      accAvatarInput.addEventListener('change', function(){
+        if (this.files && this.files[0] && window.piremaxxAvatar) {
+          window.piremaxxAvatar.processFile(this.files[0], function(){
+            showToast('Foto do perfil atualizada com sucesso!');
+          });
+          this.value = '';
+        }
+      });
+      document.getElementById('btnAccResetAvatar').addEventListener('click', function(){
+        if (window.piremaxxAvatar) {
+          window.piremaxxAvatar.set('');
+          showToast('Avatar padrão restaurado.');
+        }
+      });
+      document.getElementById('accAvatarPresets').addEventListener('click', function(e){
+        var btn = e.target.closest('.avatar-preset-btn');
+        if (!btn || !window.piremaxxAvatar) return;
+        var key = btn.dataset.avatarPreset;
+        window.piremaxxAvatar.set(key === 'default' ? '' : (window.piremaxxAvatar.presets[key] || ''));
+        showToast('Avatar atualizado!');
+      });
 
       window.closeAccount = function(){
         document.getElementById('accountModal').classList.remove('open');

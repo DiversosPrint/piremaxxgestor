@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <script>document.addEventListener('DOMContentLoaded',function(){document.addEventListener('click',function(e){const b=e.target.closest('.status-paid');if(!b)return;e.preventDefault();e.stopImmediatePropagation();const due=b.textContent.trim()==='Pago';b.textContent=due?'A pagar':'Pago';b.classList.toggle('status-due',due);const row=b.closest('.finance-row-purchase');const amount=Number(String(row?.querySelector('input')?.value||0).replace(',','.'))||0;const key='purchasePaid:'+row?.querySelector('span')?.textContent;const paid=JSON.parse(localStorage.getItem('purchasePaidRows')||'{}');if(!due&&!paid[key]){paid[key]=true;localStorage.setItem('purchasePaidRows',JSON.stringify(paid));localStorage.setItem('localCashBalance',String((Number(localStorage.getItem('localCashBalance')||0)-amount)))}else if(due&&paid[key]){delete paid[key];localStorage.setItem('purchasePaidRows',JSON.stringify(paid));localStorage.setItem('localCashBalance',String((Number(localStorage.getItem('localCashBalance')||0)+amount)))}},true)});</script>
 <script>document.addEventListener('DOMContentLoaded',function(){const obs=new MutationObserver(function(){document.querySelectorAll('.status-paid').forEach(b=>{if(b.dataset.initialized)return;b.dataset.initialized='1';b.textContent='A pagar';b.classList.add('status-due')})});obs.observe(document.body,{childList:true,subtree:true})});</script>
 <script>document.addEventListener('DOMContentLoaded',function(){const a=[...document.querySelectorAll('.sidebar nav a')].find(x=>x.textContent.includes('Clientes'));if(a)a.href='clientes.html'});</script>
-<script src="menu-lateral.js?v=layout-fixed"></script>
+<script src="menu-lateral.js?v=topo-uniform-3"></script>
 <style id="compras-home-reference">
 html body:has(.purchase-content) .purchase-header {
   height:49px!important; padding:11px!important; font-size:16px!important;
@@ -445,17 +445,6 @@ html body:has(.purchase-content) .purchase-tab {
 }
 html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
 </style>
-<script>
-/* Aplica as mesmas dimensões da Home imediatamente, inclusive antes do DOMContentLoaded. */
-(function(){
-  const sidebar=document.querySelector('.sidebar'), main=document.querySelector('main'), topbar=document.querySelector('main>.topbar');
-  if(!sidebar||!main||!topbar)return;
-  sidebar.style.cssText+=';top:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important';
-  main.style.cssText+=';margin-left:143px!important;width:calc(100% - 143px)!important;padding-top:0!important';
-   main.style.cssText+=';padding-top:98px!important';
-   topbar.style.cssText+=';position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;padding:0 10px!important;z-index:40!important';
-})();
-</script>
 <script>
 (function(){
   function initCollections(){
@@ -489,16 +478,6 @@ document.addEventListener('click',function(event){
   if(!button||document.querySelector('.collection-modal'))return;
   var panel=document.getElementById('collections-panel');
   if(panel&&panel.dataset.ready&&typeof window.openCollectionForm==='function')window.openCollectionForm();
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  const sidebar=document.querySelector('.sidebar');
-  if(!sidebar)return;
-  sidebar.classList.add('shared-sidebar');
-  const brand=sidebar.querySelector('.brand');
-  if(brand){brand.style.setProperty('display','block','important');brand.style.setProperty('visibility','visible','important');brand.style.setProperty('height','49px','important');brand.style.setProperty('background-image',"url('public/logo.webp')",'important');brand.style.setProperty('background-position','center center','important');brand.style.setProperty('background-repeat','no-repeat','important');brand.style.setProperty('background-size','auto 26px','important');brand.style.setProperty('font-size','0','important');}
-  sidebar.style.setProperty('top','0px','important');
 });
 </script>
 <style id="collections-color">.purchase-tab[data-purchase-tab="collections"],.purchase-tab[data-purchase-tab="collections"].active{background:#3f86bd!important;color:#fff!important}.purchase-tab[data-purchase-tab="collections"]:hover{background:#3575a8!important}.collections-toolbar .collections-new{background:#3f86bd!important}.collections-toolbar .collections-new:hover{background:#3575a8!important}</style>

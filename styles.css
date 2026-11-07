@@ -81,7 +81,6 @@ body:not(:has(.login-shell)) .sidebar.shared-sidebar nav a:hover {
   background: var(--piremaxx-blue-dark) !important;
 }
 
-body:not(:has(.login-shell)) .topbar, body:not(:has(.login-shell)) .products-topbar,
 body:not(:has(.login-shell)) .brand, body:not(:has(.login-shell)) .search {
   background: var(--piremaxx-panel) !important;
   color: var(--piremaxx-text) !important;
@@ -141,7 +140,7 @@ html body.standard-layout:has(.clients) .sidebar .brand{
   margin:0!important;
   padding:0!important;
   background-color:#eee!important;
-  background-image:url('public/logo.webp')!important;
+  background-image:none!important;
   background-position:center center!important;
   background-repeat:no-repeat!important;
   background-size:auto 26px!important;
@@ -229,7 +228,11 @@ html body.standard-layout:has(.clients) main>.topbar{
   max-height:49px!important;
   padding:0 10px!important;
   margin:0!important;
-  background:#eee!important;
+  background-color:#0d315e!important;
+  background-image:url('public/images/topo-textura-automotiva.svg?v=2')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
   display:flex!important;
   align-items:center!important;
   justify-content:flex-start!important;
@@ -734,3 +737,462 @@ body:not(:has(.login-shell)) .finance-panel,
 body:not(:has(.login-shell)) .purchase-panel,
 body:not(:has(.login-shell)) .client-panel,
 body:not(:has(.login-shell)) .product-panel { background: #f1f5fd !important; border-color: #c7d3e8 !important; }
+
+/* A tela Pix usa a barra superior fixa e inicia o cabeçalho logo abaixo dela. */
+html body.pix-page main { padding-top:49px !important; }
+
+/* Novo topo visual: logo à esquerda e pneu central, mantendo busca e usuário. */
+html body main>.topbar{
+  background-color:#0d315e!important;
+  background-image:url('public/images/topo-textura-automotiva.svg?v=2')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  overflow:visible!important;
+  position:fixed!important;
+  z-index:85!important;
+}
+html body:not(:has(.login-shell)) main>.topbar{
+  background-color:#0d315e!important;
+  background-image:url('public/images/topo-textura-automotiva.svg?v=2')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+}
+html body .sidebar .brand{
+  background-image:none!important;
+  background-color:#123d72!important;
+  color:transparent!important;
+}
+html body main>.topbar .brand-mini{
+  width:210px!important;
+  min-width:210px!important;
+  height:49px!important;
+  background-image:url('public/logo.png')!important;
+  background-repeat:no-repeat!important;
+  background-position:left center!important;
+  background-size:196px auto!important;
+  font-size:0!important;
+  color:transparent!important;
+}
+html body main>.topbar .brand-mini{
+  background-image:url('public/images/TOPO1.png')!important;
+  background-position:left center!important;
+  background-size:290px auto!important;
+  background-repeat:no-repeat!important;
+  mix-blend-mode:normal!important;
+}
+html body main>.topbar .brand-mini:after{display:none!important}
+html body main>.topbar .brand-mini strong,
+html body main>.topbar .brand-mini small{display:none!important}
+html body main>.topbar:before{
+  content:none!important;
+  display:none!important;
+  position:absolute!important;
+  left:50%!important;
+  top:-4px!important;
+  width:120px!important;
+  height:58px!important;
+  transform:translateX(-50%)!important;
+  background-image:url('public/images/animado.png')!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:120px auto!important;
+  z-index:2!important;
+  pointer-events:none!important;
+}
+html body main>.topbar .search,
+html body main>.topbar .user{position:relative!important;z-index:3!important}
+@media(max-width:768px){
+  html body main>.topbar:before{display:none!important}
+  html body main>.topbar .brand-mini{width:120px!important;min-width:120px!important;background-size:116px auto!important}
+}
+
+/* Cabeçalho azul no estilo da referência enviada com textura automotiva, rastro de pneu, mascote e perfil executivo. */
+html body main>.topbar,
+html body main>.products-topbar{
+  background-color:#0d315e!important;
+  background-image:url('public/images/topo-textura-automotiva.svg?v=2')!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  overflow:visible!important;
+}
+html body main>.topbar .brand-mini,
+html body main>.products-topbar .brand-mini,
+html body main>.topbar .brand-mini.brand-mini,
+html body main>.products-topbar .brand-mini.brand-mini{
+  width:185px!important;
+  min-width:185px!important;
+  max-width:185px!important;
+  height:49px!important;
+  flex:0 0 185px!important;
+  background-image:url('public/images/TOPO1.png')!important;
+  background-position:left center!important;
+  background-repeat:no-repeat!important;
+  background-size:178px auto!important;
+  mix-blend-mode:normal!important;
+  font-size:0!important;
+  color:transparent!important;
+  position:relative!important;
+}
+html body main>.topbar .brand-mini:after,
+html body main>.products-topbar .brand-mini:after{content:none!important;display:none!important}
+html body .topbar .topbar-mascot,
+html body .products-topbar .topbar-mascot{
+  display:block!important;
+  width:68px!important;
+  min-width:68px!important;
+  height:58px!important;
+  flex:0 0 68px!important;
+  margin:-4px 0 0 2px!important;
+  background:url('public/images/animado.png') center center/contain no-repeat!important;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.38))!important;
+  pointer-events:none!important;
+  z-index:4!important;
+}
+html body main>.topbar .search,
+html body main>.products-topbar .products-search,
+html body main>.products-topbar .search{
+  width:390px!important;
+  min-width:260px!important;
+  max-width:390px!important;
+  height:32px!important;
+  border-radius:18px!important;
+  margin:0 auto!important;
+  padding-left:18px!important;
+  background:#fff!important;
+  color:#8a9aa5!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.2)!important;
+}
+html body main>.topbar .search button,
+html body main>.products-topbar .products-search button,
+html body main>.products-topbar .search button{
+  border-radius:0 18px 18px 0!important;
+  width:58px!important;
+  min-width:58px!important;
+  max-width:58px!important;
+  height:32px!important;
+  background:#08b8bb!important;
+  color:#fff!important;
+}
+html body main>.topbar .user,
+html body main>.products-topbar .products-user,
+html body main>.products-topbar .user{
+  margin-left:0!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  min-width:auto!important;
+  padding:4px 26px 4px 8px!important;
+  text-align:left!important;
+  color:#fff!important;
+  position:relative!important;
+}
+html body .topbar .user-avatar,
+html body .products-topbar .user-avatar{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  top:auto!important;
+  transform:none!important;
+  width:38px!important;
+  height:38px!important;
+  flex:0 0 38px!important;
+  border-radius:50%!important;
+  background-color:#fff!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23ffffff'/%3E%3Cpath d='M12 64 C13 48 21 43 32 43 C43 43 51 48 52 64 Z' fill='%231e293b'/%3E%3Cpolygon points='26,43 32,57 38,43' fill='%23e2e8f0'/%3E%3Cpolygon points='30,45 32,43 34,45 33,58 32,60 31,58' fill='%2338bdf8'/%3E%3Crect x='28' y='35' width='8' height='10' rx='3' fill='%23e0ac8b'/%3E%3Cpath d='M21 24 C21 16 25 12 32 12 C39 12 43 16 43 24 C43 32 38 38 32 38 C26 38 21 32 21 24 Z' fill='%23eab898'/%3E%3Cpath d='M20 23 C20 14 25 10 32 10 C39 10 44 14 44 22 C42 18 39 16 33 16 C26 16 22 18 20 23 Z' fill='%231e1b18'/%3E%3C/svg%3E")!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.28)!important;
+}
+html body main>.topbar .user .user-info,
+html body main>.products-topbar .user .user-info{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  text-align:left!important;
+  line-height:1.25!important;
+}
+html body main>.topbar .user .user-info b,
+html body main>.products-topbar .user .user-info b{
+  font-size:13px!important;
+  font-weight:500!important;
+  color:#fff!important;
+  letter-spacing:.2px!important;
+}
+html body main>.topbar .user small,
+html body main>.products-topbar .user small{
+  color:#d9e6f3!important;
+  font-size:9.5px!important;
+  margin-top:1px!important;
+}
+html body .topbar .user:after,
+html body .products-topbar .products-user:after,
+html body .products-topbar .user:after{
+  content:'⌄'!important;
+  position:absolute!important;
+  right:6px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  color:#fff!important;
+  font-size:15px!important;
+}
+html body .topbar .user-menu,
+html body .products-topbar .user-menu{
+  display:none!important;
+  position:absolute!important;
+  right:0!important;
+  top:52px!important;
+  width:258px!important;
+  background:#f1f5fd!important;
+  color:#193b78!important;
+  border:1px solid #c7d3e8!important;
+  border-radius:12px!important;
+  padding:6px!important;
+  z-index:220!important;
+  box-shadow:0 14px 32px rgba(16,46,103,.32),0 4px 10px rgba(23,54,111,.16)!important;
+  text-align:left!important;
+  overflow:hidden!important;
+}
+html body .topbar .user-menu.open,
+html body .products-topbar .user-menu.open{display:block!important}
+html body .topbar .user-menu .user-menu-head,
+html body .products-topbar .user-menu .user-menu-head{
+  background:linear-gradient(135deg,#17366f 0%,#102e67 100%)!important;
+  color:#fff!important;
+  padding:10px 12px!important;
+  margin:-6px -6px 6px -6px!important;
+  border-bottom:1px solid #2b4f8c!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+html body .topbar .user-menu .user-menu-head-avatar,
+html body .products-topbar .user-menu .user-menu-head-avatar{
+  position:relative!important;
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+  border-radius:50%!important;
+  border:2px solid rgba(255,255,255,.85)!important;
+  background-color:#fff!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  padding:0!important;
+  cursor:pointer!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.28)!important;
+}
+html body .topbar .user-menu .user-menu-cam-badge,
+html body .products-topbar .user-menu .user-menu-cam-badge{
+  position:absolute!important;
+  right:-2px!important;
+  bottom:-2px!important;
+  width:18px!important;
+  height:18px!important;
+  border-radius:50%!important;
+  background:#08b8bb!important;
+  color:#fff!important;
+  border:1.5px solid #102e67!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html body .topbar .user-menu .user-menu-head-text,
+html body .products-topbar .user-menu .user-menu-head-text{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+  min-width:0!important;
+}
+html body .topbar .user-menu .user-menu-head strong,
+html body .products-topbar .user-menu .user-menu-head strong{
+  font-size:12.5px!important;
+  font-weight:700!important;
+  color:#fff!important;
+  letter-spacing:.2px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+html body .topbar .user-menu .user-menu-head span,
+html body .products-topbar .user-menu .user-menu-head span{
+  font-size:10.5px!important;
+  color:#bcd2f5!important;
+  font-weight:500!important;
+}
+html body .topbar .user-menu .user-menu-avatar-section,
+html body .products-topbar .user-menu .user-menu-avatar-section{
+  background:#e5eefb!important;
+  border:1px solid #cddbf0!important;
+  border-radius:9px!important;
+  padding:8px!important;
+  margin-bottom:6px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:7px!important;
+}
+html body .topbar .user-menu .user-menu-upload-btn,
+html body .products-topbar .user-menu .user-menu-upload-btn{
+  width:100%!important;
+  height:30px!important;
+  border:1px solid #2b549a!important;
+  border-radius:7px!important;
+  background:linear-gradient(135deg,#244d92 0%,#17366f 100%)!important;
+  color:#fff!important;
+  font-size:11.5px!important;
+  font-weight:700!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  cursor:pointer!important;
+  box-shadow:0 2px 5px rgba(23,54,111,.22)!important;
+  transition:filter .15s ease,transform .12s ease!important;
+}
+html body .topbar .user-menu .user-menu-upload-btn:hover,
+html body .products-topbar .user-menu .user-menu-upload-btn:hover{
+  filter:brightness(1.1)!important;
+}
+html body .topbar .user-menu .user-menu-presets-row,
+html body .products-topbar .user-menu .user-menu-presets-row{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:5px!important;
+}
+html body .topbar .user-menu .user-menu-presets-label,
+html body .products-topbar .user-menu .user-menu-presets-label{
+  font-size:10.5px!important;
+  font-weight:700!important;
+  color:#35558a!important;
+}
+html body .topbar .user-menu .avatar-preset-btn,
+html body .products-topbar .user-menu .avatar-preset-btn{
+  width:26px!important;
+  height:26px!important;
+  flex:0 0 26px!important;
+  border-radius:50%!important;
+  border:2px solid #fff!important;
+  background-color:#fff!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  padding:0!important;
+  cursor:pointer!important;
+  box-shadow:0 1px 3px rgba(16,46,103,.25)!important;
+  transition:transform .12s ease,border-color .12s ease!important;
+}
+html body .topbar .user-menu .avatar-preset-btn:hover,
+html body .products-topbar .user-menu .avatar-preset-btn:hover{
+  transform:scale(1.08)!important;
+}
+html body .topbar .user-menu .avatar-preset-btn.active,
+html body .products-topbar .user-menu .avatar-preset-btn.active{
+  border-color:#08b8bb!important;
+  box-shadow:0 0 0 2px rgba(8,184,187,.32)!important;
+}
+html body .topbar .user-menu .avatar-reset-btn,
+html body .products-topbar .user-menu .avatar-reset-btn{
+  height:22px!important;
+  padding:0 7px!important;
+  border:1px solid #b9cbe6!important;
+  border-radius:5px!important;
+  background:#f8fbff!important;
+  color:#2b4f8c!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+}
+html body .topbar .user-menu .avatar-reset-btn:hover,
+html body .products-topbar .user-menu .avatar-reset-btn:hover{
+  background:#dce7f9!important;
+}
+html body .topbar .user-menu a,
+html body .products-topbar .user-menu a{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  color:#193b78!important;
+  background:transparent!important;
+  text-decoration:none!important;
+  padding:8px 10px!important;
+  border-bottom:0!important;
+  border-radius:8px!important;
+  font-size:12.5px!important;
+  font-weight:600!important;
+  transition:background .15s ease,color .15s ease,transform .12s ease!important;
+}
+html body .topbar .user-menu a .user-menu-ico,
+html body .products-topbar .user-menu a .user-menu-ico{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:26px!important;
+  height:26px!important;
+  flex:0 0 26px!important;
+  border-radius:7px!important;
+  background:#e1ebf9!important;
+  color:#1e468a!important;
+  transition:background .15s ease,color .15s ease!important;
+}
+html body .topbar .user-menu a:hover,
+html body .products-topbar .user-menu a:hover{
+  background:#dce7f9!important;
+  color:#102e67!important;
+}
+html body .topbar .user-menu a:hover .user-menu-ico,
+html body .products-topbar .user-menu a:hover .user-menu-ico{
+  background:#17366f!important;
+  color:#fff!important;
+}
+html body .topbar .user-menu a[data-logout-link],
+html body .products-topbar .user-menu a[data-logout-link]{
+  margin-top:4px!important;
+  padding-top:9px!important;
+  border-top:1px solid #d5e0f2!important;
+  border-radius:0 0 8px 8px!important;
+  color:#b91c1c!important;
+}
+html body .topbar .user-menu a[data-logout-link] .user-menu-ico,
+html body .products-topbar .user-menu a[data-logout-link] .user-menu-ico{
+  background:#fee2e2!important;
+  color:#dc2626!important;
+}
+html body .topbar .user-menu a[data-logout-link]:hover,
+html body .products-topbar .user-menu a[data-logout-link]:hover{
+  background:#fee2e2!important;
+  color:#991b1b!important;
+}
+html body .topbar .user-menu a[data-logout-link]:hover .user-menu-ico,
+html body .products-topbar .user-menu a[data-logout-link]:hover .user-menu-ico{
+  background:#dc2626!important;
+  color:#fff!important;
+}
+@media(max-width:768px){
+  html body .topbar .topbar-mascot,
+  html body .products-topbar .topbar-mascot{display:none!important}
+  html body main>.topbar .brand-mini,
+  html body main>.products-topbar .brand-mini{width:120px!important;min-width:120px!important;max-width:120px!important;flex:0 0 120px!important;background-size:115px auto!important}
+  html body main>.topbar .search{width:calc(100vw - 225px)!important;max-width:220px!important}
+  html body main>.topbar .user .user-info{display:none!important}
+}
+
+/* Abas do Pix seguem o azul padrão do sistema. */
+html body.pix-page .pix-tabs{border-bottom-color:#1b2886!important}
+html body.pix-page .pix-tabs button.active{background:#1b2886!important}
+
+/* Padrão único do cabeçalho: ocupa também o antigo espaço da marca lateral. */
+@media (min-width:769px){
+  html body .sidebar.shared-sidebar,
+  html body .sidebar{top:49px!important;height:calc(100vh - 49px)!important;min-height:calc(100vh - 49px)!important}
+  html body .sidebar.shared-sidebar .brand,
+  html body .sidebar .brand{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;background-image:none!important}
+  html body main>.topbar,
+  html body main>.products-topbar{left:0!important;width:100%!important;z-index:85!important}
+}
