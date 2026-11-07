@@ -1,4 +1,34 @@
 (function () {
+  function applyPiremaxxTheme() {
+    if (document.querySelector('.login-shell')) return;
+    var groups = {
+      '#e7edf9': 'body',
+      '#17366f': '.sidebar, .sidebar.shared-sidebar, .titlebar, .clients-title, .purchase-header, .dashboard-title, .finance-title, .fleet-title, .products-title, .reports-title, .config-title',
+      '#102e67': '.sidebar nav a.active, .sidebar nav a:hover, .sidebar.shared-sidebar nav a.active, .sidebar.shared-sidebar nav a:hover',
+      '#f1f5fd': '.topbar, .products-topbar, .panel, .metric, .finance-panel, .purchase-panel, .client-panel, .product-panel'
+    };
+    Object.keys(groups).forEach(function (color) {
+      document.querySelectorAll(groups[color]).forEach(function (element) {
+        element.style.setProperty('background-color', color, 'important');
+      });
+    });
+    document.querySelectorAll('.panel, .metric, .finance-panel, .purchase-panel, .client-panel, .product-panel').forEach(function (element) {
+      element.style.setProperty('border-color', '#c7d3e8', 'important');
+      element.style.setProperty('box-shadow', '5px 5px 12px rgba(116,139,181,.22), -4px -4px 10px rgba(255,255,255,.78)', 'important');
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', applyPiremaxxTheme);
+
+  function resetDashboardHorizontalPosition() {
+    if (!document.querySelector('.dashboard')) return;
+    window.scrollTo(0, window.scrollY || 0);
+    document.documentElement.scrollLeft = 0;
+    document.body.scrollLeft = 0;
+  }
+  document.addEventListener('DOMContentLoaded', resetDashboardHorizontalPosition);
+  window.addEventListener('pageshow', resetDashboardHorizontalPosition);
+
   function fixFinanceSidebarLink() {
     document.querySelectorAll('.sidebar nav a').forEach(function (link) {
       if (link.textContent.indexOf('Financeiro') >= 0) link.setAttribute('href', 'financeiro.html');

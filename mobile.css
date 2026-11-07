@@ -3,6 +3,8 @@
    O layout Desktop (> 768px) permanece 100% inalterado.
    ========================================================================== */
 @media (max-width: 768px) {
+  html { overflow-x: hidden !important; overscroll-behavior-x: none !important; }
+  html body { overflow-x: hidden !important; overscroll-behavior-x: none !important; }
   html, body {
     width: 100% !important;
     max-width: 100vw !important;
@@ -853,6 +855,113 @@
   html body .dash-metrics {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* PWA: mantém toda a página arrastável, inclusive abaixo da barra inferior. */
+@media (max-width: 768px) {
+  html {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+  }
+  html body {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+  }
+  html body main,
+  html body main.products-page,
+  html body:has(.shared-sidebar) main {
+    height: auto !important;
+    min-height: calc(100vh - 54px) !important;
+    overflow: visible !important;
+  }
+  html body .dashboard,
+  html body .finance-content,
+  html body .sales-content,
+  html body .purchase-content,
+  html body .products-content,
+  html body .clients,
+  html body .config-body {
+    height: auto !important;
+    min-height: calc(100vh - 104px) !important;
+    overflow: visible !important;
+    padding-bottom: 88px !important;
+  }
+  html body .dash-grid,
+  html body .dash-panel,
+  html body .dash-chart {
+    overflow: visible !important;
+  }
+  html body .pwa-bottom-nav {
+    bottom: 0 !important;
+    position: fixed !important;
+  }
+
+  /* Indicadores: evita que textos e subtítulos sejam empurrados para fora da tela. */
+  html body:has(.dashboard) { overflow-x: hidden !important; }
+  html body:has(.dashboard) main { width: 100% !important; max-width: 100% !important; overflow-x: hidden !important; box-sizing: border-box !important; }
+  html body:has(.dashboard) .dashboard { width: 100% !important; max-width: 100% !important; overflow-x: hidden !important; box-sizing: border-box !important; touch-action: pan-y !important; }
+  html body:has(.dashboard) .dashboard-title,
+  html body:has(.dashboard) .dash-panel h3 { display: block !important; }
+  html body:has(.dashboard) .dashboard-title > span,
+  html body:has(.dashboard) .dash-panel h3 > span:first-child { display: block !important; width: 100% !important; min-width: 0 !important; white-space: normal !important; }
+  html body:has(.dashboard) .dashboard-title small,
+  html body:has(.dashboard) .dash-panel h3 small { display: block !important; width: 100% !important; margin: 4px 0 0 !important; text-align: left !important; white-space: normal !important; }
+  html body:has(.dashboard) .dash-notices p { display: block !important; width: 100% !important; overflow: visible !important; }
+  html body:has(.dashboard) .dash-notices p > span { display: block !important; width: 100% !important; min-width: 0 !important; overflow-wrap: anywhere !important; }
+  html body:has(.dashboard) .dash-notices p > a { display: block !important; width: 100% !important; margin-top: 4px !important; text-align: right !important; }
+  html body:has(.dashboard) .dash-fin-summary { grid-template-columns: 1fr !important; }
+  html body:has(.dashboard) .dash-fin-summary div { width: 100% !important; }
+  html body:has(.dashboard) .audit-filters { max-width: 100% !important; overflow-x: auto !important; }
+  html body:has(.dashboard) .dash-chart { overflow-x: auto !important; overflow-y: visible !important; touch-action: pan-x pan-y !important; }
+  html body:has(.dashboard) .dash-chart .dash-bar { flex: 0 0 48px !important; }
+
+  /* Rolagem horizontal isolada dos módulos que possuem conteúdo mais largo. */
+  html body:has(.dashboard) .dash-notices { overflow-x: auto !important; overflow-y: hidden !important; touch-action: pan-x pan-y !important; }
+  html body:has(.dashboard) .dash-notices > h3,
+  html body:has(.dashboard) .dash-notices > #dash-notices-body { min-width: 520px !important; }
+  html body:has(.dashboard) .dash-notices p { width: 520px !important; max-width: none !important; }
+  html body:has(.dashboard) .dash-notices p > span { width: auto !important; min-width: 0 !important; display: inline !important; }
+  html body:has(.dashboard) .dash-notices p > a { display: inline !important; width: auto !important; margin-left: 12px !important; }
+  html body:has(.dashboard) .dash-panel:has(.dash-top-products) { overflow-x: auto !important; overflow-y: hidden !important; touch-action: pan-x pan-y !important; }
+  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > h3,
+  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > .dash-top-products { min-width: 520px !important; }
+  html body:has(.dashboard) .dash-panel:has(.audit-list) { overflow-x: auto !important; overflow-y: hidden !important; touch-action: pan-x pan-y !important; }
+  html body:has(.dashboard) .dash-panel:has(.audit-list) > h3,
+  html body:has(.dashboard) .dash-panel:has(.audit-list) > .audit-list { min-width: 560px !important; }
+
+  /* No modo responsivo do F12, os módulos se adaptam sem exigir arraste horizontal. */
+  html body:has(.dashboard) .dash-notices,
+  html body:has(.dashboard) .dash-panel:has(.dash-top-products),
+  html body:has(.dashboard) .dash-panel:has(.audit-list) { overflow-x: hidden !important; }
+  html body:has(.dashboard) .dash-notices > h3,
+  html body:has(.dashboard) .dash-notices > #dash-notices-body,
+  html body:has(.dashboard) .dash-notices p,
+  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > h3,
+  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > .dash-top-products,
+  html body:has(.dashboard) .dash-panel:has(.audit-list) > h3,
+  html body:has(.dashboard) .dash-panel:has(.audit-list) > .audit-list { min-width: 0 !important; width: 100% !important; max-width: 100% !important; }
+  html body:has(.dashboard) .dash-notices p > span,
+  html body:has(.dashboard) .dash-notices p > a { display: block !important; width: 100% !important; margin-left: 0 !important; overflow-wrap: anywhere !important; }
+  html body:has(.dashboard) .dash-top-products { display: table !important; table-layout: fixed !important; white-space: normal !important; overflow: visible !important; }
+  html body:has(.dashboard) .dash-top-products th,
+  html body:has(.dashboard) .dash-top-products td { white-space: normal !important; overflow-wrap: anywhere !important; word-break: break-word !important; padding: 7px 6px !important; font-size: 10px !important; }
+  html body:has(.dashboard) .dash-top-products th:first-child,
+  html body:has(.dashboard) .dash-top-products td:first-child { width: 44% !important; }
+  html body:has(.dashboard) .dash-top-products th:nth-child(2),
+  html body:has(.dashboard) .dash-top-products td:nth-child(2) { width: 24% !important; }
+  html body:has(.dashboard) .dash-top-products th:last-child,
+  html body:has(.dashboard) .dash-top-products td:last-child { width: 32% !important; }
+  html body:has(.dashboard) .audit-list { max-height: none !important; overflow: visible !important; }
+  html body:has(.dashboard) .audit-row { grid-template-columns: auto minmax(0, 1fr) !important; gap: 6px !important; padding: 8px 10px !important; }
+  html body:has(.dashboard) .audit-info,
+  html body:has(.dashboard) .audit-info strong,
+  html body:has(.dashboard) .audit-info small { min-width: 0 !important; overflow-wrap: anywhere !important; white-space: normal !important; }
+  html body:has(.dashboard) .audit-val { grid-column: 2 !important; text-align: left !important; white-space: normal !important; overflow-wrap: anywhere !important; }
 }
 
 @media (min-width: 769px) {

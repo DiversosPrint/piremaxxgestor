@@ -9,31 +9,31 @@
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],
   "orientation": "any",
-  "background_color": "#f2f3f4",
-  "theme_color": "#5e7d89",
+  "background_color": "#e7edf9",
+  "theme_color": "#132e68",
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/public/pwa-icon-192.png",
-      "sizes": "192x192",
+      "src": "/public/images/icone%20pwa.png",
+      "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/public/pwa-icon-192.png",
-      "sizes": "192x192",
+      "src": "/public/images/icone%20pwa.png",
+      "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/public/pwa-icon-512.png",
-      "sizes": "512x512",
+      "src": "/public/images/icone%20pwa.png",
+      "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/public/pwa-icon-512.png",
-      "sizes": "512x512",
+      "src": "/public/images/icone%20pwa.png",
+      "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "maskable"
     },

@@ -50,6 +50,76 @@ html body.standard-layout:has(.clients) .sidebar{
   z-index:90!important;
 }
 
+/* Tema visual Piremaxx: azul profundo, superfícies azuladas e relevo suave. */
+:root {
+  --piremaxx-navy: #17366f;
+  --piremaxx-blue: #2f5a9e;
+  --piremaxx-blue-dark: #102e67;
+  --piremaxx-surface: #e7edf9;
+  --piremaxx-panel: #f1f5fd;
+  --piremaxx-line: #c7d3e8;
+  --piremaxx-text: #193b78;
+}
+
+body:not(:has(.login-shell)), body:not(:has(.login-shell)) main,
+body:not(:has(.login-shell)) .content, body:not(:has(.login-shell)) .dashboard,
+body:not(:has(.login-shell)) .finance-content, body:not(:has(.login-shell)) .sales-content,
+body:not(:has(.login-shell)) .purchase-content, body:not(:has(.login-shell)) .products-content,
+body:not(:has(.login-shell)) .clients, body:not(:has(.login-shell)) .config-body {
+  background: var(--piremaxx-surface) !important;
+  color: var(--piremaxx-text);
+}
+
+body:not(:has(.login-shell)) .sidebar, body:not(:has(.login-shell)) .sidebar.shared-sidebar {
+  background: var(--piremaxx-navy) !important;
+}
+
+body:not(:has(.login-shell)) .sidebar nav a.active,
+body:not(:has(.login-shell)) .sidebar nav a:hover,
+body:not(:has(.login-shell)) .sidebar.shared-sidebar nav a.active,
+body:not(:has(.login-shell)) .sidebar.shared-sidebar nav a:hover {
+  background: var(--piremaxx-blue-dark) !important;
+}
+
+body:not(:has(.login-shell)) .topbar, body:not(:has(.login-shell)) .products-topbar,
+body:not(:has(.login-shell)) .brand, body:not(:has(.login-shell)) .search {
+  background: var(--piremaxx-panel) !important;
+  color: var(--piremaxx-text) !important;
+}
+
+body:not(:has(.login-shell)) .titlebar, body:not(:has(.login-shell)) .clients-title,
+body:not(:has(.login-shell)) .purchase-header, body:not(:has(.login-shell)) .dashboard-title,
+body:not(:has(.login-shell)) .finance-title, body:not(:has(.login-shell)) .fleet-title,
+body:not(:has(.login-shell)) .products-title, body:not(:has(.login-shell)) .reports-title,
+body:not(:has(.login-shell)) .config-title, body:not(:has(.login-shell)) .panel h3 {
+  background: var(--piremaxx-navy) !important;
+  color: #fff !important;
+}
+
+body:not(:has(.login-shell)) .panel, body:not(:has(.login-shell)) .metric,
+body:not(:has(.login-shell)) .finance-panel, body:not(:has(.login-shell)) .purchase-panel,
+body:not(:has(.login-shell)) .client-panel, body:not(:has(.login-shell)) .product-panel {
+  background: var(--piremaxx-panel) !important;
+  border-color: var(--piremaxx-line) !important;
+  box-shadow: 5px 5px 12px rgba(116, 139, 181, .22), -4px -4px 10px rgba(255,255,255,.78) !important;
+}
+
+body:not(:has(.login-shell)) input:not([type="checkbox"]):not([type="radio"]),
+body:not(:has(.login-shell)) select, body:not(:has(.login-shell)) textarea {
+  background: var(--piremaxx-surface) !important;
+  border-color: var(--piremaxx-line) !important;
+  color: var(--piremaxx-text) !important;
+  box-shadow: inset 3px 3px 7px rgba(151, 171, 207, .28), inset -3px -3px 7px rgba(255,255,255,.8) !important;
+}
+
+body:not(:has(.login-shell)) .search button,
+body:not(:has(.login-shell)) button.primary,
+body:not(:has(.login-shell)) button.save,
+body:not(:has(.login-shell)) .btn-primary {
+  background: linear-gradient(145deg, var(--piremaxx-blue), var(--piremaxx-blue-dark)) !important;
+  color: #fff !important;
+}
+
 /* Logo 1 (topo da barra lateral) fixa e idêntica */
 html body .sidebar>.brand,
 html body .sidebar.shared-sidebar .brand,
@@ -630,3 +700,37 @@ html body .toolbar-icon{
     z-index: 230 !important;
   }
 }
+
+/* Aplicação final do tema Piremaxx após os estilos legados. */
+body:not(:has(.login-shell)) { background: #e7edf9 !important; color: #193b78 !important; }
+body:not(:has(.login-shell)) .sidebar,
+body:not(:has(.login-shell)) .sidebar.shared-sidebar { background: #17366f !important; }
+body:not(:has(.login-shell)) .sidebar nav a.active,
+body:not(:has(.login-shell)) .sidebar nav a:hover,
+body:not(:has(.login-shell)) .sidebar.shared-sidebar nav a.active,
+body:not(:has(.login-shell)) .sidebar.shared-sidebar nav a:hover { background: #102e67 !important; }
+body:not(:has(.login-shell)) .topbar,
+body:not(:has(.login-shell)) .products-topbar { background: #f1f5fd !important; }
+body:not(:has(.login-shell)) .titlebar,
+body:not(:has(.login-shell)) .clients-title,
+body:not(:has(.login-shell)) .purchase-header,
+body:not(:has(.login-shell)) .dashboard-title,
+body:not(:has(.login-shell)) .finance-title,
+body:not(:has(.login-shell)) .fleet-title,
+body:not(:has(.login-shell)) .products-title,
+body:not(:has(.login-shell)) .reports-title,
+body:not(:has(.login-shell)) .config-title { background: #17366f !important; }
+body:not(:has(.login-shell)) .content,
+body:not(:has(.login-shell)) .dashboard,
+body:not(:has(.login-shell)) .finance-content,
+body:not(:has(.login-shell)) .sales-content,
+body:not(:has(.login-shell)) .purchase-content,
+body:not(:has(.login-shell)) .products-content,
+body:not(:has(.login-shell)) .clients,
+body:not(:has(.login-shell)) .config-body { background: #e7edf9 !important; }
+body:not(:has(.login-shell)) .panel,
+body:not(:has(.login-shell)) .metric,
+body:not(:has(.login-shell)) .finance-panel,
+body:not(:has(.login-shell)) .purchase-panel,
+body:not(:has(.login-shell)) .client-panel,
+body:not(:has(.login-shell)) .product-panel { background: #f1f5fd !important; border-color: #c7d3e8 !important; }
