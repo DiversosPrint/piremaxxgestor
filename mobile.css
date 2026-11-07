@@ -62,14 +62,14 @@
     display: block !important;
     visibility: visible !important;
     width: 100% !important;
-    height: 50px !important;
-    min-height: 50px !important;
-    max-height: 50px !important;
-    background-color: #eee !important;
-    background-image: url('public/logo.webp') !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    background-color: #0d315e !important;
+    background-image: url('public/images/TOPO1.png') !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
-    background-size: auto 26px !important;
+    background-size: 145px auto !important;
   }
 
   html body .sidebar nav,
@@ -125,24 +125,30 @@
     min-width: 0 !important;
   }
 
-  /* 3. TOPBAR PADRONIZADA (Sem ícones duplicados :before / :after) */
+  /* 3. TOPBAR PWA APRIMORADA (Azul marinho com textura automotiva, busca expansível e avatar) */
   html body main > .topbar,
   html body main > .products-topbar {
     position: sticky !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    height: 50px !important;
-    min-height: 50px !important;
-    max-height: 50px !important;
-    padding: 0 10px !important;
-    background: #eeeeee !important;
-    border-bottom: 1px solid #d0d8dc !important;
+    height: calc(54px + env(safe-area-inset-top, 0px)) !important;
+    min-height: calc(54px + env(safe-area-inset-top, 0px)) !important;
+    max-height: none !important;
+    padding: env(safe-area-inset-top, 0px) 10px 0 10px !important;
+    background-color: #0d315e !important;
+    background-image: url('public/images/topo-textura-automotiva.svg?v=2') !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    border-bottom: 1px solid rgba(130, 198, 255, 0.24) !important;
+    box-shadow: 0 4px 14px rgba(9, 30, 66, 0.34) !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
     z-index: 150 !important;
     box-sizing: border-box !important;
+    overflow: visible !important;
   }
 
   /* Remove pseudo-elementos antigos que duplicavam o ícone ☰ e o ↻ vermelho */
@@ -164,29 +170,38 @@
     flex: 0 0 36px !important;
     margin: 0 !important;
     padding: 0 !important;
-    border: 1px solid #c8d2d7 !important;
-    border-radius: 4px !important;
-    background: #fff !important;
-    color: #344750 !important;
-    font-size: 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    border-radius: 9px !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    color: #fff !important;
+    font-size: 19px !important;
     line-height: 1 !important;
     cursor: pointer !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
   }
 
   html body .topbar .brand-mini,
   html body .products-topbar .brand-mini {
     display: block !important;
-    flex: 0 0 92px !important;
-    width: 92px !important;
-    min-width: 92px !important;
-    height: 36px !important;
-    min-height: 36px !important;
-    background-image: url('public/logo.png') !important;
-    background-position: center center !important;
+    flex: 0 0 104px !important;
+    width: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    background-image: url('public/images/TOPO1.png') !important;
+    background-position: left center !important;
     background-repeat: no-repeat !important;
-    background-size: contain !important;
+    background-size: 102px auto !important;
     font-size: 0 !important;
     color: transparent !important;
+    transition: width 0.16s ease, opacity 0.16s ease !important;
+  }
+
+  /* Quando o usuário toca na busca no PWA/Mobile, a barra ganha espaço total */
+  html body .topbar.pwa-search-active .brand-mini,
+  html body .products-topbar.pwa-search-active .brand-mini {
+    display: none !important;
   }
 
   html body .topbar .search,
@@ -197,64 +212,108 @@
     max-width: none !important;
     height: 34px !important;
     margin: 0 !important;
-    padding: 0 0 0 10px !important;
-    background: #fff !important;
-    border: 1px solid #cbd4d8 !important;
-    border-radius: 4px !important;
+    padding: 0 0 0 12px !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    border: 1px solid rgba(199, 211, 232, 0.85) !important;
+    border-radius: 18px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    font-size: 11px !important;
-    color: #7c8d96 !important;
-    overflow: hidden !important;
+    font-size: 12px !important;
+    color: #17366f !important;
+    overflow: visible !important;
     white-space: nowrap !important;
+    position: relative !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22) !important;
   }
 
-  html body .topbar .search button,
-  html body .products-topbar .products-search button {
+  html body .topbar .search .topbar-search-input,
+  html body .products-topbar .products-search .topbar-search-input {
+    font-size: 12px !important;
+    height: 32px !important;
+  }
+
+  html body .topbar .search button.topbar-search-btn,
+  html body .products-topbar .products-search button.topbar-search-btn,
+  html body .topbar .search > button:not(.topbar-search-clear),
+  html body .products-topbar .products-search > button:not(.topbar-search-clear) {
     float: none !important;
     margin: 0 !important;
-    width: 34px !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
     height: 34px !important;
-    flex: 0 0 34px !important;
-    background: #06b8bb !important;
+    flex: 0 0 36px !important;
+    border-radius: 0 18px 18px 0 !important;
+    background: linear-gradient(135deg, #08b8bb 0%, #069699 100%) !important;
     color: #fff !important;
     font-size: 16px !important;
     border: 0 !important;
   }
 
+  html body .topbar .topbar-search-results,
+  html body .products-topbar .topbar-search-results {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    top: calc(56px + env(safe-area-inset-top, 0px)) !important;
+    width: auto !important;
+    max-height: 68vh !important;
+    z-index: 320 !important;
+  }
+
+  html body main > .topbar .user,
+  html body main > .products-topbar .products-user,
+  html body main > .products-topbar .user,
   html body .topbar .user,
   html body .products-topbar .products-user {
     display: flex !important;
     align-items: center !important;
-    flex: 0 0 auto !important;
-    margin: 0 !important;
+    justify-content: center !important;
+    flex: 0 0 38px !important;
+    margin: 0 0 0 auto !important;
     padding: 0 !important;
-    width: 32px !important;
-    min-width: 32px !important;
-    height: 34px !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    max-width: 38px !important;
+    height: 38px !important;
     font-size: 0 !important;
     position: relative !important;
+    overflow: visible !important;
+    z-index: 160 !important;
   }
   html body .topbar .user:before,
-  html body .topbar .user:after {
+  html body .topbar .user:after,
+  html body .products-topbar .user:after {
     content: none !important;
     display: none !important;
   }
-  html body .topbar .user .user-avatar {
+  html body main > .topbar .user .user-avatar,
+  html body main > .products-topbar .user .user-avatar,
+  html body .topbar .user .user-avatar,
+  html body .products-topbar .user .user-avatar {
     display: block !important;
     position: static !important;
-    width: 28px !important;
-    height: 28px !important;
+    width: 34px !important;
+    height: 34px !important;
+    flex: 0 0 34px !important;
     margin: 0 auto !important;
+    border: 2px solid rgba(255, 255, 255, 0.9) !important;
   }
-  html body .topbar .user .user-menu {
+  html body main > .topbar .user .user-menu,
+  html body main > .products-topbar .user .user-menu,
+  html body .topbar .user .user-menu,
+  html body .products-topbar .user .user-menu {
+    position: fixed !important;
     font-size: 12px !important;
-    right: 0 !important;
+    right: 8px !important;
     left: auto !important;
-    top: 40px !important;
-    min-width: 190px !important;
-    z-index: 260 !important;
+    top: calc(54px + env(safe-area-inset-top, 0px)) !important;
+    width: min(272px, calc(100vw - 16px)) !important;
+    min-width: 240px !important;
+    max-height: calc(100vh - 118px) !important;
+    overflow-y: auto !important;
+    z-index: 9999 !important;
   }
 
   /* 4. BARRA DE TÍTULO DA JANELA (Sempre abaixo da Topbar, nunca ao lado) */

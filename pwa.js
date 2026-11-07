@@ -5,8 +5,10 @@
       '#e7edf9': 'body',
       '#17366f': '.sidebar, .sidebar.shared-sidebar, .titlebar, .clients-title, .purchase-header, .dashboard-title, .finance-title, .fleet-title, .products-title, .reports-title, .config-title',
       '#102e67': '.sidebar nav a.active, .sidebar nav a:hover, .sidebar.shared-sidebar nav a.active, .sidebar.shared-sidebar nav a:hover',
-      '#f1f5fd': '.topbar, .products-topbar, .panel, .metric, .finance-panel, .purchase-panel, .client-panel, .product-panel'
+      '#f1f5fd': '.panel, .metric, .finance-panel, .purchase-panel, .client-panel, .product-panel'
     };
+    var metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', '#0d315e');
     Object.keys(groups).forEach(function (color) {
       document.querySelectorAll(groups[color]).forEach(function (element) {
         element.style.setProperty('background-color', color, 'important');
@@ -180,7 +182,7 @@
     var mobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
     document.documentElement.classList.toggle('pwa-mobile', !!mobile);
     if (!mobile) return;
-    document.querySelectorAll('main, .sidebar, main>.topbar, main>.products-topbar, main>.titlebar, main>.clients-title, main>.purchase-header, main>.dashboard-title, main>.finance-title, main>.fleet-title, main>.products-title, main>.reports-title, main>.config-title').forEach(function (element) {
+    document.querySelectorAll('main, .sidebar, main>.titlebar, main>.clients-title, main>.purchase-header, main>.dashboard-title, main>.finance-title, main>.fleet-title, main>.products-title, main>.reports-title, main>.config-title').forEach(function (element) {
       element.removeAttribute('style');
     });
   }
