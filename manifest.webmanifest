@@ -14,34 +14,16 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/public/images/icone%20pwa.png",
+      "src": "/public/images/icone%20pwa.png?v=25",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/public/images/icone%20pwa.png",
+      "src": "/public/images/icone%20pwa.png?v=25",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "/public/images/icone%20pwa.png",
-      "sizes": "1254x1254",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/public/images/icone%20pwa.png",
-      "sizes": "1254x1254",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/public/pwa-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -50,28 +32,28 @@
       "short_name": "Vendas",
       "description": "Consultar e emitir vendas e orçamentos",
       "url": "/vendas.html",
-      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/public/images/icone%20pwa.png?v=25", "sizes": "1254x1254" }]
     },
     {
       "name": "Financeiro",
       "short_name": "Financeiro",
       "description": "Contas a pagar e receber",
       "url": "/financeiro.html",
-      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/public/images/icone%20pwa.png?v=25", "sizes": "1254x1254" }]
     },
     {
       "name": "Contatos",
       "short_name": "Contatos",
       "description": "Clientes, compradores e fornecedores",
       "url": "/clientes.html",
-      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/public/images/icone%20pwa.png?v=25", "sizes": "1254x1254" }]
     },
     {
       "name": "Produtos",
       "short_name": "Produtos",
       "description": "Estoque e produtos",
       "url": "/produtos.html",
-      "icons": [{ "src": "/public/pwa-icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/public/images/icone%20pwa.png?v=25", "sizes": "1254x1254" }]
     }
   ]
 }

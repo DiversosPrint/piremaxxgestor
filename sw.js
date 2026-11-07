@@ -1,4 +1,4 @@
-const CACHE_NAME = 'piremaxx-gestor-v24';
+const CACHE_NAME = 'piremaxx-gestor-v25';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -26,8 +26,7 @@ const APP_SHELL = [
   '/vendas-importadas.js',
   '/vendas-performance.js',
   '/manifest.webmanifest',
-  '/public/pwa-icon-192.png',
-  '/public/pwa-icon-512.png',
+  '/public/images/icone%20pwa.png?v=25',
   '/public/apple-touch-icon.png',
   '/public/pwa-icon.svg',
   '/public/logo.png',
