@@ -17,6 +17,7 @@
 .app-message{position:fixed;z-index:1000;left:50%;top:50%;transform:translate(-50%,-50%);width:450px;background:#f8fcff;border:1px solid #73838b;border-radius:14px;box-shadow:0 5px 18px #555;overflow:hidden;color:#183b4a}.app-message-title{font-size:17px;font-weight:bold;padding:24px 22px 10px}.app-message-body{padding:0 22px 26px;color:#17617b}.app-message button{display:block;margin:0 18px 14px auto;background:#006d7b;color:#fff;border:3px solid #fff;outline:2px solid #006d7b;border-radius:22px;padding:8px 24px;font-weight:bold}
 .type-picker{z-index:30}.type-menu{z-index:31}
 .cart-row{position:relative}.cart-row:nth-child(1){z-index:50}.cart-row:nth-child(2){z-index:40}.cart-row:nth-child(3){z-index:30}.cart-row:nth-child(n+4){z-index:20}
+.cart-row :is(input,button):focus-visible,.add-item:focus-visible{outline:2px solid #1769aa;outline-offset:2px}
 .actions button{transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}.actions button:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 4px 10px rgba(0,0,0,.25);filter:brightness(1.08);cursor:pointer}.actions button:active{transform:translateY(0) scale(.98);box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .list-tools{display:inline-flex;position:relative;gap:4px;margin-left:3px}.list-tools>button{height:29px;min-width:38px;border:1px solid #c9d1d5;background:#fff;color:#526b77;border-radius:4px;cursor:pointer;transition:.18s}.list-tools>button:hover{background:#e5f1f3;transform:translateY(-2px);box-shadow:0 3px 7px #bbb}.print-menu{position:absolute;z-index:80;top:34px;right:0;width:200px;background:#fff;border:1px solid #c6cdd0;box-shadow:0 3px 10px #aaa}.print-menu button{display:block;width:100%;border:0;background:#fff;text-align:left;padding:10px;color:#68757b}.print-menu button:hover{background:#e7f1f3}
 .toolbar .list-tools{float:none;color:inherit;padding:0;vertical-align:middle}
@@ -139,3 +140,143 @@
 .client-picker{width:100%!important;margin-left:0;margin-right:0}
 .form-grid .client-picker input#client{text-align:left!important;text-indent:0!important;padding-left:10px!important}
 .sale-header>span{display:none!important}
+.product-list button:focus,.product-list button:focus-visible,.product-list button[aria-selected="true"]{background:#ccecf0;color:#174f68;outline:2px solid #209c99;outline-offset:-2px}
+.cart-row input.stock-invalid{border-color:#e94e50!important;background:#fff1f1!important;color:#b4232b}
+#stockWarning{
+  position:fixed;
+  top:72px;
+  right:24px;
+  z-index:9999;
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  width:min(420px,calc(100vw - 32px));
+  padding:16px 18px 19px;
+  background:linear-gradient(135deg,rgba(255,255,255,.98) 0%,rgba(255,251,242,.98) 100%);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(245,158,11,.28);
+  border-radius:14px;
+  box-shadow:0 16px 36px -6px rgba(15,23,42,.18),0 4px 12px -2px rgba(245,158,11,.14),inset 0 1px 0 rgba(255,255,255,.9);
+  color:#1e293b;
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:13px;
+  font-weight:500;
+  overflow:hidden;
+  box-sizing:border-box;
+  animation:stockWarningPulse 1.6s ease-in-out infinite;
+}
+#stockWarning.is-closing{
+  animation:stockWarningOut .22s ease forwards;
+}
+#stockWarning .stock-warning-icon{
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
+  border-radius:11px;
+  background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);
+  border:1px solid rgba(245,158,11,.3);
+  color:#d97706;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 6px rgba(217,119,6,.12);
+}
+#stockWarning .stock-warning-body{
+  flex:1;
+  min-width:0;
+  padding-top:1px;
+}
+#stockWarning .stock-warning-title{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  color:#92400e;
+  letter-spacing:-.01em;
+  line-height:1.25;
+  margin-bottom:3px;
+}
+#stockWarning .stock-warning-text{
+  display:block;
+  font-size:13px;
+  font-weight:500;
+  color:#475569;
+  line-height:1.45;
+  margin-bottom:9px;
+}
+#stockWarning .stock-warning-text::first-letter{
+  text-transform:uppercase;
+}
+#stockWarning .stock-warning-stock{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#c2410c;
+  font-size:12px;
+  font-weight:600;
+  line-height:1.2;
+}
+#stockWarning .stock-warning-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#ea580c;
+  box-shadow:0 0 0 2px rgba(234,88,12,.2);
+}
+#stockWarning .stock-warning-stock b{
+  font-weight:800;
+  color:#9a3412;
+}
+#stockWarning .stock-warning-close{
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+  margin:-4px -6px 0 0;
+  padding:0;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:#94a3b8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:background .15s ease,color .15s ease,transform .15s ease;
+}
+#stockWarning .stock-warning-close:hover{
+  background:rgba(15,23,42,.06);
+  color:#334155;
+}
+#stockWarning .stock-warning-close:active{
+  transform:scale(.94);
+}
+#stockWarning .stock-warning-progress{
+  position:absolute;
+  left:0;
+  bottom:0;
+  height:3px;
+  width:100%;
+  background:linear-gradient(90deg,#f59e0b 0%,#ea580c 100%);
+  transform-origin:left center;
+  animation:stockWarningProgress 1.6s linear infinite;
+}
+@keyframes stockWarningIn{
+  from{opacity:0;transform:translateY(-12px) translateX(16px) scale(.96)}
+  to{opacity:1;transform:translateY(0) translateX(0) scale(1)}
+}
+@keyframes stockWarningOut{
+  from{opacity:1;transform:translateY(0) scale(1)}
+  to{opacity:0;transform:translateY(-8px) scale(.96)}
+}
+@keyframes stockWarningProgress{
+  from{transform:scaleX(1)}
+  to{transform:scaleX(0)}
+}
+@keyframes stockWarningPulse{
+  0%,100%{transform:translateY(0) scale(1);box-shadow:0 16px 36px -6px rgba(15,23,42,.18),0 4px 12px -2px rgba(245,158,11,.14),inset 0 1px 0 rgba(255,255,255,.9)}
+  50%{transform:translateY(-2px) scale(1.012);box-shadow:0 18px 40px -6px rgba(15,23,42,.2),0 5px 16px -2px rgba(245,158,11,.3),inset 0 1px 0 rgba(255,255,255,.9)}
+}
