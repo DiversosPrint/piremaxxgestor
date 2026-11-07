@@ -1,10 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gestão Piremaxx - Painel inicial</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=28">
 <style>
 .dashboard{padding:17px 22px 32px;background:#f2f3f4;min-height:calc(100vh - 98px);box-sizing:border-box}
 .dashboard-title{height:49px;background:#5e7d89;color:#fff;padding:11px 16px;font-size:16px;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box}
@@ -102,40 +102,62 @@
 .dash-top-products th{background:#dce6f5;color:#193b78}
 .dash-fin-summary{background:#e2eaf7}
 @media(max-width:980px){
-  .dash-metrics{grid-template-columns:1fr 1fr}
-  .dash-grid{grid-template-columns:1fr}
-  .dash-cat-box{grid-template-columns:1fr}
+  .dash-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dash-grid{grid-template-columns:minmax(0,1fr)}
+  .dash-cat-box{grid-template-columns:minmax(0,1fr)}
 }
+.dash-grid > div, .dash-panel, .dash-card{min-width:0;max-width:100%;box-sizing:border-box}
+.dash-bar-val .bar-val-compact{display:none}
 @media(max-width:768px){
-  .dashboard{padding:10px 8px 88px!important;min-height:0!important;overflow:visible!important}
-  .dashboard-title{height:auto!important;min-height:46px;flex-wrap:wrap;gap:4px;padding:8px 10px!important;line-height:1.25}
-  .dashboard-title small{font-size:10px;white-space:normal;text-align:right;margin-left:auto}
-  .dash-panel{overflow:visible!important;border-radius:12px}
-  .dash-panel h3{flex-wrap:wrap;gap:4px;line-height:1.2}
-  .dash-panel h3 small{font-size:10px;white-space:normal;text-align:right;margin-left:auto}
-  .dash-notices p{align-items:flex-start;flex-wrap:wrap;line-height:1.35;padding:9px 10px}
-  .dash-notices p>span{min-width:0;flex:1 1 220px}
-  .dash-notices a{margin-left:auto}
-  .dash-chart{height:250px!important;padding:28px 12px 12px!important;gap:7px!important;overflow:visible!important}
-  .dash-chart .dash-bar-val{font-size:9px;transform:translateY(-24px);margin-bottom:-19px}
-  .dash-chart .dash-bar span{font-size:10px}
-  .dash-chart .dash-bar small{font-size:9px;text-align:center}
-  .dash-top-products{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
-  .dash-top-products thead,.dash-top-products tbody{display:table;width:100%;min-width:520px}
-  .dash-top-products th,.dash-top-products td{padding:7px 10px}
-  .dash-cat-box{grid-template-columns:1fr!important;padding:14px 10px!important;gap:12px!important}
-  .dash-pie{width:156px;height:156px}
-  .dash-cat-legend{font-size:11px;min-width:0}
-  .dash-cat-item{gap:6px;white-space:normal}
-  .dash-fin-summary{grid-template-columns:1fr 1fr;gap:7px 10px;padding:9px 10px;font-size:10px}
-  .dash-fin-summary div{gap:5px;align-items:flex-start}
-  .dash-fin-summary b{font-size:10px;white-space:nowrap}
-  .audit-filters{max-width:100%;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+  .dashboard{padding:10px 8px 88px!important;min-height:0!important;width:100%!important;max-width:100vw!important;overflow-x:hidden!important;box-sizing:border-box!important}
+  .dashboard-title{height:auto!important;min-height:46px;flex-wrap:wrap;gap:4px;padding:8px 10px!important;line-height:1.25;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .dashboard-title small{font-size:10px;white-space:normal;text-align:left;margin-left:0;width:100%}
+  .dash-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .dash-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .dash-grid > div{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+  .dash-panel{width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;border-radius:12px;box-sizing:border-box!important}
+  .dash-panel h3{flex-wrap:wrap;gap:4px;line-height:1.2;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .dash-panel h3 small{font-size:10px;white-space:normal;text-align:left;margin-left:0}
+  .dash-notices p{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:4px!important;line-height:1.38;padding:9px 10px!important;width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important}
+  .dash-notices p>span{display:block!important;width:100%!important;min-width:0!important;white-space:normal!important;overflow-wrap:anywhere!important}
+  .dash-notices a{display:block!important;align-self:flex-end!important;text-align:right!important;margin-left:auto!important}
+  .dash-chart{height:236px!important;padding:26px 6px 10px!important;gap:4px!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;box-sizing:border-box!important}
+  .dash-chart .dash-bar{flex:1 1 0!important;min-width:0!important;max-width:100%!important}
+  .dash-chart .dash-bar-val{font-size:8.5px!important;transform:translateY(-22px)!important;margin-bottom:-17px!important;white-space:nowrap!important;letter-spacing:-.2px!important}
+  .dash-bar-val .bar-val-full{display:none!important}
+  .dash-bar-val .bar-val-compact{display:inline!important}
+  .dash-chart .dash-bar i{width:56%!important}
+  .dash-chart .dash-bar i::before{height:5px!important;top:-5px!important}
+  .dash-chart .dash-bar i::after{width:5px!important;right:-5px!important;top:-3px!important}
+  .dash-chart .dash-bar span{font-size:9.5px!important;white-space:nowrap!important}
+  .dash-chart .dash-bar small{font-size:8px!important;text-align:center!important;white-space:nowrap!important}
+  .dash-top-products{display:table!important;width:100%!important;max-width:100%!important;min-width:0!important;table-layout:fixed!important;white-space:normal!important;overflow:visible!important}
+  .dash-top-products thead{display:table-header-group!important;width:100%!important;min-width:0!important}
+  .dash-top-products tbody{display:table-row-group!important;width:100%!important;min-width:0!important}
+  .dash-top-products tr{display:table-row!important;width:100%!important}
+  .dash-top-products th,.dash-top-products td{display:table-cell!important;padding:8px 8px!important;font-size:11px!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:break-word!important;vertical-align:middle!important}
+  .dash-top-products th:nth-child(1),.dash-top-products td:nth-child(1){width:44%!important;text-align:left!important}
+  .dash-top-products th:nth-child(2),.dash-top-products td:nth-child(2){width:22%!important;text-align:center!important}
+  .dash-top-products th:nth-child(3),.dash-top-products td:nth-child(3){width:34%!important;text-align:right!important}
+  .dash-cat-box{grid-template-columns:minmax(0,1fr)!important;padding:14px 10px!important;gap:12px!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .dash-pie{width:148px;height:148px}
+  .dash-cat-legend{font-size:11px;min-width:0;width:100%!important;max-width:100%!important}
+  .dash-cat-item{gap:6px;white-space:normal;width:100%!important;min-width:0!important;box-sizing:border-box!important}
+  .dash-cat-item>span{min-width:0;flex:1 1 auto;overflow-wrap:anywhere}
+  .dash-cat-item>b{flex:0 0 auto;white-space:nowrap}
+  .dash-fin-summary{grid-template-columns:minmax(0,1fr)!important;gap:6px 10px;padding:10px 12px;font-size:11px;width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+  .dash-fin-summary div{gap:6px;align-items:center;justify-content:space-between;width:100%!important;min-width:0!important}
+  .dash-fin-summary b{font-size:11px;white-space:nowrap}
+  .audit-filters{max-width:100%;overflow-x:auto;white-space:nowrap;padding-bottom:2px;display:flex;gap:4px}
   .audit-filters button{flex:0 0 auto}
-  .audit-list{max-height:none;overflow:visible}
+  .audit-list{max-height:none;overflow:visible;width:100%!important;max-width:100%!important}
+  .audit-row{grid-template-columns:auto minmax(0,1fr) auto!important;gap:8px!important;padding:9px 10px!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;align-items:center!important}
+  .audit-info{min-width:0!important;overflow:hidden!important}
+  .audit-info strong,.audit-info small{white-space:normal!important;overflow-wrap:anywhere!important;word-break:break-word!important}
+  .audit-val{white-space:nowrap!important;font-size:11px!important;text-align:right!important}
 }
 </style>
-<link rel="stylesheet" href="mobile.css">
+<link rel="stylesheet" href="mobile.css?v=28">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#5e7d89">
 <meta name="mobile-web-app-capable" content="yes">
@@ -450,8 +472,9 @@
       chartEl.innerHTML=monthTotals.map(function(m){
         var barH=Math.max(10,Math.round((m.total/maxMonth)*155));
         var shortVal=money(m.total);
+        var compactVal=m.total>=1000?'R$ '+(m.total/1000).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:1})+'k':(m.total>0?money(m.total):'R$ 0');
         return '<div class="dash-bar" onclick="location.href=\'vendas.html\'" title="'+m.label+': '+money(m.total)+' ('+m.count+' vendas)">'+
-          '<div class="dash-bar-val">'+shortVal+'</div>'+
+          '<div class="dash-bar-val"><span class="bar-val-full">'+shortVal+'</span><span class="bar-val-compact">'+compactVal+'</span></div>'+
           '<i style="--bar-height:'+barH+'px"></i>'+
           '<span>'+m.label+'</span>'+
           '<small>'+m.count+' vendas</small>'+

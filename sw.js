@@ -1,4 +1,4 @@
-const CACHE_NAME = 'piremaxx-gestor-v27';
+const CACHE_NAME = 'piremaxx-gestor-v28';
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -37,7 +37,7 @@ self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
       return Promise.allSettled(APP_SHELL.map(function (url) {
-        return cache.add(url).catch(function (err) {
+        return cache.add(new Request(url, { cache: 'reload' })).catch(function (err) {
           console.warn('Cache add skipped:', url, err);
         });
       }));
@@ -65,7 +65,7 @@ self.addEventListener('fetch', function (event) {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    fetch(event.request).then(function (response) {
+    fetch(event.request, { cache: 'no-cache' }).then(function (response) {
       if (response && response.ok) {
         var copy = response.clone();
         caches.open(CACHE_NAME).then(function (cache) {

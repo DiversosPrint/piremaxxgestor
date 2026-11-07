@@ -367,6 +367,8 @@
   html body .sales-content,
   html body .purchase-content,
   html body .products-content,
+  html body .fleet-content,
+  html body .reports-content,
   html body .clients,
   html body .config-body {
     padding: 12px 10px 28px !important;
@@ -507,11 +509,23 @@
   html body #collections-panel,
   html body .client-panel,
   html body .product-panel,
+  html body .fleet-panel,
   html body .panel {
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+  html body .satellite-panel {
+    margin: 14px 0 24px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  html body .satellite-controls {
+    flex-wrap: wrap !important;
   }
 
   html body .sales-table,
@@ -601,21 +615,40 @@
   }
 
   /* 9. INDICADORES E FORMULÁRIOS / MODAIS PADRONIZADOS */
-  html body .dash-metrics {
+  html body .dash-metrics,
+  html body .fleet-metrics {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px !important;
     margin: 0 0 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
-  html body .dash-card {
+  html body .dash-card,
+  html body .fleet-metric {
     margin: 0 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   html body .dash-grid,
-  html body .dash-cat-box {
+  html body .dash-cat-box,
+  html body .reports-content {
     display: grid !important;
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     gap: 12px !important;
     margin: 0 0 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  html body .dash-grid > div,
+  html body .report-left {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
   }
 
   html body .new-sale,
@@ -950,77 +983,280 @@
     overflow: visible !important;
     padding-bottom: 88px !important;
   }
-  html body .dash-grid,
-  html body .dash-panel,
-  html body .dash-chart {
+  html body .dash-grid {
     overflow: visible !important;
+  }
+  html body .dash-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
   }
   html body .pwa-bottom-nav {
     bottom: 0 !important;
     position: fixed !important;
   }
 
-  /* Indicadores: evita que textos e subtítulos sejam empurrados para fora da tela. */
-  html body:has(.dashboard) { overflow-x: hidden !important; }
-  html body:has(.dashboard) main { width: 100% !important; max-width: 100% !important; overflow-x: hidden !important; box-sizing: border-box !important; }
-  html body:has(.dashboard) .dashboard { width: 100% !important; max-width: 100% !important; overflow-x: hidden !important; box-sizing: border-box !important; touch-action: pan-y !important; }
-  html body:has(.dashboard) .dashboard-title,
-  html body:has(.dashboard) .dash-panel h3 { display: block !important; }
-  html body:has(.dashboard) .dashboard-title > span,
-  html body:has(.dashboard) .dash-panel h3 > span:first-child { display: block !important; width: 100% !important; min-width: 0 !important; white-space: normal !important; }
-  html body:has(.dashboard) .dashboard-title small,
-  html body:has(.dashboard) .dash-panel h3 small { display: block !important; width: 100% !important; margin: 4px 0 0 !important; text-align: left !important; white-space: normal !important; }
-  html body:has(.dashboard) .dash-notices p { display: block !important; width: 100% !important; overflow: visible !important; }
-  html body:has(.dashboard) .dash-notices p > span { display: block !important; width: 100% !important; min-width: 0 !important; overflow-wrap: anywhere !important; }
-  html body:has(.dashboard) .dash-notices p > a { display: block !important; width: 100% !important; margin-top: 4px !important; text-align: right !important; }
-  html body:has(.dashboard) .dash-fin-summary { grid-template-columns: 1fr !important; }
-  html body:has(.dashboard) .dash-fin-summary div { width: 100% !important; }
-  html body:has(.dashboard) .audit-filters { max-width: 100% !important; overflow-x: auto !important; }
-  html body:has(.dashboard) .dash-chart { overflow-x: auto !important; overflow-y: visible !important; touch-action: pan-x pan-y !important; }
-  html body:has(.dashboard) .dash-chart .dash-bar { flex: 0 0 48px !important; }
-
-  /* Rolagem horizontal isolada dos módulos que possuem conteúdo mais largo. */
-  html body:has(.dashboard) .dash-notices { overflow-x: auto !important; overflow-y: hidden !important; touch-action: pan-x pan-y !important; }
-  html body:has(.dashboard) .dash-notices > h3,
-  html body:has(.dashboard) .dash-notices > #dash-notices-body { min-width: 520px !important; }
-  html body:has(.dashboard) .dash-notices p { width: 520px !important; max-width: none !important; }
-  html body:has(.dashboard) .dash-notices p > span { width: auto !important; min-width: 0 !important; display: inline !important; }
-  html body:has(.dashboard) .dash-notices p > a { display: inline !important; width: auto !important; margin-left: 12px !important; }
-  html body:has(.dashboard) .dash-panel:has(.dash-top-products) { overflow-x: auto !important; overflow-y: hidden !important; touch-action: pan-x pan-y !important; }
-  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > h3,
-  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > .dash-top-products { min-width: 520px !important; }
-  html body:has(.dashboard) .dash-panel:has(.audit-list) { overflow-x: auto !important; overflow-y: hidden !important; touch-action: pan-x pan-y !important; }
-  html body:has(.dashboard) .dash-panel:has(.audit-list) > h3,
-  html body:has(.dashboard) .dash-panel:has(.audit-list) > .audit-list { min-width: 560px !important; }
-
-  /* No modo responsivo do F12, os módulos se adaptam sem exigir arraste horizontal. */
-  html body:has(.dashboard) .dash-notices,
-  html body:has(.dashboard) .dash-panel:has(.dash-top-products),
-  html body:has(.dashboard) .dash-panel:has(.audit-list) { overflow-x: hidden !important; }
-  html body:has(.dashboard) .dash-notices > h3,
-  html body:has(.dashboard) .dash-notices > #dash-notices-body,
-  html body:has(.dashboard) .dash-notices p,
-  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > h3,
-  html body:has(.dashboard) .dash-panel:has(.dash-top-products) > .dash-top-products,
-  html body:has(.dashboard) .dash-panel:has(.audit-list) > h3,
-  html body:has(.dashboard) .dash-panel:has(.audit-list) > .audit-list { min-width: 0 !important; width: 100% !important; max-width: 100% !important; }
-  html body:has(.dashboard) .dash-notices p > span,
-  html body:has(.dashboard) .dash-notices p > a { display: block !important; width: 100% !important; margin-left: 0 !important; overflow-wrap: anywhere !important; }
-  html body:has(.dashboard) .dash-top-products { display: table !important; table-layout: fixed !important; white-space: normal !important; overflow: visible !important; }
-  html body:has(.dashboard) .dash-top-products th,
-  html body:has(.dashboard) .dash-top-products td { white-space: normal !important; overflow-wrap: anywhere !important; word-break: break-word !important; padding: 7px 6px !important; font-size: 10px !important; }
-  html body:has(.dashboard) .dash-top-products th:first-child,
-  html body:has(.dashboard) .dash-top-products td:first-child { width: 44% !important; }
-  html body:has(.dashboard) .dash-top-products th:nth-child(2),
-  html body:has(.dashboard) .dash-top-products td:nth-child(2) { width: 24% !important; }
-  html body:has(.dashboard) .dash-top-products th:last-child,
-  html body:has(.dashboard) .dash-top-products td:last-child { width: 32% !important; }
-  html body:has(.dashboard) .audit-list { max-height: none !important; overflow: visible !important; }
-  html body:has(.dashboard) .audit-row { grid-template-columns: auto minmax(0, 1fr) !important; gap: 6px !important; padding: 8px 10px !important; }
-  html body:has(.dashboard) .audit-info,
-  html body:has(.dashboard) .audit-info strong,
-  html body:has(.dashboard) .audit-info small { min-width: 0 !important; overflow-wrap: anywhere !important; white-space: normal !important; }
-  html body:has(.dashboard) .audit-val { grid-column: 2 !important; text-align: left !important; white-space: normal !important; overflow-wrap: anywhere !important; }
+  /* Indicadores: encaixe 100% na largura da tela física do celular sem ocultar informações à direita. */
+  html body .dashboard {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    touch-action: pan-y !important;
+  }
+  html body .dashboard-title,
+  html body .dash-panel > h3 {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 4px 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  html body .dashboard-title > span,
+  html body .dash-panel > h3 > span:first-child {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  html body .dashboard-title small,
+  html body .dash-panel > h3 small {
+    display: block !important;
+    width: 100% !important;
+    margin: 2px 0 0 !important;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+  html body .dash-notices,
+  html body .dash-notices > #dash-notices-body {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  html body .dash-notices p {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+  html body .dash-notices p > span {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  html body .dash-notices p > a {
+    display: block !important;
+    width: auto !important;
+    align-self: flex-end !important;
+    margin: 2px 0 0 auto !important;
+    text-align: right !important;
+  }
+  html body .dash-chart {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 236px !important;
+    padding: 26px 6px 10px !important;
+    gap: 4px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  html body .dash-chart .dash-bar {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  html body .dash-chart .dash-bar-val {
+    font-size: 8.5px !important;
+    transform: translateY(-22px) !important;
+    margin-bottom: -17px !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.2px !important;
+  }
+  html body .dash-chart .dash-bar-val .bar-val-full {
+    display: none !important;
+  }
+  html body .dash-chart .dash-bar-val .bar-val-compact {
+    display: inline !important;
+  }
+  html body .dash-chart .dash-bar i {
+    width: 56% !important;
+  }
+  html body .dash-chart .dash-bar i::before {
+    height: 5px !important;
+    top: -5px !important;
+  }
+  html body .dash-chart .dash-bar i::after {
+    width: 5px !important;
+    right: -5px !important;
+    top: -3px !important;
+  }
+  html body .dash-chart .dash-bar span {
+    font-size: 9.5px !important;
+    white-space: nowrap !important;
+  }
+  html body .dash-chart .dash-bar small {
+    font-size: 8px !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+  html body .dash-top-products {
+    display: table !important;
+    table-layout: fixed !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    border-collapse: collapse !important;
+  }
+  html body .dash-top-products thead {
+    display: table-header-group !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  html body .dash-top-products tbody {
+    display: table-row-group !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  html body .dash-top-products tr {
+    display: table-row !important;
+    width: 100% !important;
+  }
+  html body .dash-top-products th,
+  html body .dash-top-products td {
+    display: table-cell !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    padding: 8px 8px !important;
+    font-size: 11px !important;
+    vertical-align: middle !important;
+  }
+  html body .dash-top-products th:nth-child(1),
+  html body .dash-top-products td:nth-child(1) {
+    width: 44% !important;
+    text-align: left !important;
+  }
+  html body .dash-top-products th:nth-child(2),
+  html body .dash-top-products td:nth-child(2) {
+    width: 22% !important;
+    text-align: center !important;
+  }
+  html body .dash-top-products th:nth-child(3),
+  html body .dash-top-products td:nth-child(3) {
+    width: 34% !important;
+    text-align: right !important;
+  }
+  html body .dash-cat-box {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px 10px !important;
+    gap: 12px !important;
+    box-sizing: border-box !important;
+  }
+  html body .dash-cat-legend {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  html body .dash-cat-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  html body .dash-cat-item > span {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  html body .dash-cat-item > b {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+  html body .dash-fin-summary {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+  }
+  html body .dash-fin-summary div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  html body .audit-filters {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    display: flex !important;
+    gap: 4px !important;
+    margin-top: 4px !important;
+  }
+  html body .audit-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  html body .audit-row {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    gap: 8px !important;
+    padding: 9px 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+  }
+  html body .audit-info,
+  html body .audit-info strong,
+  html body .audit-info small {
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+  html body .audit-val {
+    grid-column: auto !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+  }
 }
 
 @media (min-width: 769px) {
