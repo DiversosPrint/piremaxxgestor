@@ -1,8 +1,9 @@
-const CACHE_NAME = 'piremaxx-gestor-v28';
+const CACHE_NAME = 'piremaxx-gestor-v29';
 const APP_SHELL = [
   '/',
   '/index.html',
   '/vendas.html',
+  '/venda-pdf.html',
   '/clientes.html',
   '/financeiro.html',
   '/financeiro-pagamentos.html',

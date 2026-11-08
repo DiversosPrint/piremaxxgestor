@@ -1,1 +1,564 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Documento de venda</title><style>@page{size:A4 portrait;margin:0}html,body{margin:0;padding:0;min-height:297mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font:13px Arial;color:#243746;padding:34mm 15mm 18mm 15mm;box-sizing:border-box;position:relative;z-index:1}.piremaxx-print-bg{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:fill;z-index:-1;pointer-events:none}header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #1b2886;padding-bottom:12px}.logo{font-size:20px;font-weight:bold;color:#1b2886;text-transform:uppercase}h2{font-size:14px;color:#1b2886;border-bottom:2px solid #1b2886;padding-bottom:5px;margin-top:20px}table{width:100%;border-collapse:collapse;background:transparent}th{background:#1b2886;color:#fff;text-align:left}td,th{padding:8px;border-bottom:1px solid #d8dee1;background:transparent}.total{text-align:right;font-size:18px;font-weight:bold;margin-top:16px;color:#1b2886}.notes-box{border:1px solid #d8dee1;padding:10px 12px;margin-top:14px;background:rgba(255,255,255,.85);white-space:pre-wrap}.print{margin-top:25px;padding:9px 16px;background:#1b2886;color:#fff;border:0;border-radius:3px;cursor:pointer}@media print{.print{display:none}}</style></head><body><img class="piremaxx-print-bg" src="public/papel-timbrado.jpg" alt=""><div id="doc">Carregando documento...</div><script src="vendas-importadas.js"></script><script>const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const fmtDate=d=>{if(!d)return '-';const s=String(d).trim();return /^\d{4}-\d{2}-\d{2}$/.test(s)?s.split('-').reverse().join('/'):s};const code=new URLSearchParams(location.search).get('code');const saved=JSON.parse(localStorage.getItem('localSales')||'[]').find(x=>String(x.code)===String(code));const source=saved||(window.importedSales||[]).find(x=>String(x.code)===String(code));const s=source||{code:code,client:'',vendor:'',date:'',type:'Venda',total:0,items:[],parts:[],financial:[],notes:''};const rawItems=s.items;const its=Array.isArray(rawItems)?rawItems:rawItems?[rawItems]:[];const parts=(Array.isArray(s.financial)&&s.financial.length)?s.financial:(s.parts||[]);const allRet=JSON.parse(localStorage.getItem('localReturns')||'[]').filter(r=>String(r.saleCode||'').trim()===String(code||'').trim()||String(r.code||'').startsWith('DEV-'+String(code||'').trim()+'-'));const retEntries=[];allRet.forEach(ret=>{(Array.isArray(ret.items)&&ret.items.length?ret.items:[{name:ret.description||'Produto devolvido',qty:ret.quantity||'-',total:Number(ret.total||ret.value||0)}]).forEach(x=>retEntries.push({returnCode:ret.code||'-',name:x.name||x.item||'Produto devolvido',qty:x.qty??x.quantity??'-',total:Number(x.total||x.value||0),date:fmtDate(ret.date)}))});const totalRet=allRet.reduce((sum,x)=>sum+Number(x.total||x.value||0),0);const returnHtml=retEntries.length?'<h2>Devoluções registradas</h2><table><thead><tr><th>Devolução</th><th>Produto ou serviço</th><th>Quantidade devolvida</th><th>Valor devolvido</th><th>Data</th></tr></thead><tbody>'+retEntries.map(x=>'<tr><td>'+x.returnCode+'</td><td>'+x.name+'</td><td>'+x.qty+'</td><td>'+money(x.total)+'</td><td>'+x.date+'</td></tr>').join('')+'</tbody></table><div class="total" style="font-size:14px;margin-top:8px">Total devolvido: '+money(totalRet)+'</div>':'';const notesHtml=(s.notes||s.observations)?'<h2>Observações gerais</h2><div class="notes-box">'+String(s.notes||s.observations||'')+'</div>':'';document.getElementById('doc').innerHTML='<header><div class="logo">'+(s.type||'Venda')+' #'+(s.code||'')+'</div><div><b>Protocolo:</b> '+(s.code||'')+'<br><b>Tipo:</b> '+(s.type||'Venda')+'<br><b>Data:</b> '+fmtDate(s.date)+'</div></header><h2>Dados da '+(s.type||'venda').toLowerCase()+'</h2><p><b>Cliente:</b> '+(s.client||'')+'<br><b>Vendedor:</b> '+(s.vendor||'')+'</p><h2>Itens da '+(s.type||'venda').toLowerCase()+'</h2><table><thead><tr><th>Produto ou serviço</th><th>Preço unitário</th><th>Quantidade</th><th>Total</th></tr></thead><tbody>'+its.map(x=>'<tr><td>'+(x.name||'')+'</td><td>'+money(x.price)+'</td><td>'+(x.qty||0)+'</td><td>'+money((x.price||0)*(x.qty||0))+'</td></tr>').join('')+'</tbody></table><div class="total">Total: '+money(s.total)+'</div>'+returnHtml+'<h2>Financeiro</h2><table><thead><tr><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Forma de pagamento</th><th>Status</th></tr></thead><tbody>'+parts.map((x,i)=>'<tr><td>'+(i+1)+'/'+parts.length+'</td><td>'+money(x.value!==undefined?x.value:(s.total||0)/(parts.length||1))+'</td><td>'+fmtDate(x.date||s.date)+'</td><td>'+(x.method||'Dinheiro')+'</td><td>'+(x.status||'A receber')+'</td></tr>').join('')+'</tbody></table>'+notesHtml+'<button class="print" onclick="window.print()">Imprimir / salvar PDF</button>';</script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Piremaxx Gestor — Pedido de Venda</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 297mm;
+    background: #e7edf9;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font: 13px Arial, Helvetica, sans-serif;
+    color: #243746;
+  }
+  .pdf-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: linear-gradient(135deg, #0d315e 0%, #17366f 100%);
+    color: #fff;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    box-shadow: 0 3px 12px rgba(9, 30, 66, 0.3);
+  }
+  .pdf-toolbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+  }
+  .pdf-toolbar-brand span {
+    background: rgba(255, 255, 255, 0.14);
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #b8d4ff;
+  }
+  .pdf-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pdf-toolbar-actions button {
+    height: 34px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-download-pdf {
+    background: #2b9348;
+    color: #fff;
+  }
+  .btn-download-pdf:hover { background: #237a3b; }
+  .btn-print-pdf {
+    background: #fff;
+    color: #17366f;
+  }
+  .btn-print-pdf:hover { background: #dce7f9; }
+  .sheet-wrap {
+    max-width: 210mm;
+    min-height: 297mm;
+    margin: 18px auto 32px;
+    background: #fff;
+    box-shadow: 0 8px 28px rgba(15, 35, 70, 0.22);
+    position: relative;
+    overflow: hidden;
+    padding: 36mm 15mm 20mm 15mm;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+  .piremaxx-print-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: -1;
+    pointer-events: none;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #1b2886;
+    padding-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1b2886;
+    text-transform: uppercase;
+  }
+  .logo small {
+    display: block;
+    font-size: 11px;
+    color: #4b6794;
+    margin-top: 3px;
+    letter-spacing: 0.4px;
+  }
+  h2 {
+    font-size: 14px;
+    color: #1b2886;
+    border-bottom: 2px solid #1b2886;
+    padding-bottom: 5px;
+    margin-top: 20px;
+    text-transform: uppercase;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+  }
+  th {
+    background: #1b2886;
+    color: #fff;
+    text-align: left;
+  }
+  td, th {
+    padding: 8px;
+    border-bottom: 1px solid #d8dee1;
+    background: transparent;
+  }
+  .total {
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 16px;
+    color: #1b2886;
+  }
+  .notes-box {
+    border: 1px solid #d8dee1;
+    padding: 10px 12px;
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.85);
+    white-space: pre-wrap;
+  }
+  @media (max-width: 768px) {
+    .sheet-wrap {
+      margin: 0;
+      max-width: 100%;
+      min-height: auto;
+      padding: 28mm 12px 24mm 12px;
+      box-shadow: none;
+    }
+    table {
+      font-size: 11.5px;
+    }
+    td, th {
+      padding: 6px 5px;
+    }
+  }
+  @media print {
+    html, body { background: #fff; }
+    .pdf-toolbar { display: none !important; }
+    .sheet-wrap {
+      margin: 0;
+      max-width: none;
+      box-shadow: none;
+      padding: 34mm 15mm 18mm 15mm;
+    }
+    .piremaxx-print-bg {
+      position: fixed;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="pdf-toolbar">
+  <div class="pdf-toolbar-brand">
+    <strong>PIREMAXX PNEUS</strong>
+    <span>Piremaxx Gestor</span>
+  </div>
+  <div class="pdf-toolbar-actions">
+    <button type="button" class="btn-download-pdf" id="btnDownloadPdf">⬇ Baixar PDF</button>
+    <button type="button" class="btn-print-pdf" onclick="window.print()">🖨 Imprimir / Salvar PDF</button>
+  </div>
+</div>
+<div class="sheet-wrap">
+  <img class="piremaxx-print-bg" id="letterheadBg" src="public/papel-timbrado.jpg" alt="" crossorigin="anonymous">
+  <div id="doc">Carregando documento...</div>
+</div>
+<script src="vendas-importadas.js"></script>
+<script>
+(function(){
+  const money = n => Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const fmtDate = d => {
+    if (!d) return '-';
+    const s = String(d).trim();
+    return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s.split('-').reverse().join('/') : s;
+  };
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+
+  const params = new URLSearchParams(location.search);
+  let code = params.get('code') || '';
+  const keyParam = params.get('key') || '';
+  if (!code && keyParam) {
+    const m = keyParam.match(/^48285\.0*(\d+)\./) || keyParam.match(/pmx\.(\d+)/i);
+    if (m) code = m[1];
+  }
+  const encodedPayload = params.get('d') || '';
+
+  function decodeSalePayload(raw) {
+    if (!raw) return null;
+    try {
+      const json = decodeURIComponent(escape(atob(raw)));
+      return JSON.parse(json);
+    } catch (e) {
+      try {
+        return JSON.parse(atob(raw));
+      } catch (e2) {
+        return null;
+      }
+    }
+  }
+
+  function findLocalOrImported(c, localArr, returnsArr) {
+    const key = String(c || '').trim();
+    const savedList = Array.isArray(localArr) ? localArr : JSON.parse(localStorage.getItem('localSales') || '[]');
+    const saved = savedList.find(x => String(x.code).trim() === key);
+    const imported = (window.importedSales || []).find(x => String(x.code).trim() === key);
+    const fromUrl = decodeSalePayload(encodedPayload);
+    const sale = saved || fromUrl || imported || {
+      code: key,
+      client: 'Consumidor Final',
+      vendor: 'Diego Miranda',
+      date: '',
+      type: 'Venda',
+      total: 0,
+      items: [],
+      parts: [],
+      financial: [],
+      notes: ''
+    };
+    const allRetSource = Array.isArray(returnsArr) ? returnsArr : JSON.parse(localStorage.getItem('localReturns') || '[]');
+    const allRet = allRetSource.filter(r => String(r.saleCode || '').trim() === key || String(r.code || '').startsWith('DEV-' + key + '-'));
+    return { sale, allRet };
+  }
+
+  let currentRenderData = null;
+
+  function renderDocument(sale, allRet) {
+    currentRenderData = { sale, allRet };
+    const docType = sale.type || 'Venda';
+    document.title = `Piremaxx Gestor — ${docType} #${sale.code || ''}`;
+    const rawItems = sale.items;
+    const its = Array.isArray(rawItems) && rawItems.length
+      ? rawItems
+      : (rawItems && !Array.isArray(rawItems) ? [rawItems] : [{ name: sale.description || sale.item || 'Produtos / Pneus Piremaxx', price: Number(sale.total) || 0, qty: Number(sale.total) ? 1 : 0 }]);
+    const parts = (Array.isArray(sale.financial) && sale.financial.length)
+      ? sale.financial
+      : (Array.isArray(sale.parts) && sale.parts.length
+        ? sale.parts
+        : [{ value: Number(sale.total) || 0, date: sale.date || '', method: 'Dinheiro', status: 'A receber' }]);
+
+    const retEntries = [];
+    (allRet || []).forEach(ret => {
+      (Array.isArray(ret.items) && ret.items.length ? ret.items : [{ name: ret.description || 'Produto devolvido', qty: ret.quantity || '-', total: Number(ret.total || ret.value || 0) }])
+        .forEach(x => retEntries.push({
+          returnCode: ret.code || '-',
+          name: x.name || x.item || 'Produto devolvido',
+          qty: x.qty ?? x.quantity ?? '-',
+          total: Number(x.total || x.value || 0),
+          date: fmtDate(ret.date)
+        }));
+    });
+    const totalRet = (allRet || []).reduce((sum, x) => sum + Number(x.total || x.value || 0), 0);
+    const returnHtml = retEntries.length
+      ? '<h2>Devoluções registradas</h2><table><thead><tr><th>Devolução</th><th>Produto ou serviço</th><th>Quantidade devolvida</th><th>Valor devolvido</th><th>Data</th></tr></thead><tbody>' +
+        retEntries.map(x => '<tr><td>' + esc(x.returnCode) + '</td><td>' + esc(x.name) + '</td><td>' + esc(x.qty) + '</td><td>' + money(x.total) + '</td><td>' + esc(x.date) + '</td></tr>').join('') +
+        '</tbody></table><div class="total" style="font-size:14px;margin-top:8px">Total devolvido: ' + money(totalRet) + '</div>'
+      : '';
+    const notesHtml = (sale.notes || sale.observations)
+      ? '<h2>Observações gerais</h2><div class="notes-box">' + esc(String(sale.notes || sale.observations || '')) + '</div>'
+      : '';
+
+    document.getElementById('doc').innerHTML =
+      '<header>' +
+        '<div class="logo">' + esc(docType) + ' #' + esc(sale.code || '') + '<small>PIREMAXX PNEUS · Piremaxx Gestor</small></div>' +
+        '<div><b>Protocolo:</b> ' + esc(sale.code || '') + '<br><b>Tipo:</b> ' + esc(docType) + '<br><b>Data:</b> ' + esc(fmtDate(sale.date)) + '</div>' +
+      '</header>' +
+      '<h2>Dados da ' + esc(docType.toLowerCase()) + '</h2>' +
+      '<p><b>Cliente:</b> ' + esc(sale.client || 'Consumidor Final') + '<br><b>Vendedor:</b> ' + esc(sale.vendor || 'Diego Miranda') + '</p>' +
+      '<h2>Itens da ' + esc(docType.toLowerCase()) + '</h2>' +
+      '<table><thead><tr><th>Produto ou serviço</th><th>Preço unitário</th><th>Quantidade</th><th>Total</th></tr></thead><tbody>' +
+      its.map(x => {
+        const q = Number(x.qty ?? x.quantity ?? 1) || 0;
+        const p = Number(x.price ?? x.unitPrice ?? ((Number(x.total) || 0) / (q || 1))) || 0;
+        return '<tr><td>' + esc(x.name || x.item || 'Produto') + '</td><td>' + money(p) + '</td><td>' + q + '</td><td>' + money(p * q) + '</td></tr>';
+      }).join('') +
+      '</tbody></table>' +
+      '<div class="total">Total: ' + money(sale.total) + '</div>' +
+      returnHtml +
+      '<h2>Financeiro</h2>' +
+      '<table><thead><tr><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Forma de pagamento</th><th>Status</th></tr></thead><tbody>' +
+      parts.map((x, i) => '<tr><td>' + (i + 1) + '/' + parts.length + '</td><td>' + money(x.value !== undefined ? x.value : (Number(sale.total) || 0) / (parts.length || 1)) + '</td><td>' + esc(fmtDate(x.date || sale.date)) + '</td><td>' + esc(x.method || 'Dinheiro') + '</td><td>' + esc(x.status || 'A receber') + '</td></tr>').join('') +
+      '</tbody></table>' +
+      notesHtml;
+  }
+
+  // Renderiza imediatamente com os dados disponíveis e também consulta /api/storage para vendas recém-criadas em outro dispositivo
+  const initial = findLocalOrImported(code);
+  renderDocument(initial.sale, initial.allRet);
+
+  if (location.protocol !== 'file:') {
+    fetch('/api/storage', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(db => {
+        if (!db) return;
+        let srvSales = null, srvReturns = null;
+        try { if (db.localSales) srvSales = JSON.parse(db.localSales); } catch (e) {}
+        try { if (db.localReturns) srvReturns = JSON.parse(db.localReturns); } catch (e) {}
+        if (Array.isArray(srvSales)) {
+          const updated = findLocalOrImported(code, srvSales, srvReturns);
+          renderDocument(updated.sale, updated.allRet);
+        }
+      })
+      .catch(() => {});
+  }
+
+  // Geração direta de arquivo .PDF binário (A4 com papel timbrado Piremaxx Pneus)
+  function canvasToPdfBlob(canvas) {
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    const base64 = dataUrl.split(',')[1];
+    const binStr = atob(base64);
+    const imgBytes = new Uint8Array(binStr.length);
+    for (let i = 0; i < binStr.length; i++) imgBytes[i] = binStr.charCodeAt(i);
+
+    const wPt = 595.28, hPt = 841.89;
+    const enc = str => {
+      const a = new Uint8Array(str.length);
+      for (let i = 0; i < str.length; i++) a[i] = str.charCodeAt(i) & 0xff;
+      return a;
+    };
+    const chunks = [];
+    let offset = 0;
+    const offsets = [0];
+    const pushBytes = b => { chunks.push(b); offset += b.length; };
+    const pushStr = s => pushBytes(enc(s));
+
+    pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
+    offsets[1] = offset;
+    pushStr('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+    offsets[2] = offset;
+    pushStr('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+    offsets[3] = offset;
+    pushStr(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${wPt} ${hPt}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`);
+    offsets[4] = offset;
+    pushStr(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${canvas.width} /Height ${canvas.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgBytes.length} >>\nstream\n`);
+    pushBytes(imgBytes);
+    pushStr('\nendstream\nendobj\n');
+    const contentStream = `q ${wPt} 0 0 ${hPt} 0 0 cm /Im0 Do Q\n`;
+    offsets[5] = offset;
+    pushStr(`5 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`);
+    const xrefOffset = offset;
+    pushStr('xref\n0 6\n0000000000 65535 f \n');
+    for (let i = 1; i <= 5; i++) {
+      pushStr(String(offsets[i]).padStart(10, '0') + ' 00000 n \n');
+    }
+    pushStr(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+    return new Blob(chunks, { type: 'application/pdf' });
+  }
+
+  function buildSalePdfBlob(sale, bgImg) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1240;
+    canvas.height = 1754;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (bgImg && bgImg.complete && bgImg.naturalWidth > 0) {
+      try { ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height); } catch (e) {}
+    }
+
+    const left = 90, right = canvas.width - 90, contentW = right - left;
+    let y = 235;
+    const docType = sale.type || 'Venda';
+
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 30px Arial';
+    ctx.fillText(`${docType.toUpperCase()} #${sale.code || ''}`, left, y);
+    ctx.font = 'bold 16px Arial';
+    ctx.fillStyle = '#4b6794';
+    ctx.fillText('PIREMAXX PNEUS · Piremaxx Gestor', left, y + 24);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#243746';
+    ctx.font = 'bold 17px Arial';
+    ctx.fillText(`Protocolo: ${sale.code || ''}`, right, y - 10);
+    ctx.font = '16px Arial';
+    ctx.fillText(`Tipo: ${docType}`, right, y + 12);
+    ctx.fillText(`Data: ${fmtDate(sale.date)}`, right, y + 34);
+    ctx.textAlign = 'left';
+
+    y += 50;
+    ctx.strokeStyle = '#1b2886';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+
+    y += 34;
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText(`DADOS DA ${docType.toUpperCase()}`, left, y);
+    y += 8;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+
+    y += 28;
+    ctx.fillStyle = '#243746';
+    ctx.font = 'bold 17px Arial';
+    ctx.fillText('Cliente: ', left, y);
+    ctx.font = '17px Arial';
+    ctx.fillText(String(sale.client || 'Consumidor Final'), left + 72, y);
+    y += 26;
+    ctx.font = 'bold 17px Arial';
+    ctx.fillText('Vendedor: ', left, y);
+    ctx.font = '17px Arial';
+    ctx.fillText(String(sale.vendor || 'Diego Miranda'), left + 90, y);
+
+    y += 40;
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText(`ITENS DA ${docType.toUpperCase()}`, left, y);
+    y += 10;
+
+    // Cabeçalho da tabela de itens
+    ctx.fillStyle = '#1b2886';
+    ctx.fillRect(left, y, contentW, 36);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText('Produto ou serviço', left + 12, y + 24);
+    ctx.fillText('Preço unitário', left + 560, y + 24);
+    ctx.fillText('Qtd.', left + 770, y + 24);
+    ctx.textAlign = 'right';
+    ctx.fillText('Total', right - 12, y + 24);
+    ctx.textAlign = 'left';
+    y += 36;
+
+    const rawItems = sale.items;
+    const its = Array.isArray(rawItems) && rawItems.length
+      ? rawItems
+      : (rawItems && !Array.isArray(rawItems) ? [rawItems] : [{ name: sale.description || sale.item || 'Produtos / Pneus Piremaxx', price: Number(sale.total) || 0, qty: Number(sale.total) ? 1 : 0 }]);
+
+    its.slice(0, 18).forEach((x, idx) => {
+      const q = Number(x.qty ?? x.quantity ?? 1) || 0;
+      const p = Number(x.price ?? x.unitPrice ?? ((Number(x.total) || 0) / (q || 1))) || 0;
+      if (idx % 2 === 1) {
+        ctx.fillStyle = 'rgba(230, 238, 250, 0.55)';
+        ctx.fillRect(left, y, contentW, 34);
+      }
+      ctx.fillStyle = '#243746';
+      ctx.font = '16px Arial';
+      ctx.fillText(String(x.name || x.item || 'Produto').slice(0, 48), left + 12, y + 23);
+      ctx.fillText(money(p), left + 560, y + 23);
+      ctx.fillText(String(q), left + 770, y + 23);
+      ctx.textAlign = 'right';
+      ctx.fillText(money(p * q), right - 12, y + 23);
+      ctx.textAlign = 'left';
+      ctx.strokeStyle = '#d8dee1';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(left, y + 34); ctx.lineTo(right, y + 34); ctx.stroke();
+      y += 34;
+    });
+
+    y += 32;
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 24px Arial';
+    ctx.fillText(`Total: ${money(sale.total)}`, right, y);
+    ctx.textAlign = 'left';
+
+    y += 36;
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText('FINANCEIRO', left, y);
+    y += 10;
+
+    ctx.fillStyle = '#1b2886';
+    ctx.fillRect(left, y, contentW, 36);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText('Parcela', left + 12, y + 24);
+    ctx.fillText('Valor', left + 180, y + 24);
+    ctx.fillText('Vencimento', left + 400, y + 24);
+    ctx.fillText('Forma de pagamento', left + 630, y + 24);
+    ctx.textAlign = 'right';
+    ctx.fillText('Status', right - 12, y + 24);
+    ctx.textAlign = 'left';
+    y += 36;
+
+    const parts = (Array.isArray(sale.financial) && sale.financial.length)
+      ? sale.financial
+      : (Array.isArray(sale.parts) && sale.parts.length
+        ? sale.parts
+        : [{ value: Number(sale.total) || 0, date: sale.date || '', method: 'Dinheiro', status: 'A receber' }]);
+
+    parts.slice(0, 10).forEach((x, i) => {
+      const val = x.value !== undefined ? x.value : (Number(sale.total) || 0) / (parts.length || 1);
+      ctx.fillStyle = '#243746';
+      ctx.font = '16px Arial';
+      ctx.fillText(`${i + 1}/${parts.length}`, left + 12, y + 23);
+      ctx.fillText(money(val), left + 180, y + 23);
+      ctx.fillText(fmtDate(x.date || sale.date), left + 400, y + 23);
+      ctx.fillText(String(x.method || 'Dinheiro'), left + 630, y + 23);
+      ctx.textAlign = 'right';
+      ctx.fillText(String(x.status || 'A receber'), right - 12, y + 23);
+      ctx.textAlign = 'left';
+      ctx.strokeStyle = '#d8dee1';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(left, y + 34); ctx.lineTo(right, y + 34); ctx.stroke();
+      y += 34;
+    });
+
+    if (sale.notes || sale.observations) {
+      y += 34;
+      ctx.fillStyle = '#1b2886';
+      ctx.font = 'bold 18px Arial';
+      ctx.fillText('OBSERVAÇÕES GERAIS', left, y);
+      y += 24;
+      ctx.fillStyle = '#243746';
+      ctx.font = '15px Arial';
+      ctx.fillText(String(sale.notes || sale.observations).slice(0, 110), left, y);
+    }
+
+    return canvasToPdfBlob(canvas);
+  }
+
+  document.getElementById('btnDownloadPdf')?.addEventListener('click', function() {
+    if (!currentRenderData) return;
+    const bgImg = document.getElementById('letterheadBg');
+    const blob = buildSalePdfBlob(currentRenderData.sale, bgImg);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Pedido_${currentRenderData.sale.code || 'Venda'}_Piremaxx.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  });
+})();
+</script>
+</body>
+</html>

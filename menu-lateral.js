@@ -1477,12 +1477,300 @@
     return '';
   }
 
-  function generateEgestorKey(code){
+  function generatePiremaxxPdfKey(code){
     const num = String(code || '3300').replace(/\D/g, '') || '3300';
-    return '48285.' + num.padStart(4, '8').slice(0, 4) + '.01a91.4146.831a.2e5d';
+    return 'pmx.' + num.padStart(4, '0') + '.d8a4';
   }
 
-  // Modal oficial "Envio via WhatsApp" idêntico à referência visual
+  function findSaleDataForPdf(code, fallbackOpts){
+    const codeStr = String(code || '').trim();
+    let sale = null;
+    try {
+      const localSales = JSON.parse(localStorage.getItem('localSales') || '[]');
+      sale = localSales.find(function(x){ return String(x.code) === codeStr; }) || null;
+    } catch(_){}
+    if(!sale && Array.isArray(window.importedSales)){
+      sale = window.importedSales.find(function(x){ return String(x.code) === codeStr; }) || null;
+    }
+    if(sale) return sale;
+    return {
+      code: codeStr || '3300',
+      type: (fallbackOpts && fallbackOpts.type) || 'Venda',
+      client: (fallbackOpts && fallbackOpts.client) || 'Consumidor final',
+      vendor: 'Diego Miranda',
+      date: new Date().toISOString().slice(0, 10),
+      total: 0,
+      items: [{ name: (fallbackOpts && fallbackOpts.client) || 'Venda #' + codeStr, qty: 1, price: 0 }]
+    };
+  }
+
+  function buildPiremaxxPdfUrl(code, opts){
+    const codeStr = String(code || '3300').trim();
+    const key = generatePiremaxxPdfKey(codeStr);
+    const urlObj = new URL('venda-pdf.html', location.href);
+    urlObj.searchParams.set('code', codeStr);
+    urlObj.searchParams.set('key', key);
+    try {
+      const localSales = JSON.parse(localStorage.getItem('localSales') || '[]');
+      const localRec = localSales.find(function(x){ return String(x.code) === codeStr; });
+      if(localRec){
+        const compact = {
+          code: localRec.code,
+          type: localRec.type || 'Venda',
+          client: localRec.client || 'Consumidor final',
+          vendor: localRec.vendor || 'Diego Miranda',
+          date: localRec.date || '',
+          total: Number(localRec.total || 0),
+          items: Array.isArray(localRec.items) ? localRec.items.slice(0, 15).map(function(it){
+            return { name: it.name || it.product || '', qty: Number(it.qty ?? it.quantity ?? 1), price: Number(it.price ?? it.unitPrice ?? 0) };
+          }) : [],
+          financial: Array.isArray(localRec.financial) ? localRec.financial.slice(0, 8) : (Array.isArray(localRec.parts) ? localRec.parts.slice(0, 8) : []),
+          notes: String(localRec.notes || '').slice(0, 240)
+        };
+        const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+        if(encoded.length <= 1200){
+          urlObj.searchParams.set('d', encoded);
+        }
+      }
+    } catch(_){}
+    return urlObj.href;
+  }
+
+  async function generateSalePdfBlob(sale){
+    const W = 1240, H = 1754;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, W, H);
+
+    try {
+      await new Promise(function(resolve){
+        const bg = new Image();
+        bg.crossOrigin = 'anonymous';
+        bg.onload = function(){
+          ctx.drawImage(bg, 0, 0, W, H);
+          resolve();
+        };
+        bg.onerror = function(){ resolve(); };
+        bg.src = 'public/papel-timbrado.jpg';
+      });
+    } catch(_){}
+
+    const fmtMoney = function(v){
+      return Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
+    const fmtDate = function(v){
+      const s = String(v || '');
+      return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s.split('-').reverse().join('/') : (s || new Date().toLocaleDateString('pt-BR'));
+    };
+
+    const code = String(sale.code || '3300');
+    const docType = String(sale.type || 'Venda');
+    const client = String(sale.client || 'Consumidor final');
+    const vendor = String(sale.vendor || 'Diego Miranda');
+    const saleDate = fmtDate(sale.date);
+    const rawItems = Array.isArray(sale.items) && sale.items.length
+      ? sale.items.map(function(it){
+          return {
+            name: String(it.name || it.product || 'Item'),
+            qty: Number(it.qty ?? it.quantity ?? 1),
+            price: Number(it.price ?? it.unitPrice ?? 0)
+          };
+        })
+      : [{ name: client, qty: 1, price: Number(sale.total || 0) }];
+    const totalVal = sale.total !== undefined
+      ? Number(sale.total)
+      : rawItems.reduce(function(acc, it){ return acc + (it.qty * it.price); }, 0);
+    const finRows = (Array.isArray(sale.financial) && sale.financial.length)
+      ? sale.financial
+      : ((Array.isArray(sale.parts) && sale.parts.length) ? sale.parts : [{ value: totalVal, date: sale.date, method: 'Dinheiro', status: 'A receber' }]);
+
+    const marginX = 92;
+    const contentW = W - marginX * 2;
+    let y = 370;
+
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 34px Arial, sans-serif';
+    ctx.fillText(docType.toUpperCase() + ' #' + code, marginX, y);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#243746';
+    ctx.font = 'bold 20px Arial, sans-serif';
+    ctx.fillText('Protocolo: ' + code, W - marginX, y - 24);
+    ctx.font = '19px Arial, sans-serif';
+    ctx.fillText('Tipo: ' + docType + '   |   Data: ' + saleDate, W - marginX, y + 4);
+    ctx.textAlign = 'left';
+
+    y += 22;
+    ctx.strokeStyle = '#1b2886';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(marginX, y);
+    ctx.lineTo(W - marginX, y);
+    ctx.stroke();
+
+    y += 42;
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 22px Arial, sans-serif';
+    ctx.fillText('DADOS DO CLIENTE', marginX, y);
+    y += 10;
+    ctx.fillStyle = '#f6f8fb';
+    ctx.fillRect(marginX, y, contentW, 82);
+    ctx.strokeStyle = '#d8dee1';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(marginX, y, contentW, 82);
+
+    ctx.fillStyle = '#243746';
+    ctx.font = 'bold 20px Arial, sans-serif';
+    ctx.fillText('Cliente: ', marginX + 18, y + 32);
+    ctx.font = '20px Arial, sans-serif';
+    ctx.fillText(client, marginX + 102, y + 32);
+    ctx.font = 'bold 20px Arial, sans-serif';
+    ctx.fillText('Vendedor: ', marginX + 18, y + 64);
+    ctx.font = '20px Arial, sans-serif';
+    ctx.fillText(vendor, marginX + 125, y + 64);
+
+    y += 122;
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 22px Arial, sans-serif';
+    ctx.fillText('ITENS DO PEDIDO (#' + code + ')', marginX, y);
+    y += 14;
+
+    const colPriceX = marginX + Math.round(contentW * 0.56);
+    const colQtyX = marginX + Math.round(contentW * 0.75);
+    const colTotX = marginX + contentW - 16;
+
+    ctx.fillStyle = '#1b2886';
+    ctx.fillRect(marginX, y, contentW, 44);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 19px Arial, sans-serif';
+    ctx.fillText('Produto ou serviço', marginX + 16, y + 29);
+    ctx.fillText('Preço unit.', colPriceX, y + 29);
+    ctx.fillText('Qtd.', colQtyX, y + 29);
+    ctx.textAlign = 'right';
+    ctx.fillText('Total', colTotX, y + 29);
+    ctx.textAlign = 'left';
+    y += 44;
+
+    rawItems.slice(0, 12).forEach(function(item, idx){
+      ctx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#f7f9fc';
+      ctx.fillRect(marginX, y, contentW, 42);
+      ctx.strokeStyle = '#d8dee1';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(marginX, y + 42);
+      ctx.lineTo(W - marginX, y + 42);
+      ctx.stroke();
+
+      ctx.fillStyle = '#243746';
+      ctx.font = '19px Arial, sans-serif';
+      const label = String(item.name || '').slice(0, 44);
+      ctx.fillText(label, marginX + 16, y + 28);
+      ctx.fillText(fmtMoney(item.price), colPriceX, y + 28);
+      ctx.fillText(String(item.qty || 0), colQtyX, y + 28);
+      ctx.textAlign = 'right';
+      ctx.font = 'bold 19px Arial, sans-serif';
+      ctx.fillText(fmtMoney((item.price || 0) * (item.qty || 0)), colTotX, y + 28);
+      ctx.textAlign = 'left';
+      y += 42;
+    });
+
+    y += 38;
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 28px Arial, sans-serif';
+    ctx.fillText('Total: ' + fmtMoney(totalVal), W - marginX, y);
+    ctx.textAlign = 'left';
+
+    y += 44;
+    ctx.fillStyle = '#1b2886';
+    ctx.font = 'bold 22px Arial, sans-serif';
+    ctx.fillText('FINANCEIRO', marginX, y);
+    y += 14;
+
+    ctx.fillStyle = '#1b2886';
+    ctx.fillRect(marginX, y, contentW, 42);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 18px Arial, sans-serif';
+    ctx.fillText('Parcela', marginX + 16, y + 27);
+    ctx.fillText('Valor', marginX + 170, y + 27);
+    ctx.fillText('Vencimento', marginX + 380, y + 27);
+    ctx.fillText('Forma de pagamento', marginX + 590, y + 27);
+    ctx.fillText('Status', marginX + 870, y + 27);
+    y += 42;
+
+    finRows.slice(0, 6).forEach(function(p, idx){
+      ctx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#f7f9fc';
+      ctx.fillRect(marginX, y, contentW, 40);
+      ctx.strokeStyle = '#d8dee1';
+      ctx.beginPath();
+      ctx.moveTo(marginX, y + 40);
+      ctx.lineTo(W - marginX, y + 40);
+      ctx.stroke();
+
+      const pVal = p.value !== undefined ? Number(p.value) : (totalVal / (finRows.length || 1));
+      ctx.fillStyle = '#243746';
+      ctx.font = '18px Arial, sans-serif';
+      ctx.fillText((idx + 1) + '/' + finRows.length, marginX + 16, y + 26);
+      ctx.fillText(fmtMoney(pVal), marginX + 170, y + 26);
+      ctx.fillText(fmtDate(p.date || sale.date), marginX + 380, y + 26);
+      ctx.fillText(String(p.method || 'Dinheiro'), marginX + 590, y + 26);
+      ctx.fillText(String(p.status || 'A receber'), marginX + 870, y + 26);
+      y += 40;
+    });
+
+    y += 38;
+    ctx.fillStyle = '#587383';
+    ctx.font = '16px Arial, sans-serif';
+    ctx.fillText('Documento emitido por PIREMAXX PNEUS · Piremaxx Gestor', marginX, Math.min(y, H - 180));
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+    const base64 = dataUrl.split(',')[1];
+    const binStr = atob(base64);
+    const jpgBytes = new Uint8Array(binStr.length);
+    for(let i = 0; i < binStr.length; i++) jpgBytes[i] = binStr.charCodeAt(i);
+
+    const enc = new TextEncoder();
+    const parts = [];
+    const offsets = [];
+    let byteLen = 0;
+    function pushStr(str){
+      const b = enc.encode(str);
+      parts.push(b);
+      byteLen += b.length;
+    }
+    function pushBytes(b){
+      parts.push(b);
+      byteLen += b.length;
+    }
+
+    pushStr('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n');
+    offsets[1] = byteLen;
+    pushStr('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+    offsets[2] = byteLen;
+    pushStr('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+    offsets[3] = byteLen;
+    pushStr('3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n');
+    offsets[4] = byteLen;
+    pushStr('4 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + W + ' /Height ' + H + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jpgBytes.length + ' >>\nstream\n');
+    pushBytes(jpgBytes);
+    pushStr('\nendstream\nendobj\n');
+    const contentStream = 'q\n595.28 0 0 841.89 0 0 cm\n/Im0 Do\nQ\n';
+    offsets[5] = byteLen;
+    pushStr('5 0 obj\n<< /Length ' + contentStream.length + ' >>\nstream\n' + contentStream + 'endstream\nendobj\n');
+    const xrefOffset = byteLen;
+    pushStr('xref\n0 6\n0000000000 65535 f \n');
+    for(let i = 1; i <= 5; i++){
+      pushStr(String(offsets[i]).padStart(10, '0') + ' 00000 n \n');
+    }
+    pushStr('trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n' + xrefOffset + '\n%%EOF');
+
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+
+  // Modal oficial "Envio via WhatsApp" com link Piremaxx Gestor e anexo/download PDF
   window.openPiremaxxWhatsAppModal = function(opts){
     opts = opts || {};
     document.getElementById('piremaxxWhatsAppOverlay')?.remove();
@@ -1631,10 +1919,40 @@
           border-top: 1px solid #e5e5e5;
           padding: 14px 18px;
           display: flex;
-          justify-content: flex-end;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
           gap: 8px;
           background: #fff;
         }
+        .wa-modal-pdf-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .wa-modal-main-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-left: auto;
+        }
+        .wa-btn-pdf {
+          height: 34px;
+          padding: 0 12px;
+          border: 1px solid #1b2886;
+          border-radius: 4px;
+          background: #f0f4ff;
+          color: #1b2886;
+          font-size: 12.5px;
+          font-weight: bold;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+        }
+        .wa-btn-pdf:hover { background: #e1e9ff; }
+        .wa-btn-pdf:disabled { opacity: 0.65; cursor: wait; }
         .wa-btn-send {
           height: 34px;
           padding: 0 16px;
@@ -1666,9 +1984,8 @@
     const docTypeRaw = String(opts.type || 'Venda').trim();
     const isQuote = docTypeRaw.toLowerCase().includes('orçamento') || docTypeRaw.toLowerCase().includes('orcamento');
     const docLabel = opts.docLabel || (isQuote ? ('o orçamento nº ' + code) : ('o pedido de venda nº ' + code));
-    const displayKey = generateEgestorKey(code);
-    const displayUrl = opts.displayUrl || ('https://v4.egestor.com.br/vendas/print.php?key=' + displayKey);
-    const openPdfUrl = opts.pdfUrl || new URL('venda-pdf.html?code=' + encodeURIComponent(code), location.href).href;
+    const openPdfUrl = opts.pdfUrl || buildPiremaxxPdfUrl(code, opts);
+    const displayUrl = opts.displayUrl || openPdfUrl;
     const initialPhone = opts.phone != null ? String(opts.phone) : findContactPhone(opts.client || '');
 
     const overlay = document.createElement('div');
@@ -1686,16 +2003,22 @@
           </div>
           <label class="wa-modal-label">Mensagem <span class="wa-modal-help" title="Mensagem que será enviada para o cliente no WhatsApp">?</span></label>
           <div class="wa-modal-msgbox" contenteditable="true" spellcheck="false">${opts.message ? escHtml(opts.message) : `Olá!
-Aqui é da empresa DNFX - COMERCIO DE PNEUS.
+Aqui é da empresa PIREMAXX PNEUS.
 
 Estou enviando ${escHtml(docLabel)}. Para visualizar, basta clicar no link:
-<a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener">${escHtml(displayUrl)}</a>`}</div>
+Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener">${escHtml(displayUrl)}</a>`}</div>
           <label class="wa-modal-label" for="waModalPhoneInput">Informe o número</label>
           <input id="waModalPhoneInput" type="tel" class="wa-modal-phone" value="${escHtml(initialPhone)}" autocomplete="off">
         </div>
         <div class="wa-modal-footer">
-          <button type="button" class="wa-btn-send">Enviar</button>
-          <button type="button" class="wa-btn-back">Voltar</button>
+          <div class="wa-modal-pdf-actions">
+            <button type="button" class="wa-btn-pdf wa-btn-download-pdf" title="Baixar o arquivo PDF desta venda no seu dispositivo">📄 Baixar PDF</button>
+            <button type="button" class="wa-btn-pdf wa-btn-share-pdf" title="Compartilhar ou anexar o arquivo PDF diretamente">📎 Compartilhar PDF</button>
+          </div>
+          <div class="wa-modal-main-actions">
+            <button type="button" class="wa-btn-send">Enviar</button>
+            <button type="button" class="wa-btn-back">Voltar</button>
+          </div>
         </div>
       </div>
     `;
@@ -1703,6 +2026,8 @@ Estou enviando ${escHtml(docLabel)}. Para visualizar, basta clicar no link:
     document.body.appendChild(overlay);
     const phoneInput = overlay.querySelector('#waModalPhoneInput');
     const msgBox = overlay.querySelector('.wa-modal-msgbox');
+    const btnDownloadPdf = overlay.querySelector('.wa-btn-download-pdf');
+    const btnSharePdf = overlay.querySelector('.wa-btn-share-pdf');
     setTimeout(function(){ phoneInput?.focus(); }, 40);
 
     function close(){ overlay.remove(); }
@@ -1722,6 +2047,74 @@ Estou enviando ${escHtml(docLabel)}. Para visualizar, basta clicar no link:
         nativeWindowOpen.call(window, a.href, '_blank');
       }
     });
+
+    const pdfFileName = (isQuote ? 'Orcamento_' : 'Pedido_') + code + '_Piremaxx.pdf';
+
+    btnDownloadPdf.onclick = async function(){
+      const origText = btnDownloadPdf.textContent;
+      btnDownloadPdf.disabled = true;
+      btnDownloadPdf.textContent = '⏳ Gerando PDF...';
+      try {
+        const saleObj = findSaleDataForPdf(code, opts);
+        const blob = await generateSalePdfBlob(saleObj);
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = pdfFileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(blobUrl); }, 10000);
+        btnDownloadPdf.textContent = '✓ PDF Baixado';
+        setTimeout(function(){
+          btnDownloadPdf.textContent = origText;
+          btnDownloadPdf.disabled = false;
+        }, 2000);
+      } catch(_){
+        btnDownloadPdf.textContent = origText;
+        btnDownloadPdf.disabled = false;
+        nativeWindowOpen.call(window, openPdfUrl, '_blank');
+      }
+    };
+
+    btnSharePdf.onclick = async function(){
+      const origText = btnSharePdf.textContent;
+      btnSharePdf.disabled = true;
+      btnSharePdf.textContent = '⏳ Preparando...';
+      try {
+        const saleObj = findSaleDataForPdf(code, opts);
+        const blob = await generateSalePdfBlob(saleObj);
+        const file = new File([blob], pdfFileName, { type: 'application/pdf' });
+        const text = (msgBox.innerText || msgBox.textContent || '').trim();
+        if(navigator.canShare && navigator.canShare({ files: [file] })){
+          await navigator.share({
+            title: 'PIREMAXX PNEUS - Pedido #' + code,
+            text: text,
+            files: [file]
+          });
+          btnSharePdf.textContent = origText;
+          btnSharePdf.disabled = false;
+          return;
+        }
+        // Em desktop sem Web Share de arquivos: baixa o PDF automaticamente para anexar no WhatsApp Web
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = pdfFileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(blobUrl); }, 10000);
+        btnSharePdf.textContent = '✓ PDF salvo p/ anexar';
+        setTimeout(function(){
+          btnSharePdf.textContent = origText;
+          btnSharePdf.disabled = false;
+        }, 2500);
+      } catch(_){
+        btnSharePdf.textContent = origText;
+        btnSharePdf.disabled = false;
+      }
+    };
 
     overlay.querySelector('.wa-btn-send').onclick = function(){
       const rawPhone = (phoneInput.value || '').replace(/\D/g, '');
