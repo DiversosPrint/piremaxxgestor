@@ -3014,7 +3014,8 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
   window.piremaxxConfirm = piremaxxConfirm;
   window.appConfirm = piremaxxConfirm;
 
-  function piremaxxToast(message) {
+  function piremaxxToast(message, options) {
+    options = options || {};
     if (!document.getElementById('piremaxx-toast-styles')) {
       const st = document.createElement('style');
       st.id = 'piremaxx-toast-styles';
@@ -3048,6 +3049,26 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
           font-size: 13px;
           flex: 0 0 22px;
         }
+        .pmx-save-toast-action {
+          margin-left: 6px;
+          background: #2b9348;
+          color: #fff;
+          border: 0;
+          border-radius: 6px;
+          padding: 6px 10px;
+          font: bold 12px Arial, Helvetica, sans-serif;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .pmx-save-toast-action:hover { background: #237a3b; }
+        @media (max-width: 768px) {
+          .pmx-save-toast {
+            left: 12px;
+            right: 12px;
+            bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+            flex-wrap: wrap;
+          }
+        }
       `;
       document.head.appendChild(st);
     }
@@ -3058,10 +3079,21 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
     toast.className = 'pmx-save-toast';
     toast.innerHTML = '<span class="pmx-save-toast-badge">✓</span><span></span>';
     toast.querySelector('span:last-child').textContent = String(message || ' Alterações salvas com sucesso.');
+    if (options.actionLabel && typeof options.onAction === 'function') {
+      const actionBtn = document.createElement('button');
+      actionBtn.type = 'button';
+      actionBtn.className = 'pmx-save-toast-action';
+      actionBtn.textContent = options.actionLabel;
+      actionBtn.onclick = function() {
+        if (toast.parentNode) toast.remove();
+        options.onAction();
+      };
+      toast.appendChild(actionBtn);
+    }
     document.body.appendChild(toast);
     setTimeout(function() {
       if (toast.parentNode) toast.remove();
-    }, 3200);
+    }, options.duration || 3200);
   }
 
   window.piremaxxToast = piremaxxToast;
