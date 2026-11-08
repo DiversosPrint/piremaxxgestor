@@ -505,6 +505,11 @@
   }
 
   /* 8. TABELAS PADRONIZADAS (Colunas reais preservadas com rolagem horizontal fluida) */
+  html body .sales-table-wrapper,
+  html body .purchase-table-wrapper,
+  html body .client-table-wrapper,
+  html body .table-responsive,
+  html body .clients,
   html body .finance-panel,
   html body #finance-receivables,
   html body #finance-other,
@@ -544,6 +549,18 @@
     min-width: 640px !important;
     table-layout: auto !important;
     border-collapse: collapse !important;
+  }
+  html body .sales-table-wrapper,
+  html body .purchase-table-wrapper,
+  html body .client-table-wrapper,
+  html body .table-responsive {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+    margin: 0 0 12px 0 !important;
   }
 
   html body .sales-table thead,

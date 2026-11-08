@@ -1327,6 +1327,11 @@
           }
 
           /* Tabelas com rolagem horizontal suave por toque */
+          html body .sales-table-wrapper,
+          html body .purchase-table-wrapper,
+          html body .client-table-wrapper,
+          html body .table-responsive,
+          html body .clients,
           html body .sales-content,
           html body .client-panel,
           html body .finance-panel,
@@ -1336,6 +1341,14 @@
             overflow-x:auto!important;
             -webkit-overflow-scrolling:touch!important;
             max-width:100%!important;
+          }
+          html body .sales-table-wrapper,
+          html body .purchase-table-wrapper,
+          html body .client-table-wrapper,
+          html body .table-responsive {
+            display:block!important;
+            width:100%!important;
+            box-sizing:border-box!important;
           }
           html body .sales-table,
           html body .client-table,
@@ -3100,6 +3113,40 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
   if (typeof window.appMessage !== 'function') {
     window.appMessage = piremaxxToast;
   }
+})();
+
+// Envelopamento responsivo automático de tabelas no mobile para isolar a rolagem horizontal
+(function(){
+  function wrapMobileTables(){
+    if(!window.matchMedia('(max-width: 768px)').matches) return;
+    const tableSelectors = ['.sales-table', '.purchase-table', '.client-table'];
+    tableSelectors.forEach(function(sel){
+      const tables = document.querySelectorAll(sel);
+      tables.forEach(function(table){
+        if(!table || table.parentElement.classList.contains('table-responsive') || 
+           table.parentElement.classList.contains('sales-table-wrapper') ||
+           table.parentElement.classList.contains('purchase-table-wrapper') ||
+           table.parentElement.classList.contains('client-table-wrapper')) {
+          return;
+        }
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-responsive ' + sel.replace('.', '') + '-wrapper';
+        wrapper.style.cssText = 'width:100%!important;max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;box-sizing:border-box!important;margin:0 0 12px 0!important;';
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      });
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', wrapMobileTables);
+  } else {
+    wrapMobileTables();
+  }
+  window.addEventListener('resize', wrapMobileTables);
+  setTimeout(wrapMobileTables, 150);
+  setTimeout(wrapMobileTables, 600);
+  setTimeout(wrapMobileTables, 1500);
 })();
 
 
