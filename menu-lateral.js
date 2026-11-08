@@ -1251,7 +1251,10 @@
 
           /* Abas horizontais deslizáveis por toque (Touch Swipe Tabs) */
           html body main>.sales-content:before { display:none!important; }
-          html body main>.sales-content { padding:10px!important; }
+          html body main>.sales-content {
+            padding:10px 10px calc(92px + env(safe-area-inset-bottom, 0px))!important;
+            background:#e7edf9!important;
+          }
           html body main>.sales-content>.tabs,
           html body .client-tabs,
           html body .finance-tabs,
@@ -1350,8 +1353,14 @@
           html body .config-body,
           html body .finance-content,
           html body .purchase-content,
-          html body .products-content {
-            padding:12px 10px 28px!important;
+          html body .products-content,
+          html body .fleet-content,
+          html body .reports-content,
+          html body .pix-content,
+          html body .new-client,
+          html body .buyer-page {
+            padding:12px 10px calc(92px + env(safe-area-inset-bottom, 0px))!important;
+            background:#e7edf9!important;
           }
           html body .dash-metrics {
             grid-template-columns:repeat(2,1fr)!important;
@@ -1383,18 +1392,46 @@
           html body .new-purchase,
           html body .stock-adjust-modal,
           html body .account-modal,
-          html body .user-modal-overlay,
-          html body #newSale {
+          html body .user-modal-overlay {
             left:0!important;
             top:0!important;
             width:100%!important;
             max-width:100vw!important;
             height:100vh!important;
-            padding:10px!important;
+            z-index:240!important;
           }
-          html body #newSale {
+          html body #newSale,
+          html body .new-sale,
+          html body .return-wizard {
             position:relative!important;
+            left:0!important;
+            top:0!important;
+            width:100%!important;
+            max-width:100vw!important;
             height:auto!important;
+            z-index:1!important;
+            background:#e7edf9!important;
+            padding:12px 12px calc(96px + env(safe-area-inset-bottom, 0px))!important;
+            box-sizing:border-box!important;
+          }
+          html body #newSale .actions,
+          html body .return-wizard .return-actions,
+          html body .new-client .actions,
+          html body .buyer-actions {
+            position:relative!important;
+            z-index:2!important;
+            background:#f1f5fd!important;
+            border:1px solid #c7d3e8!important;
+            border-radius:8px!important;
+            padding:12px!important;
+            margin-top:16px!important;
+            margin-bottom:8px!important;
+            display:flex!important;
+            flex-wrap:wrap!important;
+            justify-content:flex-end!important;
+            gap:8px!important;
+            box-shadow:0 2px 8px rgba(23, 54, 111, 0.08)!important;
+            box-sizing:border-box!important;
           }
           html body .cart-head,
           html body .finance-head { display:none!important; }

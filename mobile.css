@@ -369,11 +369,15 @@
   html body .products-content,
   html body .fleet-content,
   html body .reports-content,
+  html body .pix-content,
   html body .clients,
-  html body .config-body {
-    padding: 12px 10px 28px !important;
+  html body .config-body,
+  html body .new-client,
+  html body .buyer-page {
+    padding: 12px 10px calc(92px + env(safe-area-inset-bottom, 0px)) !important;
     width: 100% !important;
     max-width: 100vw !important;
+    background: #e7edf9 !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
   }
@@ -651,7 +655,6 @@
     box-sizing: border-box !important;
   }
 
-  html body .new-sale,
   html body .new-purchase,
   html body .finance-form-overlay,
   html body .transfer-form-overlay,
@@ -668,12 +671,94 @@
     width: 100% !important;
     max-width: 100vw !important;
     height: 100vh !important;
-    z-index: 230 !important;
+    z-index: 240 !important;
   }
-  html body #newSale {
+  html body .finance-form-overlay,
+  html body .transfer-form-overlay,
+  html body .recurrence-form-overlay,
+  html body .receipt-form-overlay,
+  html body .receipt-history-overlay,
+  html body .conciliation-upload-overlay {
+    background: #f1f5fd !important;
+    padding: 0 0 calc(28px + env(safe-area-inset-bottom, 0px)) 0 !important;
+    box-sizing: border-box !important;
+  }
+  html body .finance-form-actions,
+  html body .transfer-form-actions,
+  html body .recurrence-form-actions,
+  html body .receipt-form-actions {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 15 !important;
+    background: #ffffff !important;
+    border-top: 1px solid #c7d3e8 !important;
+    padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    margin-top: 12px !important;
+    box-shadow: 0 -2px 10px rgba(23, 54, 111, 0.08) !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+  }
+  html body #newSale,
+  html body .new-sale,
+  html body .return-wizard {
     position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
     height: auto !important;
+    z-index: 1 !important;
+    background: #e7edf9 !important;
+    padding: 12px 12px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+  }
+  html body #newSale .actions,
+  html body .return-wizard .return-actions,
+  html body .new-client .actions,
+  html body .buyer-actions {
+    position: relative !important;
+    z-index: 2 !important;
+    background: #f1f5fd !important;
+    border: 1px solid #c7d3e8 !important;
+    border-radius: 8px !important;
     padding: 12px !important;
+    margin-top: 16px !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    box-shadow: 0 2px 8px rgba(23, 54, 111, 0.08) !important;
+    box-sizing: border-box !important;
+  }
+  html body #newSale .actions button,
+  html body .return-wizard .return-actions button,
+  html body .new-client .actions button,
+  html body .buyer-actions button {
+    flex: 1 1 auto !important;
+    min-height: 36px !important;
+    border-radius: 5px !important;
+  }
+  html body .product-body,
+  html body .service-body {
+    background: #e7edf9 !important;
+    padding: 14px 10px calc(136px + env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+  }
+  html body .footer-actions,
+  html body .service-footer {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: calc(54px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 215 !important;
+    background: #ffffff !important;
+    border-top: 1px solid #c7d3e8 !important;
+    padding: 10px 12px !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.12) !important;
+    box-sizing: border-box !important;
   }
 
   html body .form-grid,
@@ -816,7 +901,8 @@
 
   /* 12. BARRA DE NAVEGAÇÃO INFERIOR PWA (BOTTOM NAVIGATION) */
   html body {
-    padding-bottom: 58px !important;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    background-color: #e7edf9 !important;
   }
 
   .pwa-bottom-nav {
@@ -826,14 +912,16 @@
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    height: 54px !important;
+    height: calc(54px + env(safe-area-inset-bottom, 0px)) !important;
     background: #2b3b44 !important;
+    background-color: #2b3b44 !important;
+    opacity: 1 !important;
     border-top: 1px solid #3d4f59 !important;
-    z-index: 220 !important;
+    z-index: 225 !important;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.24) !important;
     justify-content: space-around !important;
     align-items: center !important;
-    padding: 0 2px !important;
+    padding: 0 2px env(safe-area-inset-bottom, 0px) !important;
     box-sizing: border-box !important;
     margin: 0 !important;
   }
@@ -976,12 +1064,18 @@
   html body .sales-content,
   html body .purchase-content,
   html body .products-content,
+  html body .fleet-content,
+  html body .reports-content,
+  html body .pix-content,
   html body .clients,
-  html body .config-body {
+  html body .config-body,
+  html body .new-client,
+  html body .buyer-page {
     height: auto !important;
     min-height: calc(100vh - 104px) !important;
     overflow: visible !important;
-    padding-bottom: 88px !important;
+    background: #e7edf9 !important;
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
   }
   html body .dash-grid {
     overflow: visible !important;
