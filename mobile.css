@@ -1183,15 +1183,26 @@
     max-width: 100% !important;
     min-width: 0 !important;
     height: 236px !important;
-    padding: 26px 6px 10px !important;
-    gap: 4px !important;
-    overflow: hidden !important;
+    padding: 26px 12px 10px !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
     box-sizing: border-box !important;
+    scroll-behavior: smooth;
+  }
+  html body .dash-chart::-webkit-scrollbar {
+    height: 4px !important;
+  }
+  html body .dash-chart::-webkit-scrollbar-thumb {
+    background: #cbd6e2 !important;
+    border-radius: 2px !important;
   }
   html body .dash-chart .dash-bar {
-    flex: 1 1 0 !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
+    flex: 0 0 auto !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
   }
   html body .dash-chart .dash-bar-val {
     font-size: 8.5px !important;
