@@ -161,7 +161,11 @@ document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
           value:tipo.toUpperCase()
         });
       }
-      location.href='clientes.html#'+meta.hash;
+      editKey=name;
+      try{history.replaceState(null,'',location.pathname+'?edit='+encodeURIComponent(name)+'&tipo='+encodeURIComponent(tipo))}catch(err){}
+      applyCategoryTheme();
+      if(typeof window.appMessage==='function')window.appMessage('Cadastro salvo com sucesso.');
+      else alert('Cadastro salvo com sucesso.');
     },true);
   });
 })();
@@ -518,15 +522,13 @@ document.addEventListener('DOMContentLoaded',function(){
       }catch(err){}
     }
 
-    const firstTipo=tipoParam||tipos[0]||'cliente';
-    const dest={
-      cliente:'clientes',
-      fornecedor:'fornecedores',
-      comprador:'compradores',
-      transportador:'transportadores',
-      vendedor:'vendedores'
-    }[firstTipo]||'clientes';
-    location.href='clientes.html#'+dest;
+    try{
+      const nextUrl=location.pathname+'?edit='+encodeURIComponent(name)+(tipoParam?'&tipo='+encodeURIComponent(tipoParam):'');
+      history.replaceState(null,'',nextUrl);
+    }catch(err){}
+    restoreEditTypes();
+    if(typeof window.appMessage==='function')window.appMessage('Cadastro salvo com sucesso.');
+    else alert('Cadastro salvo com sucesso.');
   },true);
 })();
 </script>

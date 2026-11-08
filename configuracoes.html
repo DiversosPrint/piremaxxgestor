@@ -611,7 +611,7 @@
       <div class="user-modal-footer">
         <span id="adminPermissionNotice" style="font-size:12px;color:#587383">As permissões entram em vigor imediatamente no menu lateral e nas telas.</span>
         <div class="right-btns">
-          <button type="button" class="btn-cancel-user" id="cancelUserModalBtn">Cancelar</button>
+          <button type="button" class="btn-cancel-user" id="cancelUserModalBtn">Voltar</button>
           <button type="submit" class="btn-save-user">Salvar Usuário e Permissões</button>
         </div>
       </div>
@@ -675,7 +675,7 @@
     </div>
     <div class="modal-actions">
       <button type="button" class="save" id="btnSaveMyAccount">Salvar minha conta</button>
-      <button type="button" class="close" onclick="closeAccount()">Fechar</button>
+      <button type="button" class="close" onclick="closeAccount()">Voltar</button>
     </div>
   </div>
 
@@ -1021,6 +1021,9 @@
             permissoes: permissoes
           };
           list.unshift(newUser);
+          editingUserId = newUser.id;
+          document.getElementById('userModalTitle').textContent = 'Editar Usuário e Permissões — ' + nome;
+          document.getElementById('userCodeBadge').textContent = 'Código #' + newUser.id;
           if (window.piremaxxAudit) {
             window.piremaxxAudit.log({
               module: 'Usuários',
@@ -1033,7 +1036,6 @@
 
         saveUsers(list);
         renderTable();
-        closeUserModal();
       });
 
       function getSelectedIds(){
@@ -1084,11 +1086,14 @@
           alert('O administrador principal (ODIMAN COSTA) não pode ser excluído.');
           return;
         }
-        if (!confirm('Confirma a exclusão de ' + targets.length + ' usuário(s)?')) return;
-        var remaining = list.filter(function(u){ return !ids.includes(Number(u.id)); });
-        saveUsers(remaining);
-        renderTable();
-        showToast('Usuário(s) excluído(s) com sucesso.');
+        var confirmFn = typeof window.piremaxxConfirm === 'function' ? window.piremaxxConfirm : function(m){ return Promise.resolve(confirm(m)); };
+        confirmFn('Confirma a exclusão de ' + targets.length + ' usuário(s)?', { title: 'Gestão Piremaxx — Excluir Usuários' }).then(function(ok){
+          if (!ok) return;
+          var remaining = list.filter(function(u){ return !ids.includes(Number(u.id)); });
+          saveUsers(remaining);
+          renderTable();
+          showToast('Usuário(s) excluído(s) com sucesso.');
+        });
       });
 
       tbody.addEventListener('click', function(e){
@@ -1209,7 +1214,6 @@
           if (nova) list[idx].senha = nova;
           saveUsers(list);
           renderTable();
-          closeAccount();
           showToast('Dados da sua conta atualizados com sucesso!');
         }
       });

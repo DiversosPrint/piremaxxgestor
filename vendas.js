@@ -86,7 +86,14 @@ function syncReceivablesForSale(sale){
   if(!sale||!sale.code)return;
   let list=[];
   try{list=JSON.parse(localStorage.getItem('piremaxx_contas_receber')||'[]')}catch(e){list=[]}
-  list=list.filter(x=>String(x.saleCode||'')!==String(sale.code));
+  const targetCode=String(sale.code).trim();
+  list=list.filter(function(x){
+    if(String(x.saleCode||'').trim()===targetCode)return false;
+    const desc=String(x.description||x.descricao||'');
+    const m=desc.match(/(?:c[óo]digo|venda\s*#?)\s*(\d+)/i);
+    if(m&&String(m[1]).trim()===targetCode)return false;
+    return true;
+  });
   if(sale.type==='Venda'){
     const fin=(Array.isArray(sale.financial)&&sale.financial.length)?sale.financial:(sale.parts||[]);
     fin.forEach(function(f,idx){
@@ -107,10 +114,50 @@ function syncReceivablesForSale(sale){
   }
   localStorage.setItem('piremaxx_contas_receber',JSON.stringify(list));
 }
+function ensureDeletedSalesNormalized(){
+  try{
+    const d1=JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]');
+    const d2=JSON.parse(localStorage.getItem('deletedSalesCodes')||'[]');
+    const d3=JSON.parse(localStorage.getItem('deletedSales')||'[]');
+    const delSet=new Set([...(Array.isArray(d1)?d1:[]),...(Array.isArray(d2)?d2:[]),...(Array.isArray(d3)?d3:[])].map(c=>String(c||'').trim()).filter(Boolean));
+    let changed=(Array.isArray(d1)?d1.length:0)!==delSet.size||(Array.isArray(d2)?d2.length:0)!==delSet.size;
+    const imported=Array.isArray(window.importedSales)?window.importedSales:[];
+    if(imported.length>100&&delSet.size>=50){
+      let localArr=[];
+      try{localArr=JSON.parse(localStorage.getItem('localSales')||'[]')}catch(e){localArr=[]}
+      const orderedSalesCodes=[],seen=new Set();
+      (Array.isArray(localArr)?localArr:[]).forEach(s=>{
+        const t=String(s.type||'Venda').toLowerCase();
+        if(t.includes('orçamento')||t.includes('orcamento')||t.includes('devolu'))return;
+        const c=String(s.code||'').trim();
+        if(c&&!seen.has(c)){seen.add(c);orderedSalesCodes.push(c)}
+      });
+      imported.forEach(s=>{
+        const t=String(s.type||'Venda').toLowerCase();
+        if(t.includes('orçamento')||t.includes('orcamento')||t.includes('devolu'))return;
+        const c=String(s.code||'').trim();
+        if(c&&!seen.has(c)){seen.add(c);orderedSalesCodes.push(c)}
+      });
+      const page1=orderedSalesCodes.slice(0,100),rest=orderedSalesCodes.slice(100);
+      const delP1=page1.filter(c=>delSet.has(c)).length;
+      const delRest=rest.filter(c=>delSet.has(c)).length;
+      if(delP1>=80&&rest.length>0&&delRest<10){
+        rest.forEach(c=>{if(!delSet.has(c)){delSet.add(c);changed=true}});
+      }
+    }
+    if(changed){
+      const arr=JSON.stringify([...delSet]);
+      localStorage.setItem('deletedSaleCodes',arr);
+      localStorage.setItem('deletedSalesCodes',arr);
+    }
+    return delSet;
+  }catch(e){return new Set()}
+}
+ensureDeletedSalesNormalized();
 if(window.importedSales)window.importedSales.forEach(s=>{const row=[String(s.code),s.client,s.vendor,s.date?.split('-').reverse().join('/')||'',s.type,money(s.total)];const index=sales.findIndex(r=>String(r[0])===String(s.code));if(index>=0)sales[index]=row;else sales.push(row)});
-{const deletedSaleSet=new Set(JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]').map(String));for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
-const importedCodes=new Set((window.importedSales||[]).map(s=>String(s.code)));const storedSales=JSON.parse(localStorage.getItem('localSales')||'[]');const localSavedSales=storedSales.filter(s=>!importedCodes.has(String(s.code))||s.source==='userOverride');if(localSavedSales.length!==storedSales.length)localStorage.setItem('localSales',JSON.stringify(localSavedSales));let localSalesChanged=false;localSavedSales.slice().reverse().forEach(s=>{if(s.vendor==='Sim'||!s.vendor){s.vendor='Diego Miranda';localSalesChanged=true}const formatted=[String(s.code),s.client,s.vendor,(s.date||'').split('-').reverse().join('/'),s.type||'Venda',money(s.total)];const existingIdx=sales.findIndex(r=>String(r[0])===String(s.code));if(existingIdx>=0)sales[existingIdx]=formatted;else sales.unshift(formatted)});if(localSalesChanged)localStorage.setItem('localSales',JSON.stringify(localSavedSales));{const deletedSaleSet=new Set(JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]').map(String));for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
-{const deletedSaleSet=new Set(JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]').map(String));for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+{const deletedSaleSet=ensureDeletedSalesNormalized();for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+const importedCodes=new Set((window.importedSales||[]).map(s=>String(s.code)));const storedSales=JSON.parse(localStorage.getItem('localSales')||'[]');const activeDeletedInit=ensureDeletedSalesNormalized();const localSavedSales=storedSales.filter(s=>(!importedCodes.has(String(s.code))||s.source==='userOverride')&&!activeDeletedInit.has(String(s.code)));if(localSavedSales.length!==storedSales.length)localStorage.setItem('localSales',JSON.stringify(localSavedSales));let localSalesChanged=false;localSavedSales.slice().reverse().forEach(s=>{if(s.vendor==='Sim'||!s.vendor){s.vendor='Diego Miranda';localSalesChanged=true}const formatted=[String(s.code),s.client,s.vendor,(s.date||'').split('-').reverse().join('/'),s.type||'Venda',money(s.total)];const existingIdx=sales.findIndex(r=>String(r[0])===String(s.code));if(existingIdx>=0)sales[existingIdx]=formatted;else sales.unshift(formatted)});if(localSalesChanged)localStorage.setItem('localSales',JSON.stringify(localSavedSales));{const deletedSaleSet=ensureDeletedSalesNormalized();for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+{const deletedSaleSet=ensureDeletedSalesNormalized();for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
 function recalcPartsFromCart(){
   if(!parts||!parts.length){
     parts=[{days:0,value:total(),edited:false}];
@@ -411,15 +458,17 @@ function saveSale(){
   const formattedRow=[String(sale.code),sale.client,sale.vendor,sale.date.split('-').reverse().join('/'),sale.type,money(sale.total)];
   const rowIndex=sales.findIndex(r=>String(r[0])===String(nextCode));
   if(rowIndex>=0)sales[rowIndex]=formattedRow;else sales.unshift(formattedRow);
-  editingCode=null;
+  editingCode=String(sale.code);
   isNewRecord=false;
+  const protoEl=document.getElementById('saleProtocolInput');
+  if(protoEl){protoEl.value=String(sale.code);protoEl.readOnly=true;protoEl.style.background='#eef3f5';protoEl.style.color='#3d5a6c'}
+  toggleFinance();
+  setupQuoteControls();
   const searchInput=document.querySelector('.sales-search-input');
   if(searchInput)searchInput.value='';
   {const deletedSaleSet=new Set(JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]').map(String));for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}
   document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
   if(typeof window.setSalesPaginationMode==='function')window.setSalesPaginationMode(targetMode,true);
-  document.getElementById('newSale').classList.add('hidden');
-  document.querySelector('.sales-content').classList.remove('hidden');
   filterSalesRows(targetMode);
   if(window.piremaxxAudit)window.piremaxxAudit.log(wasEditing?'update':'create',type,'#'+sale.code+' - '+sale.client+' ('+money(sale.total)+')');
   appMessage(type==='Orçamento'?'Orçamento salvo com sucesso':'Venda efetuada com sucesso',{code:sale.code,type:sale.type,client:sale.client});
@@ -532,24 +581,70 @@ function cloneSelectedSale(){const checked=[...document.querySelectorAll('.sale-
 function deleteSelectedSales(){
   const checked=[...document.querySelectorAll('.sale-select:checked')].map(c=>c.closest('tr')).filter(Boolean);
   if(!checked.length){appMessage('Selecione ao menos um registro para excluir.');return}
-  if(!confirm('Deseja realmente excluir '+checked.length+' registro(s) selecionado(s)?'))return;
-  const codes=new Set(checked.map(r=>String(r.children[1]?.textContent.trim())));
-  const allSaved=JSON.parse(localStorage.getItem('localSales')||'[]');
-  codes.forEach(function(c){
-    const prev=allSaved.find(s=>String(s.code)===c)||(window.importedSales||[]).find(s=>String(s.code)===c);
-    syncStockForSale(c,[],'Excluído',prev);
-    syncReceivablesForSale({code:c,type:'Excluído'});
+  const visibleBoxes=[...document.querySelectorAll('#saleRows tr:not([hidden]):not(.hidden) .sale-select')];
+  const uncheckedCodes=new Set(
+    visibleBoxes
+      .filter(b=>!b.checked)
+      .map(b=>String(b.closest('tr')?.children[1]?.textContent.trim()||''))
+      .filter(Boolean)
+  );
+  const searchVal=String(document.querySelector('.sales-search-input')?.value||'').trim();
+  const currentMode=localStorage.getItem('activeSalesTab')==='quotes'?'quotes':'sales';
+  const isBulkSelectAll=!searchVal&&visibleBoxes.length>=50&&checked.length>=Math.max(50,visibleBoxes.length-15);
+
+  const codes=new Set(checked.map(r=>String(r.children[1]?.textContent.trim())).filter(Boolean));
+  if(isBulkSelectAll){
+    sales.forEach(function(r){
+      const code=String(r[0]||'').trim();
+      const rowType=String(r[4]||'').toLowerCase();
+      const inCurrentMode=currentMode==='quotes'?rowType.includes('orçamento'):!rowType.includes('orçamento');
+      if(code&&inCurrentMode&&!uncheckedCodes.has(code)){
+        codes.add(code);
+      }
+    });
+  }
+
+  const displayCount=checked.length;
+  const confirmFn=typeof window.piremaxxConfirm==='function'
+    ?window.piremaxxConfirm
+    :function(m){return Promise.resolve(window.confirm(m))};
+
+  confirmFn('Deseja realmente excluir '+displayCount+' registro(s) selecionado(s)?',{
+    title:'Gestão Piremaxx — Excluir Registros',
+    subtitle:displayCount===1
+      ?'O protocolo selecionado será excluído e removido dos indicadores e do financeiro.'
+      :'Os '+displayCount+' registros selecionados serão excluídos e removidos dos indicadores e do financeiro.',
+    confirmText:'Sim, excluir',
+    cancelText:'Cancelar'
+  }).then(function(confirmed){
+    if(!confirmed)return;
+    const allSaved=JSON.parse(localStorage.getItem('localSales')||'[]');
+    codes.forEach(function(c){
+      const prev=allSaved.find(s=>String(s.code)===c)||(window.importedSales||[]).find(s=>String(s.code)===c);
+      syncStockForSale(c,[],'Excluído',prev);
+      syncReceivablesForSale({code:c,type:'Excluído'});
+    });
+    const saved=allSaved.filter(s=>!codes.has(String(s.code)));
+    localStorage.setItem('localSales',JSON.stringify(saved));
+    const del=new Set([
+      ...JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]'),
+      ...JSON.parse(localStorage.getItem('deletedSalesCodes')||'[]')
+    ].map(String));
+    codes.forEach(c=>del.add(c));
+    const delJson=JSON.stringify([...del]);
+    localStorage.setItem('deletedSaleCodes',delJson);
+    localStorage.setItem('deletedSalesCodes',delJson);
+    for(let i=sales.length-1;i>=0;i--){if(codes.has(String(sales[i][0])))sales.splice(i,1)}
+    const saleRowsEl=document.getElementById('saleRows');
+    if(saleRowsEl){
+      saleRowsEl.innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+    }
+    if(typeof window.setSalesPaginationMode==='function')window.setSalesPaginationMode(currentMode,true);
+    if(typeof filterSalesRows==='function')filterSalesRows(currentMode);
+    const master=document.querySelector('.sales-select-all,.sale-select-all');
+    if(master){master.checked=false;master.indeterminate=false}
+    appMessage(displayCount+' registro(s) excluído(s) com sucesso.');
   });
-  const saved=allSaved.filter(s=>!codes.has(String(s.code)));
-  localStorage.setItem('localSales',JSON.stringify(saved));
-  const del=new Set(JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]').map(String));
-  codes.forEach(c=>del.add(c));
-  localStorage.setItem('deletedSaleCodes',JSON.stringify([...del]));
-  for(let i=sales.length-1;i>=0;i--){if(codes.has(String(sales[i][0])))sales.splice(i,1)}
-  checked.forEach(r=>r.remove());
-  const master=document.querySelector('.sales-select-all,.sale-select-all');
-  if(master){master.checked=false;master.indeterminate=false}
-  appMessage(checked.length+' registro(s) excluído(s) com sucesso.');
 }
 function whatsappSelectedSale(){const checked=[...document.querySelectorAll('.sale-select:checked')].map(c=>c.closest('tr')).filter(Boolean);if(checked.length!==1){appMessage('Selecione um único registro para enviar por WhatsApp.');return}const r=checked[0],code=r.children[1]?.textContent.trim(),client=r.children[2]?.textContent.trim(),date=r.children[4]?.textContent.trim(),type=(r.children[5]?.textContent||'').replace('NÃO APROVADO','').trim(),val=(r.children[7]||r.children[6])?.textContent.trim();if(typeof window.openPiremaxxWhatsAppModal==='function'){window.openPiremaxxWhatsAppModal({code,type,client});return}const msg=`Olá *${client}*! Segue o resumo do seu *${type} #${code}* na *Piremaxx Pneus*:\n• Data: ${date}\n• Valor Total: *${val}*`;window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank')}
 document.addEventListener('DOMContentLoaded',function(){const a=document.querySelector('#newSale .actions');if(!a||a.querySelector('.wa-send-sale'))return;const b=document.createElement('button');b.type='button';b.className='wa-send-sale';b.innerHTML='<img src="public/icons/icons8-whatsapp.gif" alt="" class="local-action-icon"> Enviar por WhatsApp';b.style.cssText='background:#4cb050;color:#fff;display:inline-flex;align-items:center;gap:5px';b.onclick=function(){const type=document.querySelector('#newSale .form-grid select')?.value||'Venda';const client=document.getElementById('client')?.value||'';if(!editingCode){appMessage('Salve o registro antes de enviá-lo por WhatsApp.');return}window.openPiremaxxWhatsAppModal({code:editingCode,type,client})};a.insertBefore(b,a.querySelector('.save'))});function nfeSelectedSale(){const checked=[...document.querySelectorAll('.sale-select:checked')].map(c=>c.closest('tr')).filter(Boolean);if(!checked.length){appMessage('Selecione ao menos uma venda para gerar a NF-e.');return}printSelected()}
@@ -767,12 +862,12 @@ document.addEventListener('DOMContentLoaded',function(){const p=document.getElem
 document.addEventListener('DOMContentLoaded',function(){document.addEventListener('click',function(e){const b=e.target.closest('.sale-status');if(!b)return;e.preventDefault();e.stopImmediatePropagation();const row=b.closest('.installment'),amount=Number(row?.querySelector('input[type=number]')?.value)||0,key='salePaid:'+[...document.querySelectorAll('#installments .installment')].indexOf(row),paid=JSON.parse(localStorage.getItem('salePaidRows')||'{}');if(paid[key]){delete paid[key];localStorage.setItem('localCashBalance',String((Number(localStorage.getItem('localCashBalance')||0)-amount)));b.textContent='A receber';b.classList.add('sale-finance-due')}else{paid[key]=true;localStorage.setItem('salePaidRows',JSON.stringify(paid));localStorage.setItem('localCashBalance',String((Number(localStorage.getItem('localCashBalance')||0)+amount)));b.textContent='Recebido';b.classList.remove('sale-finance-due')}localStorage.setItem('salePaidRows',JSON.stringify(paid))},true)});
 document.addEventListener('DOMContentLoaded',function(){const s=document.createElement('style');s.textContent='.finance-head span:nth-child(3){font-size:0}.finance-head span:nth-child(3):after{content:"Data de pagamento";font-size:12px}.sale-status{height:28px!important;border:0!important;border-radius:3px!important;background:#337fba!important;color:#fff!important;text-align:center;cursor:pointer}.sale-finance-due{background:#ddd!important;color:#587383!important}';document.head.appendChild(s);const h=document.querySelector('.finance-head');if(h){const spans=h.querySelectorAll('span');if(spans[3])spans[3].textContent='Conta de origem';if(spans[4])spans[4].textContent='Status'}});
 document.addEventListener('DOMContentLoaded',function(){const a=[...document.querySelectorAll('.sidebar nav a')].find(x=>x.textContent.includes('Clientes'));if(a)a.href='clientes.html'});
-document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const body=document.getElementById('saleRows'),table=document.querySelector('.sales-table');if(!body||body.children.length||table?.dataset.returnsView==='1')return;const source=window.importedSales||[],saved=JSON.parse(localStorage.getItem('localSales')||'[]'),rows=[...saved,...source.map(s=>({code:s.code,client:s.client,vendor:s.vendor||'Diego Miranda',date:(s.date||'2026-10-15').split('-').reverse().join('/'),type:s.type||'Venda',total:s.total||0}))];body.innerHTML=rows.map(s=>'<tr><td><input type="checkbox" class="sale-select"></td><td>'+s.code+'</td><td>'+s.client+'</td><td>'+s.vendor+'</td><td>'+s.date+'</td><td>'+s.type+'</td><td>'+money(s.total)+'</td></tr>').join('');if(typeof installSelection==='function')installSelection();if(typeof filterSalesRows==='function')filterSalesRows(localStorage.getItem('activeSalesTab')==='quotes'?'quotes':'sales')},350)});
+document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const body=document.getElementById('saleRows'),table=document.querySelector('.sales-table');if(!body||body.children.length||table?.dataset.returnsView==='1')return;const delSet=ensureDeletedSalesNormalized();const source=(window.importedSales||[]).filter(s=>!delSet.has(String(s.code)));const saved=JSON.parse(localStorage.getItem('localSales')||'[]').filter(s=>!delSet.has(String(s.code)));const rows=[...saved,...source.map(s=>({code:s.code,client:s.client,vendor:s.vendor||'Diego Miranda',date:(s.date||'2026-10-15').split('-').reverse().join('/'),type:s.type||'Venda',total:s.total||0}))];if(!rows.length)return;body.innerHTML=rows.map(s=>'<tr><td><input type="checkbox" class="sale-select"></td><td>'+s.code+'</td><td>'+s.client+'</td><td>'+s.vendor+'</td><td>'+s.date+'</td><td>'+s.type+'</td><td>'+money(s.total)+'</td></tr>').join('');if(typeof installSelection==='function')installSelection();if(typeof filterSalesRows==='function')filterSalesRows(localStorage.getItem('activeSalesTab')==='quotes'?'quotes':'sales')},350)});
 document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const wa=document.querySelector('.list-tools button[title="WhatsApp"]');if(wa)wa.onclick=whatsappSelectedSale},650)});
 document.addEventListener('DOMContentLoaded',function(){const body=document.getElementById('saleRows');if(!body)return;function restore(){body.querySelectorAll('tr').forEach(r=>{const c=r.children[0];if(c&&!c.querySelector('input')&&r.children.length>2)c.innerHTML='<input type="checkbox" class="sale-select">'})}restore();new MutationObserver(restore).observe(body,{childList:true,subtree:true})});
 document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const table=document.querySelector('.sales-table'),head=table?.querySelector('thead tr'),del=document.querySelector('.list-tools button[title="Excluir"]'),body=document.getElementById('saleRows');if(!head||!body)return;const first=head.children[0];if(first&&!first.querySelector('.sale-select-all')){first.innerHTML='<input type="checkbox" class="sale-select-all" title="Selecionar todas">';first.querySelector('input').onclick=function(){body.querySelectorAll('.sale-select').forEach(x=>x.checked=this.checked)}}if(del)del.onclick=deleteSelectedSales},900)});
-document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const removed=JSON.parse(localStorage.getItem('deletedSales')||'[]'),body=document.getElementById('saleRows');if(body)body.querySelectorAll('tr').forEach(r=>{if(removed.includes(r.children[1]?.textContent.trim()))r.remove()})},1000)});
-document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const body=document.getElementById('saleRows'),source=window.importedSales||[];if(!body||!source.length||body.querySelector('tr'))return;body.innerHTML=source.map(s=>'<tr><td><input type="checkbox" class="sale-select"></td><td>'+s.code+'</td><td>'+s.client+'</td><td>'+(s.vendor||'Diego Miranda')+'</td><td>'+((s.date||'').split('-').reverse().join('/'))+'</td><td>'+(s.type||'Venda')+'</td><td>'+money(s.total)+'</td></tr>').join('');if(typeof installSelection==='function')installSelection();if(typeof setupQuoteTab==='function')setupQuoteTab()},1300)});
+document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const delSet=ensureDeletedSalesNormalized(),body=document.getElementById('saleRows');if(body)body.querySelectorAll('tr').forEach(r=>{if(delSet.has(String(r.children[1]?.textContent.trim())))r.remove()})},1000)});
+document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const body=document.getElementById('saleRows'),delSet=ensureDeletedSalesNormalized(),source=(window.importedSales||[]).filter(s=>!delSet.has(String(s.code)));if(!body||!source.length||body.querySelector('tr'))return;body.innerHTML=source.map(s=>'<tr><td><input type="checkbox" class="sale-select"></td><td>'+s.code+'</td><td>'+s.client+'</td><td>'+(s.vendor||'Diego Miranda')+'</td><td>'+((s.date||'').split('-').reverse().join('/'))+'</td><td>'+(s.type||'Venda')+'</td><td>'+money(s.total)+'</td></tr>').join('');if(typeof installSelection==='function')installSelection();if(typeof setupQuoteTab==='function')setupQuoteTab()},1300)});
 document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const nav=document.querySelector('.sidebar nav');if(nav&&!nav.querySelector('img')){const links=[['Indicadores','index.html','icons8-home-48.png'],['Financeiro','index.html','icons8-financial-64.png'],['Vendas','vendas.html','icons8-buy-for-cash-48.png'],['Compras','compras.html','icons8-buy-48.png'],['Clientes','clientes.html','icons8-budget-48.png'],['Produtos','#','icons8-product-48.png'],['Boletos','#','icons8-boleto-bancário-48.png'],['Cobranças','#','icons8-billing-32.png'],['Pix','#','icons8-pix-48.png'],['NF-e / Fiscal','#','icons8-fiscal-50.png'],['Relatórios','#','icons8-business-report-94.png'],['Configurações','#','icons8-settings-48.png'],['Suporte online','#','icons8-question-48.png']];nav.innerHTML=links.map(x=>'<a href="'+x[1]+'"><img src="public/icons/'+x[2]+'" alt=""><b>'+x[0]+'</b></a>').join('');nav.querySelectorAll('a').forEach(a=>{if(a.textContent.includes('Vendas'))a.classList.add('active')})}document.querySelectorAll('.list-tools button[title]').forEach(b=>{const title=b.title;if(!b.querySelector('img')){const map={'Clonar venda':'icons8-copy.gif','Gerar NFe':'icons8-nf.gif','Excluir':'icons8-trash.gif','Editar':'icons8-edit-pencil.gif','WhatsApp':'icons8-whatsapp.gif','Imprimir':'icons8-print.gif'},file=map[title];if(file)b.innerHTML='<img src="public/icons/'+file+'" alt="'+title+'" class="local-action-icon">'}})},1100)});
 document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){const a=[...document.querySelectorAll('.sidebar nav a')].find(x=>x.textContent.includes('Suporte'));if(a&&!a.querySelector('span')&&!a.querySelector('img'))a.insertBefore(document.createTextNode('❔ '),a.firstChild)},1200)});
 document.addEventListener('DOMContentLoaded',function(){const s=document.createElement('style');s.textContent='.sidebar nav a{display:flex!important;align-items:center!important;min-height:32px!important}.sidebar nav a>img{width:16px!important;height:16px!important;max-width:16px!important;object-fit:contain!important;vertical-align:middle!important;margin-right:8px!important}.sidebar nav a b{line-height:16px!important}';document.head.appendChild(s)});
@@ -889,9 +984,18 @@ function returnFinanceEffect(sale,entry){
   return{mode:'deduction',label:'Dedução lançada no caixa',amount};
 }
 function renderReturnStep3(){const root=returnWizardRoot(),s=returnWizardState.sale,total=returnTotal();root.innerHTML=returnHeader()+'<div class="return-panel return-step-three">'+returnSaleInfo()+'<div class="return-product-head"><span>Cód</span><span>Item</span><span>Quant atual</span><span>Quant devol.</span><span>Quant restante</span><span>Valor da devol.</span></div><div class="return-product-list">'+returnWizardState.products.filter(p=>(p.returnQty||0)>0).map(p=>'<div class="return-product-row return-confirm-row"><span>'+p.code+'</span><span>'+p.item+'</span><span>'+p.originalQty+'</span><span>'+p.returnQty+'</span><span>'+(p.originalQty-p.returnQty)+'</span><label class="return-value"><span>$</span><input type="text" value="'+returnMoney((p.total/(p.originalQty||1))*p.returnQty).replace(/^R\$\s*/,'').replace(/^R\$\u00a0*/,'')+'" readonly></label></div>').join('')+'</div><div class="return-detail-fields"><label>Palavras-chave<div class="return-field-with-icon"><span>▰</span><input class="return-keywords" value="'+returnWizardState.keywords+'"></div></label><label>Observações<textarea class="return-notes">'+returnWizardState.notes+'</textarea></label><div class="return-total"><b>Valor total da devolução:</b><strong>'+returnMoney(total)+'</strong></div></div><h2>Financeiro</h2><div class="return-finance"><label><input type="radio" name="returnFinance" value="none" '+(returnWizardState.finance==='none'?'checked':'')+'> Não alterar valores financeiros</label><label><input type="radio" name="returnFinance" value="receivables" '+(returnWizardState.finance==='receivables'?'checked':'')+'> Alterar recebimentos da venda</label><label><input type="radio" name="returnFinance" value="deduction" '+(returnWizardState.finance==='deduction'?'checked':'')+'> Criar dedução (lançamento em Pagamentos)</label></div></div><div class="return-actions"><button type="button" class="return-confirm">Confirmar devolução</button><button type="button" class="return-back">Voltar</button></div>';wireReturnStep3(root)}
-function wireReturnStep3(root){root.querySelector('.return-close').onclick=closeReturnWizard;root.querySelector('.return-back').onclick=renderReturnStep2;root.querySelector('.return-keywords').oninput=e=>returnWizardState.keywords=e.target.value;root.querySelector('.return-notes').oninput=e=>returnWizardState.notes=e.target.value;root.querySelectorAll('input[name=returnFinance]').forEach(x=>x.onchange=()=>returnWizardState.finance=x.value);root.querySelector('.return-confirm').onclick=confirmReturn}
+function wireReturnStep3(root){root.querySelector('.return-close').onclick=closeReturnWizard;root.querySelector('.return-back').onclick=function(){if(returnWizardState.savedReturnCode){closeReturnWizard();if(typeof window.showReturnsTab==='function')window.showReturnsTab()}else{renderReturnStep2()}};root.querySelector('.return-keywords').oninput=e=>returnWizardState.keywords=e.target.value;root.querySelector('.return-notes').oninput=e=>returnWizardState.notes=e.target.value;root.querySelectorAll('input[name=returnFinance]').forEach(x=>x.onchange=()=>returnWizardState.finance=x.value);root.querySelector('.return-confirm').onclick=confirmReturn}
 function confirmReturn(){
   const s=returnWizardState.sale,retVal=returnTotal(),savedReturns=JSON.parse(localStorage.getItem('localReturns')||'[]');
+  const existingReturnIdx=returnWizardState.savedReturnCode?savedReturns.findIndex(r=>String(r.code)===String(returnWizardState.savedReturnCode)):-1;
+  if(existingReturnIdx>=0){
+    savedReturns[existingReturnIdx].keywords=returnWizardState.keywords;
+    savedReturns[existingReturnIdx].notes=returnWizardState.notes;
+    localStorage.setItem('localReturns',JSON.stringify(savedReturns));
+    if(typeof window.showReturnsTab==='function'&&document.querySelector('.tabs .tab.active')?.textContent.includes('DEVOLU'))window.showReturnsTab();
+    appMessage('Devolução '+savedReturns[existingReturnIdx].code+' atualizada com sucesso.');
+    return;
+  }
   const returnedItems=returnWizardState.products.filter(x=>x.returnQty>0).map(x=>({
     code:x.code,
     name:x.item,
@@ -972,9 +1076,10 @@ function confirmReturn(){
   };
   entry.financialEffect=returnFinanceEffect(saleRecord,entry);
   savedReturns.unshift(entry);
+  returnWizardState.savedReturnCode=entry.code;
   localStorage.setItem('localReturns',JSON.stringify(savedReturns));
-  closeReturnWizard();
-  if(typeof window.showReturnsTab==='function')window.showReturnsTab();
+  if(typeof window.showReturnsTab==='function'&&document.querySelector('.tabs .tab.active')?.textContent.includes('DEVOLU'))window.showReturnsTab();
+  appMessage('Devolução '+entry.code+' salva com sucesso.');
 }
 
 function escapeReturnHtml(value){return String(value??'').replace(/[&<>"']/g,function(ch){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]})}
@@ -1051,17 +1156,24 @@ function showReturnDetail(item){
     if(delRet)delRet.onclick=function(){
       const checked=[...document.querySelectorAll('#saleRows tr[data-return-row] .sale-select:checked')].map(c=>c.closest('tr'));
       if(!checked.length){appMessage('Selecione ao menos uma devolução para excluir.');return}
-      if(!confirm('Excluir '+checked.length+' devolução(ões) selecionada(s)?'))return;
-      const codes=new Set(checked.map(r=>String(r.children[1]?.textContent.trim())));
-      const allRet=JSON.parse(localStorage.getItem('localReturns')||'[]');
-      allRet.filter(x=>codes.has(String(x.code))).forEach(function(retObj){
-        (Array.isArray(retObj.items)?retObj.items:[]).forEach(function(it){
-          adjustProductStockSingle(it.code,it.name,-Number(it.qty||0));
+      const confirmFn=typeof window.piremaxxConfirm==='function'?window.piremaxxConfirm:function(m){return Promise.resolve(window.confirm(m))};
+      confirmFn('Deseja realmente excluir '+checked.length+' devolução(ões) selecionada(s)?',{
+        title:'Gestão Piremaxx — Excluir Devoluções',
+        confirmText:'Sim, excluir',
+        cancelText:'Cancelar'
+      }).then(function(confirmed){
+        if(!confirmed)return;
+        const codes=new Set(checked.map(r=>String(r.children[1]?.textContent.trim())));
+        const allRet=JSON.parse(localStorage.getItem('localReturns')||'[]');
+        allRet.filter(x=>codes.has(String(x.code))).forEach(function(retObj){
+          (Array.isArray(retObj.items)?retObj.items:[]).forEach(function(it){
+            adjustProductStockSingle(it.code,it.name,-Number(it.qty||0));
+          });
         });
+        const savedRet=allRet.filter(x=>!codes.has(String(x.code)));
+        localStorage.setItem('localReturns',JSON.stringify(savedRet));
+        showReturns();
       });
-      const savedRet=allRet.filter(x=>!codes.has(String(x.code)));
-      localStorage.setItem('localReturns',JSON.stringify(savedRet));
-      showReturns();
     };
     if(window.installSalesCheckboxes)window.installSalesCheckboxes();
     const create=toolbar?.querySelector('.new-btn');if(create)create.onclick=function(){showReturn()};

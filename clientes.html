@@ -316,24 +316,31 @@ document.addEventListener('DOMContentLoaded',function(){
         e.preventDefault();
         var sel=selectedContactRows();
         if(!sel.length){alert('Selecione ao menos um contato para excluir.');return}
-        if(!confirm('Excluir '+sel.length+' contato(s) selecionado(s)?'))return;
-        var names=new Set(),codes=new Set();
-        sel.forEach(function(r){
-          var c=(r.cells[1]&&r.cells[1].textContent||'').trim(),n=(r.cells[2]&&r.cells[2].textContent||'').trim();
-          if(c)codes.add(c);
-          if(n)names.add(n);
+        var confirmFn=typeof window.piremaxxConfirm==='function'?window.piremaxxConfirm:function(m){return Promise.resolve(confirm(m))};
+        confirmFn('Deseja realmente excluir '+sel.length+' contato(s) selecionado(s)?',{
+          title:'Gestão Piremaxx — Excluir Contatos',
+          confirmText:'Sim, excluir',
+          cancelText:'Cancelar'
+        }).then(function(ok){
+          if(!ok)return;
+          var names=new Set(),codes=new Set();
+          sel.forEach(function(r){
+            var c=(r.cells[1]&&r.cells[1].textContent||'').trim(),n=(r.cells[2]&&r.cells[2].textContent||'').trim();
+            if(c)codes.add(c);
+            if(n)names.add(n);
+          });
+          var all=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(x){
+            return !codes.has(String(x.id))&&!names.has(String(x.nome).trim());
+          });
+          localStorage.setItem('piremaxx_contatos',JSON.stringify(all));
+          var del=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
+          codes.forEach(function(c){del.add(c)});
+          names.forEach(function(n){del.add(n)});
+          localStorage.setItem('deletedContactCodes',JSON.stringify(Array.from(del)));
+          sel.forEach(function(r){r.remove()});
+          var master=document.querySelector('.client-table .client-select-all');
+          if(master){master.checked=false;master.indeterminate=false;}
         });
-        var all=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(x){
-          return !codes.has(String(x.id))&&!names.has(String(x.nome).trim());
-        });
-        localStorage.setItem('piremaxx_contatos',JSON.stringify(all));
-        var del=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
-        codes.forEach(function(c){del.add(c)});
-        names.forEach(function(n){del.add(n)});
-        localStorage.setItem('deletedContactCodes',JSON.stringify(Array.from(del)));
-        sel.forEach(function(r){r.remove()});
-        var master=document.querySelector('.client-table .client-select-all');
-        if(master){master.checked=false;master.indeterminate=false;}
       };
     }
 

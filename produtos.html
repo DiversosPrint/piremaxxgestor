@@ -202,19 +202,25 @@
   });
   action('Excluir',function(){
     var codes=selectedCodes();if(!codes.length){alert('Selecione ao menos um item para excluir.');return}
-    if(!confirm('Excluir os itens selecionados?'))return;
-    var saved=[];try{saved=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}
-    var deleted=[];try{deleted=JSON.parse(localStorage.getItem('deletedProductCodes')||'[]')}catch(e){}
-    codes.forEach(function(code){if(!deleted.includes(String(code)))deleted.push(String(code))});
-    localStorage.setItem('deletedProductCodes',JSON.stringify(deleted));localStorage.setItem('localProducts',JSON.stringify(saved.filter(function(item){return !codes.includes(String(item.code))})));location.reload();
+    var confirmFn=typeof window.piremaxxConfirm==='function'?window.piremaxxConfirm:function(m){return Promise.resolve(confirm(m))};
+    confirmFn('Deseja realmente excluir '+codes.length+' item(ns) selecionado(s)?',{title:'Gestão Piremaxx — Excluir Produtos'}).then(function(ok){
+      if(!ok)return;
+      var saved=[];try{saved=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}
+      var deleted=[];try{deleted=JSON.parse(localStorage.getItem('deletedProductCodes')||'[]')}catch(e){}
+      codes.forEach(function(code){if(!deleted.includes(String(code)))deleted.push(String(code))});
+      localStorage.setItem('deletedProductCodes',JSON.stringify(deleted));localStorage.setItem('localProducts',JSON.stringify(saved.filter(function(item){return !codes.includes(String(item.code))})));location.reload();
+    });
   });
   action('Excluir serviço',function(){
     var codes=selectedCodes();if(!codes.length){alert('Selecione ao menos um serviço para excluir.');return}
-    if(!confirm('Excluir os serviços selecionados?'))return;
-    var saved=[];try{saved=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}
-    var deleted=[];try{deleted=JSON.parse(localStorage.getItem('deletedProductCodes')||'[]')}catch(e){}
-    codes.forEach(function(code){if(!deleted.includes(String(code)))deleted.push(String(code))});
-    localStorage.setItem('deletedProductCodes',JSON.stringify(deleted));localStorage.setItem('localProducts',JSON.stringify(saved.filter(function(item){return !codes.includes(String(item.code))})));location.reload();
+    var confirmFn=typeof window.piremaxxConfirm==='function'?window.piremaxxConfirm:function(m){return Promise.resolve(confirm(m))};
+    confirmFn('Deseja realmente excluir '+codes.length+' serviço(s) selecionado(s)?',{title:'Gestão Piremaxx — Excluir Serviços'}).then(function(ok){
+      if(!ok)return;
+      var saved=[];try{saved=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}
+      var deleted=[];try{deleted=JSON.parse(localStorage.getItem('deletedProductCodes')||'[]')}catch(e){}
+      codes.forEach(function(code){if(!deleted.includes(String(code)))deleted.push(String(code))});
+      localStorage.setItem('deletedProductCodes',JSON.stringify(deleted));localStorage.setItem('localProducts',JSON.stringify(saved.filter(function(item){return !codes.includes(String(item.code))})));location.reload();
+    });
   });
   function printItemsOrList(isService){
     var codes=selectedCodes();
@@ -360,9 +366,12 @@
       modal.querySelector('.stock-adjust-back').onclick=close;
       modal.querySelector('.stock-adjust-save').onclick=function(){
         var cleanChanges=changes.map(function(c){return{code:c.code,name:c.name,oldStock:c.oldStock,newStock:c.newStock,change:c.change}});
-        var record={id:String(Date.now()),date:new Date().toISOString().slice(0,10),reason:modal.querySelector('#stockReason').value,dre:modal.querySelector('#stockDre').value,contact:modal.querySelector('#stockContact').value,notes:modal.querySelector('#stockNotes').value,keywords:modal.querySelector('#stockKeywords').value,changes:cleanChanges};
+        var adjId=modal.dataset.savedAdjustmentId||String(Date.now());
+        var record={id:adjId,date:new Date().toISOString().slice(0,10),reason:modal.querySelector('#stockReason').value,dre:modal.querySelector('#stockDre').value,contact:modal.querySelector('#stockContact').value,notes:modal.querySelector('#stockNotes').value,keywords:modal.querySelector('#stockKeywords').value,changes:cleanChanges};
         var saved=[];try{saved=JSON.parse(localStorage.getItem('piremaxx_ajustes_estoque')||'[]')}catch(e){}
-        saved.unshift(record);
+        var idx=saved.findIndex(function(x){return String(x.id)===String(adjId)});
+        if(idx>=0)saved[idx]=record;else saved.unshift(record);
+        modal.dataset.savedAdjustmentId=adjId;
         localStorage.setItem('piremaxx_ajustes_estoque',JSON.stringify(saved));
         var local=[];try{local=JSON.parse(localStorage.getItem('localProducts')||'[]')}catch(e){}
         changes.forEach(function(change){
@@ -375,7 +384,6 @@
         });
         localStorage.setItem('localProducts',JSON.stringify(local));
         if(typeof window.renderProductsTable==='function')window.renderProductsTable();
-        close();
         var toast=document.createElement('div');toast.className='stock-success-toast';toast.textContent='Ajuste de estoque salvo com sucesso.';document.body.appendChild(toast);setTimeout(function(){toast.remove()},2800);
       };
     };
@@ -409,10 +417,13 @@
   if(delStockBtn)delStockBtn.onclick=function(){
     var checked=Array.from(document.querySelectorAll('#stockRows .stock-select:checked')).map(function(b){return b.dataset.id});
     if(!checked.length){alert('Selecione ao menos um ajuste para excluir.');return}
-    if(!confirm('Excluir '+checked.length+' ajuste(s) selecionado(s)?'))return;
-    var saved=[];try{saved=JSON.parse(localStorage.getItem('piremaxx_ajustes_estoque')||'[]')}catch(e){}
-    localStorage.setItem('piremaxx_ajustes_estoque',JSON.stringify(saved.filter(function(x){return !checked.includes(String(x.id))})));
-    renderStockAdjustments();
+    var confirmFn=typeof window.piremaxxConfirm==='function'?window.piremaxxConfirm:function(m){return Promise.resolve(confirm(m))};
+    confirmFn('Deseja realmente excluir '+checked.length+' ajuste(s) selecionado(s)?',{title:'Gestão Piremaxx — Excluir Ajustes'}).then(function(ok){
+      if(!ok)return;
+      var saved=[];try{saved=JSON.parse(localStorage.getItem('piremaxx_ajustes_estoque')||'[]')}catch(e){}
+      localStorage.setItem('piremaxx_ajustes_estoque',JSON.stringify(saved.filter(function(x){return !checked.includes(String(x.id))})));
+      renderStockAdjustments();
+    });
   };
   var printStockBtn=document.getElementById('printStockAdjustments');
   if(printStockBtn)printStockBtn.onclick=function(){

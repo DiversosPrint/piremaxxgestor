@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
@@ -81,7 +81,7 @@
         <label class="buyer-field wide">Observações<textarea></textarea></label>
       </div>
     </section>
-    <div class="buyer-actions buyer-reference-actions"><button class="buyer-save" type="button">● Salvar</button><button class="buyer-back" type="button">✖ Cancelar</button></div>
+    <div class="buyer-actions buyer-reference-actions"><button class="buyer-save" type="button">● Salvar</button><button class="buyer-back" type="button">Voltar</button></div>
   </main>
   <script src="menu-lateral.js?v=buyer-form-1"></script>
   <script>
@@ -106,7 +106,7 @@
         const contacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]');
         contacts.push({id:record.id,nome:record.nome,tipos:['comprador'],telefone:record.telefone,dados:{'Nome / Razão Social':record.nome,'Código de integração':record.codigo},endereco:{},adicionais:{}});
         localStorage.setItem('piremaxx_contatos',JSON.stringify(contacts));
-        location.href='clientes.html#compradores';
+        if(typeof window.appMessage==='function')window.appMessage('Comprador salvo com sucesso.');else alert('Comprador salvo com sucesso.');
       };
     });
   </script>
@@ -118,8 +118,8 @@ document.addEventListener('DOMContentLoaded',function(){
   const upload=document.querySelector('#buyer-upload-image'),camera=document.querySelector('#buyer-camera-image'),file=document.querySelector('#buyer-image-file'),cameraFile=document.querySelector('#buyer-camera-file'),preview=document.querySelector('#buyer-image-preview');let imageData='';
   function showImage(input){const selected=input.files&&input.files[0];if(!selected)return;const reader=new FileReader();reader.onload=function(){const image=new Image();image.onload=function(){const size=240,canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=size;canvas.height=size;ctx.fillStyle='#f8f8f8';ctx.fillRect(0,0,size,size);const scale=Math.min(size/image.width,size/image.height),width=image.width*scale,height=image.height*scale;ctx.drawImage(image,(size-width)/2,(size-height)/2,width,height);imageData=canvas.toDataURL('image/jpeg',0.86);preview.style.backgroundImage='url("'+imageData+'")';preview.classList.add('has-image')};image.src=reader.result};reader.readAsDataURL(selected)}
   upload?.addEventListener('click',function(){file.click()});camera?.addEventListener('click',function(){cameraFile.click()});file?.addEventListener('change',function(){showImage(file)});cameraFile?.addEventListener('change',function(){showImage(cameraFile)});
-  const params=new URLSearchParams(location.search),edit=params.get('edit'),contacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),old=edit&&contacts.find(function(item){return item.nome===edit});
+  const params=new URLSearchParams(location.search);let edit=params.get('edit'),contacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),old=edit&&contacts.find(function(item){return item.nome===edit});
   if(old){document.querySelector('#buyer-name').value=old.nome||'';document.querySelector('#buyer-code').value=old.dados?.['Código de integração']||'';document.querySelector('#buyer-owner').value=old.dados?.['Comprador responsável']||'';document.querySelector('#buyer-type').value=old.dados?.['Tipo de comprador']||'';document.querySelector('#buyer-active').checked=old.ativo!==false;if(old.imagem){imageData=old.imagem;preview.style.backgroundImage='url("'+imageData+'")';preview.classList.add('has-image')}}
-  const save=document.querySelector('.buyer-save');if(!save)return;save.onclick=function(){const name=document.querySelector('#buyer-name'),code=document.querySelector('#buyer-code'),owner=document.querySelector('#buyer-owner'),type=document.querySelector('#buyer-type');if(!name.value.trim()){name.focus();alert('Informe a descrição do comprador.');return}const current=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),records=JSON.parse(localStorage.getItem('piremaxx_compradores')||'[]'),id=old?.id||Date.now(),registro={id:id,nome:name.value.trim(),tipos:['comprador'],telefone:'',dados:{'Nome / Razão Social':name.value.trim(),'Código de integração':code.value,'Comprador responsável':owner.value,'Tipo de comprador':type.value},endereco:{},adicionais:{},imagem:imageData,ativo:document.querySelector('#buyer-active').checked};localStorage.setItem('piremaxx_contatos',JSON.stringify(old?current.map(function(item){return item.id===old.id?registro:item}):current.concat(registro)));const buyer={id:id,nome:registro.nome,codigo:code.value,responsavel:owner.value,tipoComprador:type.value,ativo:registro.ativo,imagem:imageData,tipo:'comprador'};localStorage.setItem('piremaxx_compradores',JSON.stringify(old?records.map(function(item){return item.id===old.id?buyer:item}):records.concat(buyer)));location.href='clientes.html#compradores'};
+  const save=document.querySelector('.buyer-save');if(!save)return;save.onclick=function(){const name=document.querySelector('#buyer-name'),code=document.querySelector('#buyer-code'),owner=document.querySelector('#buyer-owner'),type=document.querySelector('#buyer-type');if(!name.value.trim()){name.focus();alert('Informe a descrição do comprador.');return}const current=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),records=JSON.parse(localStorage.getItem('piremaxx_compradores')||'[]'),id=old?.id||Date.now(),registro={id:id,nome:name.value.trim(),tipos:['comprador'],telefone:'',dados:{'Nome / Razão Social':name.value.trim(),'Código de integração':code.value,'Comprador responsável':owner.value,'Tipo de comprador':type.value},endereco:{},adicionais:{},imagem:imageData,ativo:document.querySelector('#buyer-active').checked};localStorage.setItem('piremaxx_contatos',JSON.stringify(old?current.map(function(item){return item.id===old.id?registro:item}):current.concat(registro)));const buyer={id:id,nome:registro.nome,codigo:code.value,responsavel:owner.value,tipoComprador:type.value,ativo:registro.ativo,imagem:imageData,tipo:'comprador'};localStorage.setItem('piremaxx_compradores',JSON.stringify(old?records.map(function(item){return item.id===old.id?buyer:item}):records.concat(buyer)));old=registro;try{history.replaceState(null,'',location.pathname+'?edit='+encodeURIComponent(registro.nome))}catch(err){}const headEl=document.querySelector('.buyer-head');if(headEl)headEl.textContent='Editar comprador';if(typeof window.appMessage==='function')window.appMessage('Comprador salvo com sucesso.');else alert('Comprador salvo com sucesso.')};
 });
 </script>

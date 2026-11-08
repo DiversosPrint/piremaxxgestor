@@ -213,10 +213,15 @@
           try{
             const localSales=JSON.parse(localStorage.getItem('localSales')||'[]');
             const impSales=(window.cloneData&&window.cloneData.sales)||window.importedSales||[];
+            const delSales=new Set([
+              ...JSON.parse(localStorage.getItem('deletedSaleCodes')||'[]'),
+              ...JSON.parse(localStorage.getItem('deletedSalesCodes')||'[]')
+            ].map(function(x){return String(x).trim()}));
             const seenS=new Set();
             [...localSales,...impSales].forEach(function(s){
               if(results.length>=30)return;
               const code=String(s.code||s.id||'').trim();
+              if(code&&delSales.has(code))return;
               const client=String(s.client||s.cliente||'').trim();
               if(!client&&!code)return;
               const key=code+'|'+client;
@@ -2369,6 +2374,7 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
     'localSales',
     'localReturns',
     'deletedSaleCodes',
+    'deletedSalesCodes',
     'localProducts',
     'deletedProductCodes',
     'localServices',
@@ -2383,6 +2389,104 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
 
   const origSetItem = Storage.prototype.setItem.bind(localStorage);
   const origGetItem = Storage.prototype.getItem.bind(localStorage);
+
+  function extractReceivableSaleCode(r) {
+    if (!r) return '';
+    if (r.saleCode) return String(r.saleCode).trim();
+    const desc = String(r.description || r.descricao || '');
+    const m = desc.match(/(?:c[óo]digo|venda\s*#?)\s*(\d+)/i);
+    return m ? String(m[1]).trim() : '';
+  }
+
+  function normalizePiremaxxDeletedSales() {
+    try {
+      const d1 = JSON.parse(origGetItem('deletedSaleCodes') || '[]');
+      const d2 = JSON.parse(origGetItem('deletedSalesCodes') || '[]');
+      const d3 = JSON.parse(origGetItem('deletedSales') || '[]');
+      const delSet = new Set(
+        [...(Array.isArray(d1) ? d1 : []), ...(Array.isArray(d2) ? d2 : []), ...(Array.isArray(d3) ? d3 : [])]
+          .map(function(c) { return String(c || '').trim(); })
+          .filter(Boolean)
+      );
+
+      let changed = (Array.isArray(d1) ? d1.length : 0) !== delSet.size || (Array.isArray(d2) ? d2.length : 0) !== delSet.size;
+
+      // Caso o usuário tenha selecionado " todas " na Página 1 (100 linhas) e desmarcado apenas algumas vendas (ex.: 98 excluídas),
+      // propaga a exclusão para as páginas anteriores do histórico importado para manter apenas os registros preservados pelo usuário.
+      const imported = Array.isArray(window.importedSales) ? window.importedSales : ((window.cloneData && Array.isArray(window.cloneData.sales)) ? window.cloneData.sales : []);
+      if (imported.length > 100 && delSet.size >= 50) {
+        let localArr = [];
+        try { localArr = JSON.parse(origGetItem('localSales') || '[]'); } catch (e) { localArr = []; }
+        const orderedSalesCodes = [];
+        const seenCodes = new Set();
+        (Array.isArray(localArr) ? localArr : []).forEach(function(s) {
+          const t = String(s.type || 'Venda').toLowerCase();
+          if (t.includes('orçamento') || t.includes('orcamento') || t.includes('devolu')) return;
+          const c = String(s.code || '').trim();
+          if (c && !seenCodes.has(c)) { seenCodes.add(c); orderedSalesCodes.push(c); }
+        });
+        imported.forEach(function(s) {
+          const t = String(s.type || 'Venda').toLowerCase();
+          if (t.includes('orçamento') || t.includes('orcamento') || t.includes('devolu')) return;
+          const c = String(s.code || '').trim();
+          if (c && !seenCodes.has(c)) { seenCodes.add(c); orderedSalesCodes.push(c); }
+        });
+
+        const page1Codes = orderedSalesCodes.slice(0, 100);
+        const restCodes = orderedSalesCodes.slice(100);
+        const deletedInPage1 = page1Codes.filter(function(c) { return delSet.has(c); }).length;
+        const deletedInRest = restCodes.filter(function(c) { return delSet.has(c); }).length;
+
+        if (deletedInPage1 >= 80 && restCodes.length > 0 && deletedInRest < 10) {
+          restCodes.forEach(function(c) {
+            if (!delSet.has(c)) {
+              delSet.add(c);
+              changed = true;
+            }
+          });
+        }
+      }
+
+      if (delSet.size > 0) {
+        try {
+          const localSales = JSON.parse(origGetItem('localSales') || '[]');
+          if (Array.isArray(localSales)) {
+            const filteredLocal = localSales.filter(function(s) { return !delSet.has(String(s.code || '').trim()); });
+            if (filteredLocal.length !== localSales.length) {
+              origSetItem('localSales', JSON.stringify(filteredLocal));
+              changed = true;
+            }
+          }
+        } catch (e) {}
+
+        try {
+          const recList = JSON.parse(origGetItem('piremaxx_contas_receber') || '[]');
+          if (Array.isArray(recList) && recList.length) {
+            const filteredRec = recList.filter(function(r) {
+              const sc = extractReceivableSaleCode(r);
+              return !sc || !delSet.has(sc);
+            });
+            if (filteredRec.length !== recList.length) {
+              origSetItem('piremaxx_contas_receber', JSON.stringify(filteredRec));
+              changed = true;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (changed) {
+        const arrStr = JSON.stringify(Array.from(delSet));
+        origSetItem('deletedSaleCodes', arrStr);
+        origSetItem('deletedSalesCodes', arrStr);
+      }
+      return delSet;
+    } catch (e) {
+      return new Set();
+    }
+  }
+
+  window.normalizePiremaxxDeletedSales = normalizePiremaxxDeletedSales;
+  window.extractReceivableSaleCode = extractReceivableSaleCode;
 
   function syncSupplierMirror() {
     try {
@@ -2434,6 +2538,10 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
     if (location.protocol === 'file:') return Promise.resolve();
     const payload = {};
     payload[key] = value;
+    if (key === 'deletedSaleCodes' || key === 'deletedSalesCodes') {
+      payload['deletedSaleCodes'] = value;
+      payload['deletedSalesCodes'] = value;
+    }
     if (key === 'piremaxx_contatos') {
       syncSupplierMirror();
       payload['piremaxx_fornecedores'] = origGetItem('piremaxx_fornecedores') || '[]';
@@ -2458,11 +2566,14 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
 
   Storage.prototype.setItem = function(key, value) {
     origSetItem(key, value);
+    if (key === 'deletedSaleCodes') origSetItem('deletedSalesCodes', value);
+    else if (key === 'deletedSalesCodes') origSetItem('deletedSaleCodes', value);
     if (this === localStorage && SYNC_KEYS.includes(key)) {
       pushKeyToServer(key, value);
     }
   };
 
+  normalizePiremaxxDeletedSales();
   syncSupplierMirror();
 
   if (location.protocol !== 'file:') {
@@ -2472,9 +2583,71 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
         if (!serverDB || typeof serverDB !== 'object') return;
         let updatedAny = false;
         const toPush = {};
+
+        // 1. Consolida códigos de vendas excluídas entre navegador e servidor (união de conjuntos)
+        try {
+          const localDel = JSON.parse(origGetItem('deletedSaleCodes') || '[]');
+          const srvDel1 = JSON.parse(serverDB['deletedSaleCodes'] || '[]');
+          const srvDel2 = JSON.parse(serverDB['deletedSalesCodes'] || '[]');
+          const mergedDel = new Set([
+            ...(Array.isArray(localDel) ? localDel : []),
+            ...(Array.isArray(srvDel1) ? srvDel1 : []),
+            ...(Array.isArray(srvDel2) ? srvDel2 : [])
+          ].map(function(x) { return String(x || '').trim(); }).filter(Boolean));
+          if (mergedDel.size > 0) {
+            const mergedStr = JSON.stringify(Array.from(mergedDel));
+            if (origGetItem('deletedSaleCodes') !== mergedStr) {
+              origSetItem('deletedSaleCodes', mergedStr);
+              origSetItem('deletedSalesCodes', mergedStr);
+              updatedAny = true;
+            }
+            if (serverDB['deletedSaleCodes'] !== mergedStr) {
+              toPush['deletedSaleCodes'] = mergedStr;
+              toPush['deletedSalesCodes'] = mergedStr;
+            }
+          }
+        } catch (e) {}
+
+        const activeDeletedSales = normalizePiremaxxDeletedSales();
+        if (activeDeletedSales.size > 0) {
+          const fullDelStr = JSON.stringify(Array.from(activeDeletedSales));
+          if (serverDB['deletedSaleCodes'] !== fullDelStr) {
+            toPush['deletedSaleCodes'] = fullDelStr;
+            toPush['deletedSalesCodes'] = fullDelStr;
+          }
+        }
+
         SYNC_KEYS.forEach(function(k) {
+          if (k === 'deletedSaleCodes' || k === 'deletedSalesCodes') return;
           const localVal = origGetItem(k);
           const serverVal = serverDB[k];
+          if (k === 'localSales' && serverVal) {
+            try {
+              const srvSales = JSON.parse(serverVal || '[]');
+              const locSales = JSON.parse(localVal || '[]');
+              const map = new Map();
+              (Array.isArray(srvSales) ? srvSales : []).forEach(function(s) {
+                const c = String(s.code || '').trim();
+                if (c && !activeDeletedSales.has(c)) map.set(c, s);
+              });
+              (Array.isArray(locSales) ? locSales : []).forEach(function(s) {
+                const c = String(s.code || '').trim();
+                if (c && !activeDeletedSales.has(c)) map.set(c, s);
+              });
+              const finalSales = Array.from(map.values()).sort(function(a, b) {
+                return (Number(b.code) || 0) - (Number(a.code) || 0);
+              });
+              const finalStr = JSON.stringify(finalSales);
+              if (localVal !== finalStr) {
+                origSetItem('localSales', finalStr);
+                updatedAny = true;
+              }
+              if (serverVal !== finalStr) {
+                toPush['localSales'] = finalStr;
+              }
+            } catch (e) {}
+            return;
+          }
           if (serverVal && (!localVal || localVal === '[]' || localVal === '{}')) {
             origSetItem(k, serverVal);
             updatedAny = true;
@@ -2509,6 +2682,7 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
             } catch (e) {}
           }
         });
+        normalizePiremaxxDeletedSales();
         syncSupplierMirror();
         if (Object.keys(toPush).length) {
           fetch('/api/storage', {
@@ -2521,8 +2695,343 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
         if (updatedAny && typeof window.renderContactsTable === 'function') {
           window.renderContactsTable();
         }
+        if (typeof window.buildDashboard === 'function') {
+          window.buildDashboard();
+        }
       })
       .catch(function(){});
   }
 })();
+
+// =========================================================================
+// MODAL DE CONFIRMAÇÃO PERSONALIZADO (Substitui o window.confirm nativo)
+// =========================================================================
+(function(){
+  function ensureConfirmStyles() {
+    if (document.getElementById('piremaxx-confirm-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'piremaxx-confirm-styles';
+    style.textContent = `
+      .pmx-confirm-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 10050;
+        background: rgba(15, 29, 58, 0.52);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        box-sizing: border-box;
+        animation: pmxConfirmFadeIn 0.16s ease-out;
+      }
+      .pmx-confirm-card {
+        width: min(440px, 94vw);
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #d5e0f2;
+        box-shadow: 0 20px 45px rgba(14, 30, 62, 0.28), 0 4px 12px rgba(14, 30, 62, 0.12);
+        overflow: hidden;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #243746;
+        transform-origin: center;
+        animation: pmxConfirmPopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .pmx-confirm-header {
+        background: linear-gradient(135deg, #17366f 0%, #224b94 100%);
+        color: #ffffff;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .pmx-confirm-header-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 0.2px;
+      }
+      .pmx-confirm-header-badge {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.16);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+      }
+      .pmx-confirm-close {
+        border: 0;
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        font-size: 17px;
+        line-height: 1;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s ease;
+      }
+      .pmx-confirm-close:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .pmx-confirm-body {
+        padding: 22px 22px 18px;
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      .pmx-confirm-icon {
+        flex: 0 0 46px;
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #e11d48;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pmx-confirm-content {
+        flex: 1;
+        min-width: 0;
+      }
+      .pmx-confirm-message {
+        margin: 0 0 6px;
+        font-size: 15px;
+        font-weight: bold;
+        color: #1e293b;
+        line-height: 1.4;
+      }
+      .pmx-confirm-sub {
+        margin: 0;
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.45;
+      }
+      .pmx-confirm-footer {
+        padding: 13px 20px 16px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .pmx-confirm-btn {
+        height: 36px;
+        padding: 0 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      }
+      .pmx-confirm-btn:active {
+        transform: scale(0.97);
+      }
+      .pmx-confirm-cancel {
+        background: #ffffff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+      }
+      .pmx-confirm-cancel:hover {
+        background: #f1f5f9;
+        color: #1e293b;
+      }
+      .pmx-confirm-ok {
+        background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+        color: #ffffff;
+        border: 0;
+        box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+      }
+      .pmx-confirm-ok:hover {
+        filter: brightness(1.06);
+        box-shadow: 0 6px 14px rgba(229, 57, 53, 0.38);
+      }
+      .pmx-confirm-ok:focus-visible, .pmx-confirm-cancel:focus-visible {
+        outline: 2px solid #17366f;
+        outline-offset: 2px;
+      }
+      @keyframes pmxConfirmFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes pmxConfirmPopIn {
+        from { opacity: 0; transform: translateY(10px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function piremaxxConfirm(message, onConfirmOrOptions) {
+    ensureConfirmStyles();
+    const existing = document.getElementById('piremaxxConfirmModal');
+    if (existing) existing.remove();
+
+    const opts = typeof onConfirmOrOptions === 'function'
+      ? { onConfirm: onConfirmOrOptions }
+      : (onConfirmOrOptions || {});
+
+    const titleText = opts.title || 'Gestão Piremaxx — Confirmação';
+    const subText = opts.subtitle || 'Esta ação removerá os registros selecionados e atualizará os indicadores do sistema.';
+    const confirmLabel = opts.confirmText || 'Sim, excluir';
+    const cancelLabel = opts.cancelText || 'Cancelar';
+
+    return new Promise(function(resolve) {
+      const overlay = document.createElement('div');
+      overlay.id = 'piremaxxConfirmModal';
+      overlay.className = 'pmx-confirm-overlay';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+
+      overlay.innerHTML = `
+        <div class="pmx-confirm-card">
+          <header class="pmx-confirm-header">
+            <div class="pmx-confirm-header-title">
+              <span class="pmx-confirm-header-badge">⚠</span>
+              <span></span>
+            </div>
+            <button type="button" class="pmx-confirm-close" aria-label="Fechar">×</button>
+          </header>
+          <div class="pmx-confirm-body">
+            <div class="pmx-confirm-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+              </svg>
+            </div>
+            <div class="pmx-confirm-content">
+              <p class="pmx-confirm-message"></p>
+              <p class="pmx-confirm-sub"></p>
+            </div>
+          </div>
+          <footer class="pmx-confirm-footer">
+            <button type="button" class="pmx-confirm-btn pmx-confirm-cancel"></button>
+            <button type="button" class="pmx-confirm-btn pmx-confirm-ok"></button>
+          </footer>
+        </div>
+      `;
+
+      overlay.querySelector('.pmx-confirm-header-title span:last-child').textContent = titleText;
+      overlay.querySelector('.pmx-confirm-message').textContent = String(message || 'Deseja confirmar esta operação?');
+      overlay.querySelector('.pmx-confirm-sub').textContent = subText;
+      const btnCancel = overlay.querySelector('.pmx-confirm-cancel');
+      const btnOk = overlay.querySelector('.pmx-confirm-ok');
+      const btnClose = overlay.querySelector('.pmx-confirm-close');
+      btnCancel.textContent = cancelLabel;
+      btnOk.textContent = confirmLabel;
+
+      let settled = false;
+      function finish(result) {
+        if (settled) return;
+        settled = true;
+        document.removeEventListener('keydown', onKey);
+        overlay.remove();
+        if (result && typeof opts.onConfirm === 'function') {
+          opts.onConfirm();
+        }
+        resolve(result);
+      }
+
+      function onKey(e) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          finish(false);
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          finish(true);
+        }
+      }
+
+      btnCancel.onclick = function() { finish(false); };
+      btnClose.onclick = function() { finish(false); };
+      btnOk.onclick = function() { finish(true); };
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) finish(false);
+      });
+      document.addEventListener('keydown', onKey);
+
+      document.body.appendChild(overlay);
+      setTimeout(function() { btnOk.focus(); }, 10);
+    });
+  }
+
+  window.piremaxxConfirm = piremaxxConfirm;
+  window.appConfirm = piremaxxConfirm;
+
+  function piremaxxToast(message) {
+    if (!document.getElementById('piremaxx-toast-styles')) {
+      const st = document.createElement('style');
+      st.id = 'piremaxx-toast-styles';
+      st.textContent = `
+        .pmx-save-toast {
+          position: fixed;
+          right: 22px;
+          bottom: 22px;
+          z-index: 10060;
+          background: linear-gradient(135deg, #17366f 0%, #224b94 100%);
+          color: #ffffff;
+          padding: 12px 18px;
+          border-radius: 10px;
+          border-left: 4px solid #29a55d;
+          box-shadow: 0 10px 26px rgba(14, 30, 62, 0.28);
+          font: bold 13px/1.4 Arial, Helvetica, sans-serif;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          animation: pmxConfirmPopIn 0.18s ease-out;
+        }
+        .pmx-save-toast-badge {
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          background: #29a55d;
+          color: #fff;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          flex: 0 0 22px;
+        }
+      `;
+      document.head.appendChild(st);
+    }
+    const oldToast = document.getElementById('piremaxxSaveToast');
+    if (oldToast) oldToast.remove();
+    const toast = document.createElement('div');
+    toast.id = 'piremaxxSaveToast';
+    toast.className = 'pmx-save-toast';
+    toast.innerHTML = '<span class="pmx-save-toast-badge">✓</span><span></span>';
+    toast.querySelector('span:last-child').textContent = String(message || ' Alterações salvas com sucesso.');
+    document.body.appendChild(toast);
+    setTimeout(function() {
+      if (toast.parentNode) toast.remove();
+    }, 3200);
+  }
+
+  window.piremaxxToast = piremaxxToast;
+  if (typeof window.appMessage !== 'function') {
+    window.appMessage = piremaxxToast;
+  }
+})();
+
+
 

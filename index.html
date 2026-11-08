@@ -96,6 +96,8 @@
 .dash-chart .dash-bar:nth-child(even) i{background:linear-gradient(90deg,#74d8cf 0%,#47bdb8 68%,#26928f 100%)}
 .dash-chart .dash-bar:nth-child(even) i::before{background:#9be8df}
 .dash-chart .dash-bar:nth-child(even) i::after{background:#26928f}
+.dash-chart .dash-bar.dash-bar-empty i{height:2px!important;min-height:2px!important;opacity:.28;box-shadow:none}
+.dash-chart .dash-bar.dash-bar-empty i::before,.dash-chart .dash-bar.dash-bar-empty i::after{display:none}
 .dash-pie{transform:rotateX(58deg) rotateZ(-18deg);box-shadow:12px 15px 16px rgba(34,73,115,.25),inset 0 0 0 1px rgba(0,0,0,.08);transition:transform .25s ease}
 .dash-pie:hover{transform:rotateX(48deg) rotateZ(-12deg) scale(1.04)}
 .dash-pie::after{box-shadow:inset 3px 3px 7px rgba(124,149,191,.28),inset -3px -3px 7px rgba(255,255,255,.8)}
@@ -313,15 +315,76 @@
     return s;
   }
 
+  function extractRecSaleCode(r){
+    if(!r)return '';
+    if(r.saleCode)return String(r.saleCode).trim();
+    var desc=String(r.description||r.descricao||'');
+    var m=desc.match(/(?:c[óo]digo|venda\s*#?)\s*(\d+)/i);
+    return m?String(m[1]).trim():'';
+  }
+
   function buildDashboard(){
-    // 1. Consolida Contas a Receber (Sistema + Local)
+    if(typeof window.normalizePiremaxxDeletedSales==='function'){
+      window.normalizePiremaxxDeletedSales();
+    }
+
+    // 1. Consolida Vendas e Orçamentos (Base Importada + LocalSales) respeitando exclusões
+    var importedSales=Array.isArray(window.importedSales)?window.importedSales:[];
+    var localSales=read('localSales');
+    var deletedSales={};
+    var deletedCount=0;
+    read('deletedSaleCodes').concat(read('deletedSalesCodes'),read('deletedSales')).forEach(function(c){
+      var k=String(c||'').trim();
+      if(k&&!deletedSales[k]){
+        deletedSales[k]=true;
+        deletedCount++;
+      }
+    });
+
+    var allSalesMap={};
+    importedSales.forEach(function(s){
+      var c=String(s.code||'').trim();
+      if(!c||deletedSales[c])return;
+      allSalesMap[c]=s;
+    });
+    localSales.forEach(function(s){
+      var c=String(s.code||'').trim();
+      if(!c||deletedSales[c])return;
+      allSalesMap[c]=s;
+    });
+    var allRecords=Object.keys(allSalesMap).map(function(k){return allSalesMap[k]});
+
+    var salesList=[];
+    var quotesList=[];
+    allRecords.forEach(function(r){
+      var t=String(r.type||'').toLowerCase();
+      if(t.indexOf('devolu')>=0||t.indexOf('exclu')>=0)return;
+      if(t.indexOf('orçamento')>=0||t.indexOf('orcamento')>=0){
+        quotesList.push(r);
+      }else{
+        salesList.push(r);
+      }
+    });
+
+    // 2. Consolida Contas a Receber (Sistema + Local) ignorando vendas excluídas
     var savedRec=read('piremaxx_contas_receber');
     var recById={};
-    defaultReceivables.forEach(function(r){recById[String(r.id)]=r});
+    var isBulkCleaned=(deletedCount>=50||salesList.length<=200);
+    if(!isBulkCleaned){
+      defaultReceivables.forEach(function(r){
+        var sc=extractRecSaleCode(r);
+        if(sc&&deletedSales[sc])return;
+        recById[String(r.id)]=r;
+      });
+    }
     savedRec.forEach(function(r){
+      var sc=extractRecSaleCode(r);
+      if(sc&&deletedSales[sc])return;
+      if(isBulkCleaned&&sc&&!allSalesMap[sc])return;
       var id=String(r.id||r.code||('rec-'+Math.random()));
       recById[id]={
         id:id,
+        saleCode:sc||'',
         description:r.description||r.descricao||'Conta a receber',
         contact:r.contact||r.contato||r.client||'',
         account:r.account||'Caixa interno',
@@ -330,16 +393,51 @@
         value:num(r.value||r.valor||r.amount||r.total)
       };
     });
+
+    // Garante que vendas ativas tenham suas parcelas refletidas no financeiro caso ainda não sincronizadas
+    salesList.forEach(function(s){
+      var sc=String(s.code||'').trim();
+      if(!sc)return;
+      var hasRec=Object.keys(recById).some(function(k){return extractRecSaleCode(recById[k])===sc});
+      if(!hasRec){
+        var fin=(Array.isArray(s.financial)&&s.financial.length)?s.financial:(Array.isArray(s.parts)&&s.parts.length?s.parts:[]);
+        if(fin.length){
+          fin.forEach(function(f,idx){
+            var id='VENDA-'+sc+'-'+(idx+1);
+            recById[id]={
+              id:id,
+              saleCode:sc,
+              description:'Venda #'+sc+' ('+(idx+1)+'/'+fin.length+') - '+(s.client||'Cliente'),
+              contact:s.client||'',
+              account:'Caixa interno',
+              date:formatDateBR(f.date||s.date||''),
+              status:f.status||'A Receber',
+              value:num(f.value)
+            };
+          });
+        }else if(isBulkCleaned&&num(s.total)>0){
+          var idSingle='VENDA-'+sc+'-1';
+          recById[idSingle]={
+            id:idSingle,
+            saleCode:sc,
+            description:'Venda #'+sc+' - '+(s.client||'Cliente'),
+            contact:s.client||'',
+            account:'Caixa interno',
+            date:formatDateBR(s.date||''),
+            status:'Recebida',
+            value:num(s.total)
+          };
+        }
+      }
+    });
+
     var receivables=Object.keys(recById).map(function(k){return recById[k]}).sort(function(a,b){return (parseInt(b.id,10)||0)-(parseInt(a.id,10)||0)});
-    if(!savedRec.length){
-      try{localStorage.setItem('piremaxx_contas_receber',JSON.stringify(receivables))}catch(e){}
-    }
     var openReceivables=receivables.filter(function(r){return !isPaidStatus(r.status)});
     var paidReceivables=receivables.filter(function(r){return isPaidStatus(r.status)});
     var openRecTotal=openReceivables.reduce(function(acc,r){return acc+num(r.value)},0);
     var paidRecTotal=paidReceivables.reduce(function(acc,r){return acc+num(r.value)},0);
 
-    // 2. Consolida Contas a Pagar + Compras + Coletas
+    // 3. Consolida Contas a Pagar + Compras + Coletas
     var savedPay=read('piremaxx_contas_pagar');
     var localPurchases=read('piremaxx_compras');
     var localCollections=read('piremaxx_coletas');
@@ -370,52 +468,33 @@
     var openPayTotal=openPayables.reduce(function(acc,p){return acc+num(p.value)},0);
     var paidPayTotal=paidPayables.reduce(function(acc,p){return acc+num(p.value)},0);
 
-    // 3. Consolida Vendas e Orçamentos (Base Importada + LocalSales)
-    var importedSales=Array.isArray(window.importedSales)?window.importedSales:[];
-    var localSales=read('localSales');
-    var deletedSales={};
-    read('deletedSalesCodes').forEach(function(c){deletedSales[String(c)]=true});
-
-    var allSalesMap={};
-    importedSales.forEach(function(s){
-      if(deletedSales[String(s.code)])return;
-      allSalesMap[String(s.code)]=s;
-    });
-    localSales.forEach(function(s){
-      if(deletedSales[String(s.code)])return;
-      allSalesMap[String(s.code)]=s;
-    });
-    var allRecords=Object.keys(allSalesMap).map(function(k){return allSalesMap[k]});
-
-    var salesList=[];
-    var quotesList=[];
-    allRecords.forEach(function(r){
-      var t=String(r.type||'').toLowerCase();
-      if(t.indexOf('orçamento')>=0||t.indexOf('orcamento')>=0){
-        quotesList.push(r);
-      }else{
-        salesList.push(r);
-      }
-    });
-
-    // Filtra vendas de Outubro/2026 (mês atual de referência do sistema)
-    var octSales=salesList.filter(function(s){
-      return String(s.date||'').slice(0,7)==='2026-10';
-    });
-    var octSalesTotal=octSales.reduce(function(acc,s){return acc+num(s.total)},0);
+    // Quando o histórico foi limpo (ex.: restando apenas 2 vendas), utiliza todas as vendas ativas;
+    // caso contrário, considera as vendas do período atual (Outubro/Novembro 2026).
+    var periodSales=isBulkCleaned
+      ?salesList
+      :salesList.filter(function(s){
+        var ym=String(s.date||'').slice(0,7);
+        return ym==='2026-10'||ym==='2026-11';
+      });
+    var periodSalesTotal=periodSales.reduce(function(acc,s){return acc+num(s.total)},0);
     var quotesTotal=quotesList.reduce(function(acc,q){return acc+num(q.total)},0);
+
+    var salesCardLabel=document.querySelector('#card-sales .dash-card-label');
+    if(salesCardLabel){
+      salesCardLabel.textContent=isBulkCleaned?'Vendas ativas':'Vendas no período';
+    }
 
     // 4. Atualiza os 4 Cards Superiores
     document.getElementById('metric-rec-count').textContent=openReceivables.length;
-    document.getElementById('metric-rec-total').textContent='Em aberto: '+money(openRecTotal)+' ('+receivables.length+' no mês)';
+    document.getElementById('metric-rec-total').textContent='Em aberto: '+money(openRecTotal)+' ('+receivables.length+' no total)';
     document.getElementById('card-receivables').onclick=function(){location.href='financeiro.html#recebimentos'};
 
     document.getElementById('metric-pay-count').textContent=openPayables.length;
     document.getElementById('metric-pay-total').textContent='Em aberto: '+money(openPayTotal)+(paidPayTotal?' | Pago: '+money(paidPayTotal):'');
     document.getElementById('card-payables').onclick=function(){location.href='financeiro.html#pagamentos'};
 
-    document.getElementById('metric-sales-count').textContent=octSales.length;
-    document.getElementById('metric-sales-total').textContent='Faturamento: '+money(octSalesTotal);
+    document.getElementById('metric-sales-count').textContent=periodSales.length;
+    document.getElementById('metric-sales-total').textContent='Faturamento: '+money(periodSalesTotal);
     document.getElementById('card-sales').onclick=function(){location.href='vendas.html'};
 
     document.getElementById('metric-quotes-count').textContent=quotesList.length;
@@ -435,7 +514,7 @@
     noticesHtml+='<p><span>↪ Há <b>'+openReceivables.length+'</b> título(s) a receber em aberto no financeiro, somando <b>'+money(openRecTotal)+'</b> (e <b>'+paidReceivables.length+'</b> já recebidos: <b>'+money(paidRecTotal)+'</b>).</span><a href="financeiro.html#recebimentos">detalhar »</a></p>';
     noticesHtml+='<p><span>⚑ Há <b>'+quotesList.length+'</b> negociação(ões) em aberto na aba de orçamentos. Total acumulado: <b>'+money(quotesTotal)+'</b>.</span><a href="vendas.html#orcamentos">detalhar »</a></p>';
     noticesHtml+='<p><span>⚠ Há <b>'+lowStockProducts.length+'</b> produto(s) com estoque igual ou abaixo do mínimo no catálogo de pneus.</span><a href="produtos.html">detalhar »</a></p>';
-    noticesHtml+='<p><span>▣ Base corporativa ativa: <b>'+totalContacts.toLocaleString('pt-BR')+'</b> contatos, <b>'+allProducts.length+'</b> produtos e <b>'+allRecords.length.toLocaleString('pt-BR')+'</b> vendas/orçamentos sincronizados.</span><a href="clientes.html">detalhar »</a></p>';
+    noticesHtml+='<p><span>▣ Base corporativa ativa: <b>'+totalContacts.toLocaleString('pt-BR')+'</b> contatos, <b>'+allProducts.length+'</b> produtos, <b>'+salesList.length.toLocaleString('pt-BR')+'</b> venda(s) e <b>'+quotesList.length.toLocaleString('pt-BR')+'</b> orçamento(s) sincronizados.</span><a href="clientes.html">detalhar »</a></p>';
     document.getElementById('dash-notices-body').innerHTML=noticesHtml;
 
     // 6. Gráfico de Evolução de Faturamento Mensal (inclui automaticamente o mês atual)
@@ -470,36 +549,40 @@
     var chartEl=document.getElementById('dash-monthly-chart');
     if(chartEl){
       chartEl.innerHTML=monthTotals.map(function(m){
-        var barH=Math.max(10,Math.round((m.total/maxMonth)*155));
+        var isEmpty=m.total<=0||m.count<=0;
+        var barH=isEmpty?2:Math.max(14,Math.round((m.total/maxMonth)*155));
         var shortVal=money(m.total);
         var compactVal=m.total>=1000?'R$ '+(m.total/1000).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:1})+'k':(m.total>0?money(m.total):'R$ 0');
-        return '<div class="dash-bar" onclick="location.href=\'vendas.html\'" title="'+m.label+': '+money(m.total)+' ('+m.count+' vendas)">'+
+        return '<div class="dash-bar'+(isEmpty?' dash-bar-empty':'')+'" onclick="location.href=\'vendas.html\'" title="'+m.label+': '+money(m.total)+' ('+m.count+' vendas)">'+
           '<div class="dash-bar-val"><span class="bar-val-full">'+shortVal+'</span><span class="bar-val-compact">'+compactVal+'</span></div>'+
           '<i style="--bar-height:'+barH+'px"></i>'+
           '<span>'+m.label+'</span>'+
-          '<small>'+m.count+' vendas</small>'+
+          '<small>'+m.count+' '+(m.count===1?'venda':'vendas')+'</small>'+
         '</div>';
       }).join('');
     }
 
-    // 7. Produtos Mais Vendidos e Vendas por Categoria em Outubro 2026
+    // 7. Produtos Mais Vendidos e Vendas por Categoria
     var prodStats={};
     var catStats={'Pneus Linha A (Tabela A)':0,'Pneus Linha B / Outros':0,'Serviços / Carcaças':0};
-    octSales.forEach(function(s){
-      var items=Array.isArray(s.items)?s.items:[];
+    periodSales.forEach(function(s){
+      var items=Array.isArray(s.items)?s.items:(s.items&&typeof s.items==='object'?[s.items]:[]);
       if(!items.length){
+        var fallbackName=String(s.description||s.item||'Venda #'+s.code).trim();
+        if(!prodStats[fallbackName])prodStats[fallbackName]={name:fallbackName,qty:1,total:0};
+        prodStats[fallbackName].total+=num(s.total);
         catStats['Pneus Linha A (Tabela A)']+=num(s.total);
         return;
       }
       items.forEach(function(it){
-        var name=String(it.name||it.product||'Produto').trim();
+        var name=String(it.name||it.product||it.item||'Produto').trim();
         var q=num(it.qty||it.quantity||1);
         var val=num(it.total)||(num(it.price)*q);
         if(!prodStats[name])prodStats[name]={name:name,qty:0,total:0};
         prodStats[name].qty+=q;
         prodStats[name].total+=val;
 
-        if(/^A-/i.test(name)||String(it.table||'').toUpperCase().indexOf('TABELA A')>=0){
+        if(/^A-/i.test(name)||String(it.table||it.category||'').toUpperCase().indexOf('TABELA A')>=0){
           catStats['Pneus Linha A (Tabela A)']+=val;
         }else if(/servi|conserto|montagem|balanceamento/i.test(name)){
           catStats['Serviços / Carcaças']+=val;
@@ -534,29 +617,32 @@
     var pieEl=document.getElementById('dash-category-pie');
     if(pieEl){
       pieEl.style.background=conicParts.length?'conic-gradient('+conicParts.join(',')+')':'#dce4e8';
-      pieEl.title=catEntries.map(function(c){return c.label+': '+c.pct.toFixed(1)+'% ('+money(c.total)+')'}).join(' | ');
+      pieEl.title=catEntries.length?catEntries.map(function(c){return c.label+': '+c.pct.toFixed(1)+'% ('+money(c.total)+')'}).join(' | '):'Nenhuma venda registrada no período';
       pieEl.setAttribute('aria-label','Vendas por categoria: '+pieEl.title);
     }
     var legEl=document.getElementById('dash-category-legend');
     if(legEl){
-      legEl.innerHTML=catEntries.map(function(c){
+      legEl.innerHTML=catEntries.length?catEntries.map(function(c){
         return '<div class="dash-cat-item"><span><i class="dash-cat-dot" style="background:'+c.color+'"></i>'+esc(c.label)+' ('+c.pct.toFixed(1)+'%)</span><b>'+money(c.total)+'</b></div>';
-      }).join('');
+      }).join(''):'<div class="dash-cat-item"><span>Nenhuma venda ativa no período</span><b>R$ 0,00</b></div>';
     }
-    var baseCash=6403855.54 + paidRecTotal - paidPayTotal;
+    var baseCash=(isBulkCleaned?0:6403855.54) + paidRecTotal - paidPayTotal;
     var finSumEl=document.getElementById('dash-fin-summary');
     if(finSumEl){
       finSumEl.innerHTML=
-        '<div><span>Saldo Caixa Interno:</span><b class="pos">'+money(baseCash)+'</b></div>'+
-        '<div><span>Recebido em Outubro:</span><b class="pos">'+money(paidRecTotal)+'</b></div>'+
+        '<div><span>Saldo Caixa Interno:</span><b class="'+(baseCash>=0?'pos':'neg')+'">'+money(baseCash)+'</b></div>'+
+        '<div><span>Recebido no Período:</span><b class="pos">'+money(paidRecTotal)+'</b></div>'+
         '<div><span>A Receber (Aberto):</span><b>'+money(openRecTotal)+'</b></div>'+
         '<div><span>A Pagar (Aberto):</span><b class="neg">'+money(openPayTotal)+'</b></div>';
     }
 
     // 8. Auditoria Real — "Últimas Atividades"
     var auditEvents=[];
-    // A) Eventos gravados em tempo real pelo sistema de auditoria
+    // A) Eventos gravados em tempo real pelo sistema de auditoria (ignorando protocolos de vendas excluídas)
     read('piremaxx_auditoria').forEach(function(a){
+      var detailStr=String(a.detail||a.action||'');
+      var mCode=detailStr.match(/#(\d+)/);
+      if(mCode&&deletedSales[String(mCode[1]).trim()])return;
       var mod=String(a.module||'Sistema').toLowerCase();
       var cat=mod.indexOf('fin')>=0?'fin':(mod.indexOf('vend')>=0||mod.indexOf('orç')>=0)?'sale':'cad';
       var badgeClass=mod.indexOf('pag')>=0?'pay':mod.indexOf('fin')>=0?'fin':mod.indexOf('orç')>=0?'quote':mod.indexOf('vend')>=0?'sale':'contact';
@@ -680,11 +766,13 @@
     }
   }
 
+  window.buildDashboard=buildDashboard;
   buildDashboard();
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',buildDashboard);
   }
   window.addEventListener('focus',buildDashboard);
+  window.addEventListener('storage',buildDashboard);
 })();
 </script>
 </body>
