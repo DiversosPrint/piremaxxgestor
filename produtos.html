@@ -35,7 +35,7 @@
   <aside class="sidebar"></aside>
   <main class="products-page">
     <header class="products-topbar"><div class="brand-mini"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><div class="products-search">em:produtos<button>⌕</button></div><div class="products-user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div></header>
-    <div class="products-title">Produtos e serviços<div class="title-actions"><button class="tutorials">▣ Tutoriais</button><button class="new-product">⊞ Novo⌄</button></div></div>
+    <div class="products-title">Produtos e serviços</div>
     <section class="products-content">
       <div class="product-tabs"><button class="active" data-tab="products">♣ PRODUTOS</button><button data-tab="services">⚒ SERVIÇOS</button><button data-tab="stock">☷ AJUSTE DE ESTOQUE</button></div>
       <div class="product-panel" id="products-panel"><div class="product-toolbar"><button class="toolbar-button primary" id="newProduct">⊞ Novo</button><button class="toolbar-button" title="Clonar">♧</button><button class="toolbar-button" title="Arquivar">▣</button><button class="toolbar-button" title="Arquivados" id="toggleArchived">▣</button><button class="toolbar-button" title="Editar">✎⌄</button><button class="toolbar-button" title="Excluir">♜</button><button class="toolbar-button" title="Imprimir">▤</button><div class="product-filter"><input id="productSearch" placeholder="Buscar produtos"><button>⌕</button></div></div><table class="product-table"><thead><tr><th>□</th><th>Cód</th><th>Produto ↕</th><th>Categoria</th><th>Preço Venda</th><th>Estoque</th></tr></thead><tbody id="productRows"></tbody></table></div>
@@ -43,7 +43,7 @@
       <div class="product-panel stock-panel" id="stock-panel" hidden><div class="product-toolbar stock-toolbar"><button class="toolbar-button primary" id="newStockAdjustment">⊞ Novo</button><button class="toolbar-button" id="deleteStockAdjustments" title="Excluir ajustes"><img src="public/icons/icons8-trash.gif" alt="Excluir"></button><button class="toolbar-button" id="printStockAdjustments" title="Imprimir ajustes"><img src="public/icons/icons8-print.gif" alt="Imprimir"></button><div class="stock-period"><button type="button">Mês Atual</button><span>‹</span><b>Outubro 2026</b><span>›</span></div></div><table class="product-table stock-table"><thead><tr><th>□</th><th>Cód ↕</th><th>Motivo</th><th>Contato</th><th>Palavras-chave</th><th>Observações</th><th>Data</th></tr></thead><tbody id="stockRows"><tr><td colspan="7" class="empty-panel">Nenhum registro encontrado.<br><a href="#">Veja no mês anterior</a></td></tr></tbody></table></div>
     </section>
   </main>
-  <script src="vendas-importadas.js?v=produtos-1"></script>
+  <script src="vendas-importadas.js?v=planilhas-20261109"></script>
   <script src="menu-lateral.js?v=produtos-1"></script>
   <script>
     document.addEventListener('DOMContentLoaded',function(){
@@ -74,7 +74,7 @@
       function openNewProduct(){window.location.href='novo-produto.html?v=17'}
       var serviceNew=document.getElementById('serviceNew');if(serviceNew)serviceNew.addEventListener('click',function(){window.location.href='novo-servico.html'});
       document.getElementById('newProduct').addEventListener('click',openNewProduct);
-      document.querySelector('.new-product').addEventListener('click',openNewProduct);
+      document.querySelector('.new-product')?.addEventListener('click',openNewProduct);
     });
   </script><script>
   document.addEventListener('DOMContentLoaded',function(){var body=document.getElementById('productRows');if(!body)return;body.addEventListener('click',function(e){if(e.target.closest('input,button,a'))return;var row=e.target.closest('tr');if(!row||!row.children[1])return;var code=row.children[1].textContent.trim();if(code)window.location.href='novo-produto.html?edit='+encodeURIComponent(code)+'&v=17'})});

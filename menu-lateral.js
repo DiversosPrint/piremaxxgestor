@@ -75,13 +75,8 @@
       brandEl.style.setProperty('color','transparent','important');
       brandEl.style.setProperty('position','relative','important');
     }
-    if(!topbar.querySelector('.topbar-mascot')){
-      const mascot=document.createElement('span');
-      mascot.className='topbar-mascot';
-      mascot.setAttribute('aria-hidden','true');
-      if(brandEl&&brandEl.nextSibling)topbar.insertBefore(mascot,brandEl.nextSibling);
-      else topbar.appendChild(mascot);
-    }
+    const oldMascot=topbar.querySelector('.topbar-mascot');
+    if(oldMascot)oldMascot.remove();
     const searchEl=topbar.querySelector('.search, .products-search');
     if(searchEl){
       searchEl.classList.add('search');
@@ -367,8 +362,7 @@
       const AVATAR_PRESETS={
         default:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23ffffff'/%3E%3Cpath d='M12 64 C13 48 21 43 32 43 C43 43 51 48 52 64 Z' fill='%231e293b'/%3E%3Cpolygon points='26,43 32,57 38,43' fill='%23e2e8f0'/%3E%3Cpolygon points='30,45 32,43 34,45 33,58 32,60 31,58' fill='%2338bdf8'/%3E%3Crect x='28' y='35' width='8' height='10' rx='3' fill='%23e0ac8b'/%3E%3Cpath d='M21 24 C21 16 25 12 32 12 C39 12 43 16 43 24 C43 32 38 38 32 38 C26 38 21 32 21 24 Z' fill='%23eab898'/%3E%3Cpath d='M20 23 C20 14 25 10 32 10 C39 10 44 14 44 22 C42 18 39 16 33 16 C26 16 22 18 20 23 Z' fill='%231e1b18'/%3E%3C/svg%3E",
         navy:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23e8f0fe'/%3E%3Cpath d='M11 64 C12 47 20 42 32 42 C44 42 52 47 53 64 Z' fill='%2317366f'/%3E%3Cpolygon points='26,42 32,56 38,42' fill='%23ffffff'/%3E%3Cpolygon points='30,44 32,42 34,44 33,57 32,59 31,57' fill='%23e11d48'/%3E%3Crect x='28' y='34' width='8' height='10' rx='3' fill='%23c68b67'/%3E%3Cpath d='M21 24 C21 16 25 12 32 12 C39 12 43 16 43 24 C43 32 38 38 32 38 C26 38 21 32 21 24 Z' fill='%23d49b78'/%3E%3Cpath d='M20 22 C20 13 25 9 32 9 C39 9 44 13 44 22 C41 17 37 15 32 15 C27 15 23 17 20 22 Z' fill='%23111827'/%3E%3C/svg%3E",
-        female:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23f0f5ff'/%3E%3Cpath d='M17 26 C17 14 23 9 32 9 C41 9 47 14 47 26 C47 36 45 43 42 46 L22 46 C19 43 17 36 17 26 Z' fill='%23292524'/%3E%3Cpath d='M12 64 C13 48 21 43 32 43 C43 43 51 48 52 64 Z' fill='%231e3a8a'/%3E%3Cpolygon points='25,43 32,55 39,43' fill='%23f8fafc'/%3E%3Crect x='28' y='35' width='8' height='9' rx='3' fill='%23e5b293'/%3E%3Cpath d='M22 25 C22 17 26 13 32 13 C38 13 42 17 42 25 C42 32 38 38 32 38 C26 38 22 32 22 25 Z' fill='%23f1c4a7'/%3E%3Cpath d='M20 24 C21 15 26 11 33 11 C39 11 43 15 44 23 C40 18 35 17 29 18 C25 19 22 21 20 24 Z' fill='%23292524'/%3E%3C/svg%3E",
-        tire:"public/images/animado.png"
+        female:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23f0f5ff'/%3E%3Cpath d='M17 26 C17 14 23 9 32 9 C41 9 47 14 47 26 C47 36 45 43 42 46 L22 46 C19 43 17 36 17 26 Z' fill='%23292524'/%3E%3Cpath d='M12 64 C13 48 21 43 32 43 C43 43 51 48 52 64 Z' fill='%231e3a8a'/%3E%3Cpolygon points='25,43 32,55 39,43' fill='%23f8fafc'/%3E%3Crect x='28' y='35' width='8' height='9' rx='3' fill='%23e5b293'/%3E%3Cpath d='M22 25 C22 17 26 13 32 13 C38 13 42 17 42 25 C42 32 38 38 32 38 C26 38 22 32 22 25 Z' fill='%23f1c4a7'/%3E%3Cpath d='M20 24 C21 15 26 11 33 11 C39 11 43 15 44 23 C40 18 35 17 29 18 C25 19 22 21 20 24 Z' fill='%23292524'/%3E%3C/svg%3E"
       };
       function getCurrentUserKey(){
         try{
@@ -444,7 +438,8 @@
             }
           }
         }catch(e){}
-        applyAvatarEverywhere();
+        window.applyAvatarEverywhere = applyAvatarEverywhere;
+      applyAvatarEverywhere();
       }
       function processAvatarFile(file,onDone){
         if(!file||!file.type||!file.type.startsWith('image/'))return;
@@ -485,7 +480,7 @@
       const roleLabel=(sess&&sess.perfil==='vendedor')?'Vendedor':(sess&&sess.perfil==='financeiro')?'Financeiro':'Administrador';
       userEl.classList.add('user');
       if(!userEl.querySelector('.user-menu')){
-        userEl.innerHTML='<span class="user-avatar" aria-hidden="true"></span><span class="user-info"><b>'+displayName+'</b><small>DNFX - COMERCIO DE PNEUS</small></span><div class="user-menu"><div class="user-menu-head"><button type="button" class="user-menu-head-avatar" title="Clique para carregar foto do perfil" aria-label="Carregar foto do perfil"><span class="user-menu-cam-badge" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span></button><div class="user-menu-head-text"><strong>'+displayName+'</strong><span>'+roleLabel+' · Piremaxx</span></div></div><div class="user-menu-avatar-section"><input type="file" accept="image/*" class="user-avatar-file-input" hidden><button type="button" class="user-menu-upload-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Carregar foto do perfil</span></button><div class="user-menu-presets-row"><span class="user-menu-presets-label">Avatar:</span><button type="button" class="avatar-preset-btn" data-avatar-preset="default" title="Avatar Executivo 1" style="background-image:url(&quot;'+AVATAR_PRESETS.default+'&quot;)"></button><button type="button" class="avatar-preset-btn" data-avatar-preset="navy" title="Avatar Executivo 2" style="background-image:url(&quot;'+AVATAR_PRESETS.navy+'&quot;)"></button><button type="button" class="avatar-preset-btn" data-avatar-preset="female" title="Avatar Executiva" style="background-image:url(&quot;'+AVATAR_PRESETS.female+'&quot;)"></button><button type="button" class="avatar-preset-btn" data-avatar-preset="tire" title="Mascote Piremaxx" style="background-image:url(&quot;'+AVATAR_PRESETS.tire+'&quot;)"></button><button type="button" class="avatar-reset-btn" title="Restaurar avatar padrão">Padrão</button></div></div><a href="configuracoes.html#conta"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Minha conta</a><a href="configuracoes.html"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Usuários e Permissões</a><a href="configuracoes.html#novo"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>Novo usuário</a><a href="configuracoes.html"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>Configurações</a><a href="login.html" data-logout-link="1"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>Sair / Trocar usuário</a></div>';
+        userEl.innerHTML='<span class="user-avatar" aria-hidden="true"></span><span class="user-info"><b>'+displayName+'</b><small>DNFX - COMERCIO DE PNEUS</small></span><div class="user-menu"><div class="user-menu-head"><button type="button" class="user-menu-head-avatar" title="Clique para carregar foto do perfil" aria-label="Carregar foto do perfil"><span class="user-menu-cam-badge" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span></button><div class="user-menu-head-text"><strong>'+displayName+'</strong><span>'+roleLabel+' · Piremaxx</span></div></div><div class="user-menu-avatar-section"><input type="file" accept="image/*" class="user-avatar-file-input" hidden><button type="button" class="user-menu-upload-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Carregar foto do perfil</span></button><div class="user-menu-presets-row"><span class="user-menu-presets-label">Avatar:</span><button type="button" class="avatar-preset-btn" data-avatar-preset="default" title="Avatar Executivo 1" style="background-image:url(&quot;'+AVATAR_PRESETS.default+'&quot;)"></button><button type="button" class="avatar-preset-btn" data-avatar-preset="navy" title="Avatar Executivo 2" style="background-image:url(&quot;'+AVATAR_PRESETS.navy+'&quot;)"></button><button type="button" class="avatar-preset-btn" data-avatar-preset="female" title="Avatar Executiva" style="background-image:url(&quot;'+AVATAR_PRESETS.female+'&quot;)"></button><button type="button" class="avatar-reset-btn" title="Restaurar avatar padrão">Padrão</button></div></div><a href="configuracoes.html#conta"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Minha conta</a><a href="configuracoes.html"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Usuários e Permissões</a><a href="configuracoes.html#novo"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>Novo usuário</a><a href="configuracoes.html"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>Configurações</a><a href="#" data-action="open-backup-modal"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></span>💾 Backup e Restauração</a><a href="login.html" data-logout-link="1"><span class="user-menu-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>Sair / Trocar usuário</a></div>';
         const menu=userEl.querySelector('.user-menu');
         const fileInput=menu.querySelector('.user-avatar-file-input');
         fileInput.addEventListener('click',function(ev){ev.stopPropagation();});
@@ -496,8 +491,26 @@
           }
         });
         userEl.addEventListener('click',function(event){
+          const backupLink=event.target.closest('a[data-action="open-backup-modal"]');
+          if(backupLink){
+            event.preventDefault();
+            event.stopPropagation();
+            menu.classList.remove('open');
+            if(typeof window.openBackupModal==='function')window.openBackupModal();
+            return;
+          }
           const logoutLink=event.target.closest('a[data-logout-link]');
-          if(logoutLink){localStorage.removeItem('piremaxx_sessao');return;}
+          if(logoutLink){
+            // Antes de sair, lembra o usuário de fazer o backup (auth-guard.js)
+            if(typeof window.piremaxxRequestLogout==='function'){
+              event.preventDefault();
+              event.stopPropagation();
+              menu.classList.remove('open');
+              window.piremaxxRequestLogout();
+              return;
+            }
+            localStorage.removeItem('piremaxx_sessao');return;
+          }
           if(event.target.closest('.user-menu-upload-btn, .user-menu-head-avatar')){
             event.stopPropagation();
             fileInput.click();
@@ -532,26 +545,64 @@
         avatar.className='user-avatar';
         userEl.insertBefore(avatar,userEl.firstChild);
       }
+      window.applyAvatarEverywhere = applyAvatarEverywhere;
       applyAvatarEverywhere();
     }
   }
+  function isCurrentUserAdmin(){
+    let sess=null;
+    try{sess=JSON.parse(localStorage.getItem('piremaxx_sessao')||'null')}catch(e){}
+    if(!sess)return true;
+    const p=String(sess.perfil||'').toLowerCase().trim();
+    const l=String(sess.permissaoLabel||'').toLowerCase().trim();
+    const n=String(sess.nome||'').toLowerCase().trim();
+    if(p==='admin'||p.includes('admin')||p.includes('administrador')||p.includes('diretor'))return true;
+    if(l.includes('completo')||l.includes('total')||l.includes('admin')||l.includes('administrador'))return true;
+    if(n.includes('odiman')||n.includes('admin'))return true;
+    if(!sess.permissoes||Object.keys(sess.permissoes).length===0)return true;
+    return false;
+  }
+  function ensureBackupLinkInNav(){
+    const nav=sidebar.querySelector('nav')||document.querySelector('aside.sidebar nav');
+    if(!nav)return;
+    let a=nav.querySelector('[data-menu-key="backup"]');
+    if(!a){
+      a=document.createElement('a');
+      a.href='#';
+      a.dataset.menuKey='backup';
+      a.id='menuBtnBackup';
+      a.className='admin-only-feature';
+      a.innerHTML='<span style="display:inline-block;width:16px;margin-right:8px;text-align:center;font-size:14px;line-height:1;">💾</span><b>Backup / Dados</b>';
+      a.onclick=function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        if(typeof window.openBackupModal==='function')window.openBackupModal();
+      };
+      const sup=nav.querySelector('[data-menu-key="suporte"]')||nav.lastElementChild;
+      if(sup)nav.insertBefore(a,sup);
+      else nav.appendChild(a);
+    }
+    const isAdmin=isCurrentUserAdmin();
+    a.style.setProperty('display',isAdmin?'flex':'none','important');
+  }
   function applySessionPermissions(){
+    ensureBackupLinkInNav();
     let sess=null;
     try{sess=JSON.parse(localStorage.getItem('piremaxx_sessao')||'null')}catch(e){}
     if(!sess||sess.perfil==='admin'||!sess.permissoes)return;
     const perms=sess.permissoes;
     sidebar.querySelectorAll('nav a[data-menu-key]').forEach(function(a){
       const key=a.dataset.menuKey;
-      if(key&&Object.prototype.hasOwnProperty.call(perms,key)&&perms[key]===false){
+      if(key&&key!=='backup'&&Object.prototype.hasOwnProperty.call(perms,key)&&perms[key]===false){
         a.style.setProperty('display','none','important');
-      }else{
+      }else if(key!=='backup'){
         a.style.removeProperty('display');
       }
     });
   }
   function render(){
     if(sidebar.dataset.rendered!=='1'||!sidebar.querySelector('[data-menu-key="frota"]')){
-      sidebar.innerHTML='<div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav>'+items.map(x=>'<a class="'+x[4]+' '+(x[0]===active?'active':'')+'" href="'+x[2]+'" data-menu-key="'+x[0]+'"'+(x[0]===active?' aria-current="page"':'')+'><img src="public/icons/'+x[3]+'" alt=""><b>'+x[1]+'</b></a>').join('')+'<a href="#" data-menu-key="suporte"><span>❔</span><b>Suporte online</b></a></nav>';
+      sidebar.innerHTML='<div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav>'+items.map(x=>'<a class="'+x[4]+' '+(x[0]===active?'active':'')+'" href="'+x[2]+'" data-menu-key="'+x[0]+'"'+(x[0]===active?' aria-current="page"':'')+'><img src="public/icons/'+x[3]+'" alt=""><b>'+x[1]+'</b></a>').join('')+'<a href="#" data-menu-key="backup" class="admin-only-feature"><span>💾</span><b>Backup / Dados</b></a><a href="#" data-menu-key="suporte"><span>❔</span><b>Suporte online</b></a></nav>';
       sidebar.dataset.rendered='1';
     }else{
       sidebar.querySelectorAll('nav a[data-menu-key]').forEach(function(a){
@@ -560,6 +611,7 @@
         if(a.dataset.menuKey==='home'){const b=a.querySelector('b');if(b)b.textContent='Indicadores';}
       });
     }
+    ensureBackupLinkInNav();
     applyBrandStyles();
     normalizeTopbar();
     applySessionPermissions();
@@ -2067,8 +2119,8 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
         </div>
         <div class="wa-modal-footer">
           <div class="wa-modal-pdf-actions">
-            <button type="button" class="wa-btn-pdf wa-btn-download-pdf" title="Baixar o arquivo PDF desta venda no seu dispositivo">📄 Baixar PDF</button>
-            <button type="button" class="wa-btn-pdf wa-btn-share-pdf" title="Compartilhar ou anexar o arquivo PDF diretamente">📎 Compartilhar PDF</button>
+            <button type="button" class="wa-btn-pdf wa-btn-download-pdf" title="Abrir e salvar o PDF padrão oficial desta venda">🖨️ Baixar / Imprimir PDF Oficial</button>
+            <button type="button" class="wa-btn-pdf wa-btn-share-pdf" title="Visualizar documento oficial da venda no papel timbrado">👁️ Visualizar Documento</button>
           </div>
           <div class="wa-modal-main-actions">
             <button type="button" class="wa-btn-send">Enviar</button>
@@ -2103,72 +2155,22 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
       }
     });
 
-    const pdfFileName = (isQuote ? 'Orcamento_' : 'Pedido_') + code + '_Piremaxx.pdf';
-
-    btnDownloadPdf.onclick = async function(){
-      const origText = btnDownloadPdf.textContent;
-      btnDownloadPdf.disabled = true;
-      btnDownloadPdf.textContent = '⏳ Gerando PDF...';
+    btnDownloadPdf.onclick = function(){
       try {
-        const saleObj = findSaleDataForPdf(code, opts);
-        const blob = await generateSalePdfBlob(saleObj);
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = pdfFileName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(function(){ URL.revokeObjectURL(blobUrl); }, 10000);
-        btnDownloadPdf.textContent = '✓ PDF Baixado';
-        setTimeout(function(){
-          btnDownloadPdf.textContent = origText;
-          btnDownloadPdf.disabled = false;
-        }, 2000);
-      } catch(_){
-        btnDownloadPdf.textContent = origText;
-        btnDownloadPdf.disabled = false;
+        const printUrl = new URL(openPdfUrl, location.href);
+        printUrl.searchParams.set('print', '1');
+        printUrl.searchParams.set('autoPrint', '1');
+        const w = nativeWindowOpen.call(window, printUrl.href, '_blank');
+        if(!w){
+          location.href = printUrl.href;
+        }
+      } catch(e) {
         nativeWindowOpen.call(window, openPdfUrl, '_blank');
       }
     };
 
-    btnSharePdf.onclick = async function(){
-      const origText = btnSharePdf.textContent;
-      btnSharePdf.disabled = true;
-      btnSharePdf.textContent = '⏳ Preparando...';
-      try {
-        const saleObj = findSaleDataForPdf(code, opts);
-        const blob = await generateSalePdfBlob(saleObj);
-        const file = new File([blob], pdfFileName, { type: 'application/pdf' });
-        const text = (msgBox.innerText || msgBox.textContent || '').trim();
-        if(navigator.canShare && navigator.canShare({ files: [file] })){
-          await navigator.share({
-            title: 'PIREMAXX PNEUS - Pedido #' + code,
-            text: text,
-            files: [file]
-          });
-          btnSharePdf.textContent = origText;
-          btnSharePdf.disabled = false;
-          return;
-        }
-        // Em desktop sem Web Share de arquivos: baixa o PDF automaticamente para anexar no WhatsApp Web
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = pdfFileName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(function(){ URL.revokeObjectURL(blobUrl); }, 10000);
-        btnSharePdf.textContent = '✓ PDF salvo p/ anexar';
-        setTimeout(function(){
-          btnSharePdf.textContent = origText;
-          btnSharePdf.disabled = false;
-        }, 2500);
-      } catch(_){
-        btnSharePdf.textContent = origText;
-        btnSharePdf.disabled = false;
-      }
+    btnSharePdf.onclick = function(){
+      nativeWindowOpen.call(window, openPdfUrl, '_blank');
     };
 
     overlay.querySelector('.wa-btn-send').onclick = function(){
@@ -2434,11 +2436,33 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
     'piremaxx_contas_pagar',
     'localCashBalance',
     'localCashTransactions',
-    'returnReceivableAdjustments'
+    'returnReceivableAdjustments',
+    'piremaxx_usuarios',
+    'piremaxx_avatares',
+    'piremaxx_config_geral'
   ];
 
   const origSetItem = Storage.prototype.setItem.bind(localStorage);
   const origGetItem = Storage.prototype.getItem.bind(localStorage);
+
+  // Época dos dados: quando as planilhas são reimportadas, os dados locais antigos
+  // (clientes, fornecedores, produtos, vendas e derivados) são descartados uma única vez
+  // neste navegador, para que o sistema passe a usar somente os dados novos.
+  const DATA_EPOCH = 'planilhas-2026-11-09';
+  try {
+    if (origGetItem('piremaxx_data_epoch') !== DATA_EPOCH) {
+      ['localSales','localReturns','returnReceivableAdjustments','deletedSaleCodes','deletedSalesCodes','deletedSales',
+       'localProducts','deletedProductCodes','archivedProductCodes','localServices','deletedServiceCodes',
+       'piremaxx_fornecedores','deletedContactCodes','piremaxx_contas_receber'].forEach(function(k){ localStorage.removeItem(k); });
+      try {
+        const keepContacts = JSON.parse(origGetItem('piremaxx_contatos') || '[]').filter(function(c){
+          return !(Array.isArray(c.tipos) ? c.tipos : []).some(function(t){ return t === 'cliente' || t === 'fornecedor'; });
+        });
+        origSetItem('piremaxx_contatos', JSON.stringify(keepContacts));
+      } catch (e) { localStorage.removeItem('piremaxx_contatos'); }
+      origSetItem('piremaxx_data_epoch', DATA_EPOCH);
+    }
+  } catch (e) {}
 
   function extractReceivableSaleCode(r) {
     if (!r) return '';
@@ -2675,15 +2699,49 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
             try {
               const srvSales = JSON.parse(serverVal || '[]');
               const locSales = JSON.parse(localVal || '[]');
+              
+              let maxCodeNum = 0;
+              [...srvSales, ...locSales].forEach(function(s) {
+                const n = Number(s.code);
+                if (!isNaN(n) && n > maxCodeNum) maxCodeNum = n;
+              });
+              if (maxCodeNum < 3477) maxCodeNum = 3477;
+
               const map = new Map();
               (Array.isArray(srvSales) ? srvSales : []).forEach(function(s) {
                 const c = String(s.code || '').trim();
                 if (c && !activeDeletedSales.has(c)) map.set(c, s);
               });
+
+              let localConflictCount = 0;
               (Array.isArray(locSales) ? locSales : []).forEach(function(s) {
-                const c = String(s.code || '').trim();
-                if (c && !activeDeletedSales.has(c)) map.set(c, s);
+                let c = String(s.code || '').trim();
+                if (!c || activeDeletedSales.has(c)) return;
+
+                const existing = map.get(c);
+                if (existing) {
+                  const isSame = String(existing.client || '').trim().toLowerCase() === String(s.client || '').trim().toLowerCase() &&
+                                 Math.abs((Number(existing.total) || 0) - (Number(s.total) || 0)) < 0.05 &&
+                                 String(existing.date || '').trim() === String(s.date || '').trim();
+                  if (!isSame) {
+                    maxCodeNum++;
+                    const oldCode = c;
+                    c = String(maxCodeNum);
+                    s.code = c;
+                    s.conflictReassignedFrom = oldCode;
+                    localConflictCount++;
+                    console.warn('[Sync] Conflito de protocolo resolvido: Venda #' + oldCode + ' de ' + s.client + ' renomeada para #' + c);
+                  }
+                } else if (s.isPendingSync || c.startsWith('OFF-') || c.startsWith('TMP-')) {
+                  maxCodeNum++;
+                  c = String(maxCodeNum);
+                  s.code = c;
+                  delete s.isPendingSync;
+                  localConflictCount++;
+                }
+                map.set(c, s);
               });
+
               const finalSales = Array.from(map.values()).sort(function(a, b) {
                 return (Number(b.code) || 0) - (Number(a.code) || 0);
               });
@@ -2692,8 +2750,54 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
                 origSetItem('localSales', finalStr);
                 updatedAny = true;
               }
-              if (serverVal !== finalStr) {
+              if (serverVal !== finalStr || localConflictCount > 0) {
                 toPush['localSales'] = finalStr;
+              }
+            } catch (e) {}
+            return;
+          }
+          if (k === 'piremaxx_avatares') {
+            try {
+              const locMap = JSON.parse(localVal || '{}');
+              const srvMap = JSON.parse(serverVal || '{}');
+              const mergedMap = Object.assign({}, locMap, srvMap);
+              const mergedStr = JSON.stringify(mergedMap);
+              if (localVal !== mergedStr) {
+                origSetItem('piremaxx_avatares', mergedStr);
+                updatedAny = true;
+                if (typeof window.applyAvatarEverywhere === 'function') {
+                  window.applyAvatarEverywhere();
+                }
+              }
+              if (serverVal !== mergedStr) {
+                toPush['piremaxx_avatares'] = mergedStr;
+              }
+            } catch (e) {}
+            return;
+          }
+          if (k === 'piremaxx_usuarios') {
+            try {
+              const locUsers = JSON.parse(localVal || '[]');
+              const srvUsers = JSON.parse(serverVal || '[]');
+              if (Array.isArray(srvUsers) && srvUsers.length) {
+                const userMap = new Map();
+                srvUsers.forEach(function(u) { if (u && u.login) userMap.set(String(u.login).toLowerCase(), u); });
+                locUsers.forEach(function(u) {
+                  if (u && u.login && !userMap.has(String(u.login).toLowerCase())) {
+                    userMap.set(String(u.login).toLowerCase(), u);
+                  }
+                });
+                const mergedUsers = Array.from(userMap.values());
+                const mergedStr = JSON.stringify(mergedUsers);
+                if (localVal !== mergedStr) {
+                  origSetItem('piremaxx_usuarios', mergedStr);
+                  updatedAny = true;
+                }
+                if (serverVal !== mergedStr) {
+                  toPush['piremaxx_usuarios'] = mergedStr;
+                }
+              } else if (Array.isArray(locUsers) && locUsers.length && !serverVal) {
+                toPush['piremaxx_usuarios'] = localVal;
               }
             } catch (e) {}
             return;
@@ -2742,11 +2846,19 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
             keepalive: true
           }).catch(function(){});
         }
-        if (updatedAny && typeof window.renderContactsTable === 'function') {
-          window.renderContactsTable();
-        }
-        if (typeof window.buildDashboard === 'function') {
-          window.buildDashboard();
+        if (updatedAny) {
+          if (typeof window.renderContactsTable === 'function') {
+            window.renderContactsTable();
+          }
+          if (typeof window.buildDashboard === 'function') {
+            window.buildDashboard();
+          }
+          if (typeof window.reloadSalesFromStorage === 'function') {
+            window.reloadSalesFromStorage();
+          }
+          if (typeof window.applyAvatarEverywhere === 'function') {
+            window.applyAvatarEverywhere();
+          }
         }
       })
       .catch(function(){});
@@ -3147,6 +3259,373 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
   setTimeout(wrapMobileTables, 150);
   setTimeout(wrapMobileTables, 600);
   setTimeout(wrapMobileTables, 1500);
+})();
+
+// =========================================================================
+// SISTEMA DE BACKUP E RESTAURAÇÃO DE DADOS (CONTROLE TOTAL / ADMIN)
+// =========================================================================
+(function(){
+  const BACKUP_STORAGE_KEYS = [
+    'localSales',
+    'piremaxx_contatos',
+    'piremaxx_fornecedores',
+    'deletedContactCodes',
+    'localProducts',
+    'deletedProductCodes',
+    'localServices',
+    'deletedServiceCodes',
+    'piremaxx_compras',
+    'piremaxx_contas_receber',
+    'piremaxx_contas_pagar',
+    'localCashBalance',
+    'localCashTransactions',
+    'returnReceivableAdjustments',
+    'localReturns',
+    'deletedSaleCodes',
+    'deletedSalesCodes',
+    'piremaxx_stock_ledger',
+    'piremaxx_usuarios',
+    'piremaxx_avatares',
+    'piremaxx_config_geral'
+  ];
+
+  function ensureBackupModalStyles() {
+    if (document.getElementById('piremaxx-backup-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'piremaxx-backup-styles';
+    style.textContent = `
+      .pmx-backup-overlay {
+        position: fixed; inset: 0; z-index: 10050;
+        background: rgba(15, 29, 58, 0.6); backdrop-filter: blur(4px);
+        display: flex; align-items: center; justify-content: center;
+        padding: 16px; box-sizing: border-box; animation: pmxConfirmFadeIn 0.18s ease-out;
+      }
+      .pmx-backup-card {
+        width: min(560px, 95vw); max-height: 90vh; overflow-y: auto;
+        background: #fff; border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.32);
+        display: flex; flex-direction: column; overflow: hidden;
+      }
+      .pmx-backup-head {
+        background: #1e3a47; color: #fff; padding: 16px 20px;
+        display: flex; align-items: center; justify-content: space-between;
+      }
+      .pmx-backup-head h3 { margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+      .pmx-backup-close {
+        background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.8;
+      }
+      .pmx-backup-close:hover { opacity: 1; }
+      .pmx-backup-tabs {
+        display: flex; border-bottom: 1px solid #e1e7ea; background: #f4f7f9;
+      }
+      .pmx-backup-tab {
+        flex: 1; padding: 12px 16px; border: none; background: none; font-size: 13px; font-weight: 600;
+        color: #55707d; cursor: pointer; text-align: center; border-bottom: 2px solid transparent;
+      }
+      .pmx-backup-tab.active {
+        color: #0b7285; border-bottom-color: #0b7285; background: #fff;
+      }
+      .pmx-backup-body { padding: 20px; font-size: 13px; color: #334e5b; }
+      .pmx-backup-stats {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 18px;
+      }
+      .pmx-backup-stat-box {
+        background: #f8fafb; border: 1px solid #dde5e8; border-radius: 8px; padding: 10px; text-align: center;
+      }
+      .pmx-backup-stat-val { font-size: 18px; font-weight: bold; color: #1e3a47; }
+      .pmx-backup-stat-lbl { font-size: 11px; color: #6a828e; margin-top: 2px; }
+      .pmx-btn-primary {
+        background: #0b7285; color: #fff; border: none; border-radius: 6px; padding: 11px 18px;
+        font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+      }
+      .pmx-btn-primary:hover { background: #085a69; }
+      .pmx-backup-file-drop {
+        border: 2px dashed #b5c7ce; border-radius: 8px; padding: 22px; text-align: center; background: #fafbfc;
+        cursor: pointer; margin-bottom: 16px; transition: border-color 0.15s;
+      }
+      .pmx-backup-file-drop:hover { border-color: #0b7285; background: #f2f7f9; }
+      .pmx-backup-options { margin: 14px 0; background: #fdfdfe; border: 1px solid #e2e8ea; border-radius: 8px; padding: 12px; }
+      .pmx-backup-opt { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; cursor: pointer; }
+      .pmx-backup-opt:last-child { margin-bottom: 0; }
+      .pmx-backup-opt input { margin-top: 3px; }
+      .pmx-backup-opt div small { display: block; color: #6c8693; font-size: 11px; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function getBackupStats() {
+    let salesCount = 0, contactsCount = 0, productsCount = 0, finCount = 0;
+    try { salesCount = (JSON.parse(localStorage.getItem('localSales') || '[]')).length; } catch(e){}
+    try { contactsCount = (JSON.parse(localStorage.getItem('piremaxx_contatos') || '[]')).length; } catch(e){}
+    try { productsCount = (JSON.parse(localStorage.getItem('localProducts') || '[]')).length; } catch(e){}
+    try { finCount = (JSON.parse(localStorage.getItem('piremaxx_contas_receber') || '[]')).length; } catch(e){}
+    return { salesCount, contactsCount, productsCount, finCount };
+  }
+
+  function downloadBackupFile() {
+    const backupData = {
+      app: 'Piremaxx Gestor',
+      version: '2.0',
+      exportedAt: new Date().toISOString(),
+      timestamp: Date.now(),
+      payload: {}
+    };
+
+    BACKUP_STORAGE_KEYS.forEach(k => {
+      const val = localStorage.getItem(k);
+      if (val !== null) backupData.payload[k] = val;
+    });
+
+    const jsonStr = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const dateStr = [now.getFullYear(), pad(now.getMonth()+1), pad(now.getDate())].join('-') + '_' + pad(now.getHours()) + pad(now.getMinutes());
+    a.href = url;
+    a.download = `backup-piremaxx-${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+    try { localStorage.setItem('piremaxx_last_backup', String(Date.now())); } catch (e) {}
+
+    if (typeof window.appMessage === 'function') {
+      window.appMessage('Arquivo de backup baixado com sucesso!');
+    }
+  }
+  window.piremaxxDownloadBackup = downloadBackupFile;
+
+  function openBackupModal() {
+    let sess = null;
+    try { sess = JSON.parse(localStorage.getItem('piremaxx_sessao') || 'null'); } catch(e){}
+    const isAdmin = !sess || sess.perfil === 'admin' || (sess.permissaoLabel && sess.permissaoLabel.toLowerCase().includes('completo'));
+    if (!isAdmin) {
+      if (typeof window.appMessage === 'function') {
+        window.appMessage('Acesso restrito: Apenas administradores com controle total podem acessar o backup.');
+      }
+      return;
+    }
+
+    ensureBackupModalStyles();
+    const old = document.getElementById('pmxBackupModal');
+    if (old) old.remove();
+
+    const stats = getBackupStats();
+    const overlay = document.createElement('div');
+    overlay.id = 'pmxBackupModal';
+    overlay.className = 'pmx-backup-overlay';
+    overlay.innerHTML = `
+      <div class="pmx-backup-card">
+        <div class="pmx-backup-head">
+          <h3>💾 Backup e Restauração do Sistema</h3>
+          <button type="button" class="pmx-backup-close" aria-label="Fechar">&times;</button>
+        </div>
+        <div class="pmx-backup-tabs">
+          <button type="button" class="pmx-backup-tab active" data-tab="export">📥 Fazer Backup</button>
+          <button type="button" class="pmx-backup-tab" data-tab="import">📤 Restaurar Dados</button>
+        </div>
+        <div class="pmx-backup-body">
+          <div id="pmxTabExport">
+            <p style="margin-top:0; color:#526f7d;">Baixe um arquivo seguro contendo todos os registros de vendas, contatos, compras, produtos, contas a receber e configurações para proteção contra perda de dados.</p>
+            <div class="pmx-backup-stats">
+              <div class="pmx-backup-stat-box"><div class="pmx-backup-stat-val">${stats.salesCount}</div><div class="pmx-backup-stat-lbl">Vendas salvas</div></div>
+              <div class="pmx-backup-stat-box"><div class="pmx-backup-stat-val">${stats.contactsCount}</div><div class="pmx-backup-stat-lbl">Contatos</div></div>
+              <div class="pmx-backup-stat-box"><div class="pmx-backup-stat-val">${stats.productsCount}</div><div class="pmx-backup-stat-lbl">Produtos</div></div>
+              <div class="pmx-backup-stat-box"><div class="pmx-backup-stat-val">${stats.finCount}</div><div class="pmx-backup-stat-lbl">Recebimentos</div></div>
+            </div>
+            <button type="button" class="pmx-btn-primary" id="pmxBtnDownloadBackup">
+              <span>💾</span> Baixar Arquivo de Backup Completo (.json)
+            </button>
+          </div>
+          <div id="pmxTabImport" style="display:none;">
+            <p style="margin-top:0; color:#526f7d;">Selecione um arquivo de backup previamente exportado (.json) para restaurar no sistema.</p>
+            <input type="file" id="pmxBackupFileInput" accept=".json,application/json" style="display:none;">
+            <div class="pmx-backup-file-drop" id="pmxDropZone">
+              <div style="font-size:24px; margin-bottom:4px;">📁</div>
+              <strong id="pmxFileLabel" style="color:#1e3a47;">Clique aqui para selecionar o arquivo de backup</strong>
+              <small style="display:block; color:#859ba5; margin-top:4px;">Suporta arquivos .json gerados pelo Piremaxx</small>
+            </div>
+            <div id="pmxFileInfoBlock" style="display:none; background:#f0f7f9; border:1px solid #c2dbe3; border-radius:6px; padding:10px; margin-bottom:12px;"></div>
+            <div class="pmx-backup-options">
+              <label class="pmx-backup-opt">
+                <input type="radio" name="pmxRestoreMode" value="merge" checked>
+                <div>
+                  <strong>Mesclagem Segura (Recomendado)</strong>
+                  <small>Junta os dados do backup com o sistema atual. Vendas novas feitas na rua ou offline NÃO serão apagadas nem sobrescritas.</small>
+                </div>
+              </label>
+              <label class="pmx-backup-opt">
+                <input type="radio" name="pmxRestoreMode" value="full">
+                <div>
+                  <strong style="color:#b22a2a;">Substituição Completa</strong>
+                  <small>Substitui integralmente o banco pelo backup. Use apenas em caso de restauração após perda total do aparelho.</small>
+                </div>
+              </label>
+            </div>
+            <button type="button" class="pmx-btn-primary" id="pmxBtnApplyRestore" disabled style="opacity:0.6; cursor:not-allowed;">
+              <span>⚡</span> Restaurar Dados Agora
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const closeBtn = overlay.querySelector('.pmx-backup-close');
+    closeBtn.onclick = () => overlay.remove();
+    overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+
+    const tabBtns = overlay.querySelectorAll('.pmx-backup-tab');
+    const tabExport = overlay.querySelector('#pmxTabExport');
+    const tabImport = overlay.querySelector('#pmxTabImport');
+    tabBtns.forEach(btn => {
+      btn.onclick = () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const isExport = btn.dataset.tab === 'export';
+        tabExport.style.display = isExport ? 'block' : 'none';
+        tabImport.style.display = isExport ? 'none' : 'block';
+      };
+    });
+
+    overlay.querySelector('#pmxBtnDownloadBackup').onclick = downloadBackupFile;
+
+    const fileInput = overlay.querySelector('#pmxBackupFileInput');
+    const dropZone = overlay.querySelector('#pmxDropZone');
+    const fileLabel = overlay.querySelector('#pmxFileLabel');
+    const infoBlock = overlay.querySelector('#pmxFileInfoBlock');
+    const restoreBtn = overlay.querySelector('#pmxBtnApplyRestore');
+    let parsedBackup = null;
+
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = function() {
+      if (!this.files || !this.files[0]) return;
+      const file = this.files[0];
+      fileLabel.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const json = JSON.parse(e.target.result);
+          if (!json || typeof json !== 'object' || (!json.payload && !json.localSales)) {
+            throw new Error('Arquivo de backup inválido ou incompatível.');
+          }
+          parsedBackup = json;
+          const payload = json.payload || json;
+          const sCount = payload.localSales ? JSON.parse(payload.localSales || '[]').length : 0;
+          const cCount = payload.piremaxx_contatos ? JSON.parse(payload.piremaxx_contatos || '[]').length : 0;
+          infoBlock.innerHTML = `
+            <strong>Arquivo analisado com sucesso:</strong><br>
+            • Data do arquivo: ${json.exportedAt ? new Date(json.exportedAt).toLocaleString('pt-BR') : 'Data não informada'}<br>
+            • Conteúdo detectado: ${sCount} vendas, ${cCount} contatos.
+          `;
+          infoBlock.style.display = 'block';
+          restoreBtn.disabled = false;
+          restoreBtn.style.opacity = '1';
+          restoreBtn.style.cursor = 'pointer';
+        } catch(err) {
+          alert('Erro ao ler arquivo de backup: ' + err.message);
+          restoreBtn.disabled = true;
+          restoreBtn.style.opacity = '0.6';
+          restoreBtn.style.cursor = 'not-allowed';
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    restoreBtn.onclick = function() {
+      if (!parsedBackup) return;
+      const mode = overlay.querySelector('input[name="pmxRestoreMode"]:checked').value;
+      if (mode === 'full') {
+        const ok = confirm('ATENÇÃO: A substituição completa irá substituir todos os dados atuais do sistema pelo conteúdo do arquivo de backup.\n\nDeseja realmente continuar?');
+        if (!ok) return;
+      }
+
+      const payload = parsedBackup.payload || parsedBackup;
+      const toPushServer = {};
+
+      if (mode === 'full') {
+        BACKUP_STORAGE_KEYS.forEach(k => {
+          if (payload[k] !== undefined) {
+            localStorage.setItem(k, typeof payload[k] === 'string' ? payload[k] : JSON.stringify(payload[k]));
+            toPushServer[k] = localStorage.getItem(k);
+          }
+        });
+      } else {
+        try {
+          const curSales = JSON.parse(localStorage.getItem('localSales') || '[]');
+          const bkpSales = JSON.parse(payload.localSales || '[]');
+          let maxCode = 0;
+          [...curSales, ...bkpSales].forEach(s => {
+            const n = Number(s.code);
+            if (!isNaN(n) && n > maxCode) maxCode = n;
+          });
+          const salesMap = new Map();
+          (Array.isArray(bkpSales) ? bkpSales : []).forEach(s => {
+            const c = String(s.code || '').trim();
+            if (c) salesMap.set(c, s);
+          });
+          (Array.isArray(curSales) ? curSales : []).forEach(s => {
+            let c = String(s.code || '').trim();
+            if (!c) return;
+            const existing = salesMap.get(c);
+            if (existing) {
+              const isSame = String(existing.client || '').trim().toLowerCase() === String(s.client || '').trim().toLowerCase() &&
+                             Math.abs((Number(existing.total) || 0) - (Number(s.total) || 0)) < 0.05;
+              if (!isSame) {
+                maxCode++;
+                c = String(maxCode);
+                s.code = c;
+              }
+            }
+            salesMap.set(c, s);
+          });
+          const mergedSales = Array.from(salesMap.values()).sort((a,b) => (Number(b.code)||0) - (Number(a.code)||0));
+          const salesStr = JSON.stringify(mergedSales);
+          localStorage.setItem('localSales', salesStr);
+          toPushServer['localSales'] = salesStr;
+        } catch(e) {}
+
+        BACKUP_STORAGE_KEYS.forEach(k => {
+          if (k === 'localSales') return;
+          if (payload[k] !== undefined) {
+            const curVal = localStorage.getItem(k);
+            if (!curVal || curVal === '[]' || curVal === '{}') {
+              const valStr = typeof payload[k] === 'string' ? payload[k] : JSON.stringify(payload[k]);
+              localStorage.setItem(k, valStr);
+              toPushServer[k] = valStr;
+            }
+          }
+        });
+      }
+
+      if (Object.keys(toPushServer).length && location.protocol !== 'file:') {
+        fetch('/api/storage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(toPushServer),
+          keepalive: true
+        }).catch(() => {});
+      }
+
+      overlay.remove();
+      if (typeof window.appMessage === 'function') {
+        window.appMessage('Restauração concluída com sucesso! Recarregando...');
+      }
+      setTimeout(() => { location.reload(); }, 1200);
+    };
+  }
+
+  window.openBackupModal = openBackupModal;
+
+  document.addEventListener('click', function(e) {
+    const backupTarget = e.target.closest('[data-menu-key="backup"], [data-action="open-backup-modal"], #menuBtnBackup');
+    if (backupTarget) {
+      e.preventDefault();
+      e.stopPropagation();
+      openBackupModal();
+    }
+  });
 })();
 
 

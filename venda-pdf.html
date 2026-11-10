@@ -170,9 +170,30 @@
       padding: 6px 5px;
     }
   }
+  .pwa-bottom-nav,
+  .mobile-bottom-bar,
+  .mobile-menu-toggle,
+  .mobile-menu-backdrop,
+  .mobile-drawer,
+  #pwaInstallBanner {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
   @media print {
     html, body { background: #fff; }
-    .pdf-toolbar { display: none !important; }
+    .pdf-toolbar,
+    .pwa-bottom-nav,
+    .mobile-bottom-bar,
+    .mobile-menu-toggle,
+    .mobile-menu-backdrop,
+    .mobile-drawer,
+    #pwaInstallBanner {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
     .sheet-wrap {
       margin: 0;
       max-width: none;
@@ -184,6 +205,19 @@
     }
   }
 </style>
+<script>
+  (function() {
+    function removeExtraneous() {
+      document.querySelectorAll('.pwa-bottom-nav, .mobile-bottom-bar, .mobile-menu-toggle, .mobile-menu-backdrop, .mobile-drawer, #pwaInstallBanner').forEach(function(el) {
+        el.remove();
+      });
+    }
+    removeExtraneous();
+    document.addEventListener('DOMContentLoaded', removeExtraneous);
+    window.addEventListener('load', removeExtraneous);
+    new MutationObserver(removeExtraneous).observe(document.documentElement, { childList: true, subtree: true });
+  })();
+</script>
 </head>
 <body>
 <div class="pdf-toolbar">
@@ -200,7 +234,7 @@
   <img class="piremaxx-print-bg" id="letterheadBg" src="public/papel-timbrado.jpg" alt="" crossorigin="anonymous">
   <div id="doc">Carregando documento...</div>
 </div>
-<script src="vendas-importadas.js"></script>
+<script src="vendas-importadas.js?v=planilhas-20261109"></script>
 <script>
 (function(){
   const money = n => Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -294,9 +328,17 @@
       ? '<h2>Observações gerais</h2><div class="notes-box">' + esc(String(sale.notes || sale.observations || '')) + '</div>'
       : '';
 
+    let cfgCabecalho = '';
+    try {
+      const cfg = JSON.parse(localStorage.getItem('piremaxx_config_geral') || 'null');
+      if (cfg && cfg.cabecalho) {
+        cfgCabecalho = cfg.cabecalho.split('\n').filter(Boolean).map(esc).join(' · ');
+      }
+    } catch(e) {}
+
     document.getElementById('doc').innerHTML =
       '<header>' +
-        '<div class="logo">' + esc(docType) + ' #' + esc(sale.code || '') + '<small>PIREMAXX PNEUS · Piremaxx Gestor</small></div>' +
+        '<div class="logo">' + esc(docType) + ' #' + esc(sale.code || '') + '<small>' + (cfgCabecalho || 'PIREMAXX PNEUS · Piremaxx Gestor') + '</small></div>' +
         '<div><b>Protocolo:</b> ' + esc(sale.code || '') + '<br><b>Tipo:</b> ' + esc(docType) + '<br><b>Data:</b> ' + esc(fmtDate(sale.date)) + '</div>' +
       '</header>' +
       '<h2>Dados da ' + esc(docType.toLowerCase()) + '</h2>' +
@@ -321,6 +363,12 @@
   // Renderiza imediatamente com os dados disponíveis e também consulta /api/storage para vendas recém-criadas em outro dispositivo
   const initial = findLocalOrImported(code);
   renderDocument(initial.sale, initial.allRet);
+
+  if (params.get('print') === '1' || params.get('autoPrint') === '1') {
+    setTimeout(function() {
+      window.print();
+    }, 600);
+  }
 
   if (location.protocol !== 'file:') {
     fetch('/api/storage', { cache: 'no-store' })
@@ -546,17 +594,7 @@
   }
 
   document.getElementById('btnDownloadPdf')?.addEventListener('click', function() {
-    if (!currentRenderData) return;
-    const bgImg = document.getElementById('letterheadBg');
-    const blob = buildSalePdfBlob(currentRenderData.sale, bgImg);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Pedido_${currentRenderData.sale.code || 'Venda'}_Piremaxx.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    window.print();
   });
 })();
 </script>

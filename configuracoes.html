@@ -28,7 +28,7 @@
     .config-body { padding: 22px; }
     .categories {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 2px;
       margin-bottom: 0;
     }
@@ -52,23 +52,289 @@
       }
     }
     .categories button {
-      height: 34px;
+      height: 38px;
       border: 0;
-      background: #5e7d89;
+      background: #446171;
       color: #fff;
       text-align: left;
-      padding: 0 12px;
+      padding: 0 14px;
       font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .categories button:hover { background: #37505d; }
+    .categories button.active { background: #00d982 !important; color: #fff !important; }
+    .cat-ico { font-size: 13px; opacity: 0.95; }
+
+    /* Estilos da Guia Configuração Geral (Padrão eGestor) */
+    .config-general-panel {
+      margin-top: 6px;
+    }
+    .config-sub-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #496572;
+      margin: 16px 0 14px 4px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .config-card {
+      background: #fff;
+      border: 1px solid #dfe5e8;
+      border-radius: 4px;
+      padding: 22px 26px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .config-card-head {
+      font-size: 15px;
+      font-weight: 600;
+      color: #557282;
+      margin-bottom: 18px;
+    }
+    .form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-width: 140px;
+    }
+    .form-group label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #5e7a88;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      height: 34px;
+      border: 1px solid #cbd4d8;
+      border-radius: 3px;
+      padding: 0 10px;
+      font-size: 12.5px;
+      color: #344955;
+      background: #fff;
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .form-group textarea {
+      height: auto;
+      min-height: 85px;
+      padding: 8px 10px;
+      line-height: 1.45;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #00d982;
+      box-shadow: 0 0 0 1px #00d982;
+    }
+    .input-with-icon {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+    }
+    .input-with-icon .input-prefix-box {
+      background: #f1f4f6;
+      border: 1px solid #cbd4d8;
+      border-right: 0;
+      border-radius: 3px 0 0 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      min-width: 34px;
+      color: #78909c;
+    }
+    .input-with-icon input, .input-with-icon select {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .btn-autofill {
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid #c9d0d6;
+      border-radius: 4px;
+      background: #fbfbfb;
+      color: #334e68;
+      font-size: 12.5px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-autofill:hover {
+      background: #eef2f5;
+      border-color: #a0aec0;
+      color: #1a365d;
+    }
+    .btn-buscar-correios {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 25px;
+      padding: 0 10px;
+      background: #fbfbfb;
+      border: 1px solid #c9d0d6;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: bold;
+      color: #334e68;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      margin-bottom: 4px;
+      width: fit-content;
+      transition: all 0.15s;
+    }
+    .btn-buscar-correios:hover {
+      background: #eef2f5;
+      border-color: #a0aec0;
+      color: #1a365d;
+    }
+    .chips-input-container {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid #cbd4d8;
+      border-radius: 3px;
+      min-height: 34px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .chips-input-container .input-prefix-box {
+      background: #f1f4f6;
+      border: 0;
+      border-right: 1px solid #cbd4d8;
+      border-radius: 3px 0 0 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      min-width: 34px;
+      color: #78909c;
+    }
+    .chips-content-area {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 3px 6px;
+      flex: 1 1 auto;
+    }
+    .chip-badge {
+      background: #39b54a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: bold;
+      border-radius: 3px;
+      padding: 2px 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.4;
+      user-select: none;
+    }
+    .chip-badge button {
+      background: transparent;
+      border: 0;
+      color: #fff;
+      font-size: 11px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      font-weight: bold;
+      opacity: 0.9;
+    }
+    .chip-badge button:hover {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+    .chip-add-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      flex: 1 1 120px;
+    }
+    .chip-new-input {
+      border: 0 !important;
+      outline: none !important;
+      height: 24px !important;
+      width: 100%;
+      font-size: 12px;
+      padding: 0 4px !important;
+      color: #344955;
+      background: transparent;
+    }
+    .btn-add-chip {
+      height: 22px;
+      width: 22px;
+      min-width: 22px;
+      padding: 0;
+      border: 0;
+      border-radius: 3px;
+      background: #39b54a;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-add-chip:hover {
+      background: #2ea03d;
+    }
+    .cat-soon {
+      font-size: 9.5px;
+      font-weight: normal;
+      color: #b0bec5;
+      margin-left: 4px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .categories button.active .cat-soon {
+      color: #e8f5e9;
+    }
+    .card-footer-action {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 14px;
+      padding-top: 8px;
+    }
+    .btn-egestor-save {
+      height: 36px;
+      padding: 0 28px;
+      border: 0;
+      border-radius: 3px;
+      background: #00d982;
+      color: #fff;
+      font-size: 13px;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.15s;
     }
-    .categories button:hover { background: #4d6974; }
-    .categories button.active { background: #f4bd00; color: #fff; }
+    .btn-egestor-save:hover {
+      background: #00be72;
+    }
     .panel {
       background: #fff;
       border: 1px solid #dfe3e5;
-      border-top: 3px solid #f4bd00;
+      border-top: 3px solid #00d982;
     }
     .toolbar {
       min-height: 62px;
@@ -457,20 +723,281 @@
       <div class="user">ODIMAN COSTA<br><small>DNFX - COMERCIO DE PNEUS ◉</small></div>
     </header>
     <div class="titlebar config-title">
-      <span>Configurações — Gestão de Usuários e Permissões</span>
-      <div>
-        <button type="button" class="tutorial" onclick="openAccount()">▣ Minha Conta</button>
-        <button type="button" class="new" id="topNewUserBtn">⊞ Novo Usuário</button>
-      </div>
+      <span id="configMainTitle">Configurações</span>
     </div>
     <div class="config-body">
       <nav class="categories">
-        <button type="button" data-cat="usuarios" class="active">♟ USUÁRIOS E PERMISSÕES</button>
-        <button type="button" data-cat="conta" onclick="openAccount()">▣ MINHA CONTA</button>
-        <button type="button" data-cat="empresa" id="btnSwitchLogin" onclick="location.href='login.html'">🔒 TELA DE LOGIN / TROCAR USUÁRIO</button>
-        <button type="button" data-cat="auditoria" onclick="location.href='index.html'">▤ INDICADORES E AUDITORIA</button>
+        <button type="button" data-cat="geral" class="active"><span class="cat-ico">⚙</span> GERAL</button>
+        <button type="button" data-cat="plano-contas"><span class="cat-ico">▤</span> PLANO DE CONTAS <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="contas-caixa"><span class="cat-ico">🏛</span> CONTAS CAIXA <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="operacoes"><span class="cat-ico">🛒</span> OPERAÇÕES <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="formas-pgto"><span class="cat-ico">💵</span> FORMAS PGTO <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="boletos"><span class="cat-ico">📄</span> BOLETOS <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="cobrancas"><span class="cat-ico">💳</span> COBRANÇAS <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="fiscal"><span class="cat-ico">📑</span> FISCAL <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="dados-tributarios"><span class="cat-ico">📋</span> DADOS TRIBUTÁRIOS <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="contabil"><span class="cat-ico">💼</span> CONTÁBIL <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="usuarios"><span class="cat-ico">👤</span> USUÁRIOS <span class="cat-soon">(Aba ativa em breve)</span></button>
+        <button type="button" data-cat="api"><span class="cat-ico">☁</span> API <span class="cat-soon">(Aba ativa em breve)</span></button>
       </nav>
-      <section class="panel">
+
+      <!-- Painel de Configuração Geral (Padrão eGestor) -->
+      <section id="panelGeral" class="config-general-panel">
+        <div class="config-sub-title">
+          <span style="font-size:16px;">⚙</span>
+          <strong>Configuração geral</strong>
+        </div>
+
+        <!-- Card 1: Dados gerais da empresa -->
+        <div class="config-card">
+          <div class="config-card-head">Dados gerais da empresa</div>
+          <div class="config-card-body">
+            <!-- CNPJ / CPF e Autopreencher -->
+            <div class="form-row">
+              <div class="form-group" style="flex: 0 0 240px; max-width: 240px;">
+                <label>CNPJ / CPF</label>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                  </div>
+                  <input type="text" id="cfgCnpj" value="39290148000143" placeholder="CNPJ / CPF">
+                </div>
+              </div>
+              <div class="form-group" style="flex:0 0 auto; align-self: flex-end;">
+                <button type="button" class="btn-autofill" id="btnAutopreencherCnpj">Autopreencher</button>
+              </div>
+            </div>
+
+            <!-- Razao Social e Nome Fantasia -->
+            <div class="form-row">
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>Razão Social / Nome</label>
+                <input type="text" id="cfgRazaoSocial" value="DORACI NOGUEIRA FILHO LTDA">
+              </div>
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>Nome Fantasia</label>
+                <input type="text" id="cfgNomeFantasia" value="DNFX - COMERCIO DE PNEUS">
+              </div>
+            </div>
+
+            <!-- Inscrição Estadual, Municipal e CNAE -->
+            <div class="form-row">
+              <div class="form-group" style="flex: 1 1 200px;">
+                <label>Inscrição Estadual</label>
+                <input type="text" id="cfgInscricaoEstadual" value="11846840">
+              </div>
+              <div class="form-group" style="flex: 1 1 200px;">
+                <label>Inscrição Municipal</label>
+                <input type="text" id="cfgInscricaoMunicipal" value="">
+              </div>
+              <div class="form-group" style="flex: 1 1 200px;">
+                <label>CNAE principal</label>
+                <input type="text" id="cfgCnaePrincipal" value="4530702">
+              </div>
+            </div>
+
+            <!-- Telefones e E-mails com Chips Excluir (x) e Adição Múltipla -->
+            <div class="form-row">
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>Telefones</label>
+                <div class="chips-input-container" id="cfgTelefonesContainer">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                  </div>
+                  <div class="chips-content-area">
+                    <div class="chips-list" id="cfgTelefonesList"></div>
+                    <div class="chip-add-wrapper">
+                      <input type="text" class="chip-new-input" id="cfgTelefoneInput" placeholder="+ telefone">
+                      <button type="button" class="btn-add-chip" id="btnAddPhone" title="Adicionar telefone">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>E-mails</label>
+                <div class="chips-input-container" id="cfgEmailsContainer">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                  </div>
+                  <div class="chips-content-area">
+                    <div class="chips-list" id="cfgEmailsList"></div>
+                    <div class="chip-add-wrapper">
+                      <input type="email" class="chip-new-input" id="cfgEmailInput" placeholder="+ e-mail">
+                      <button type="button" class="btn-add-chip" id="btnAddEmail" title="Adicionar e-mail">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CEP (com Botão Buscar nos Correios), Estado e Cidade -->
+            <div class="form-row" style="align-items: flex-end;">
+              <div class="form-group" style="flex: 0 0 190px; max-width: 190px;">
+                <label style="margin-bottom: 2px;">CEP</label>
+                <button type="button" class="btn-buscar-correios" id="btnBuscarCep">Buscar nos Correios</button>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                      <text x="1" y="7" font-size="6.5" font-weight="bold" fill="currentColor">1</text>
+                      <line x1="6.5" y1="5.5" x2="22" y2="5.5" stroke="currentColor" stroke-width="1.8"/>
+                      <text x="1" y="13.5" font-size="6.5" font-weight="bold" fill="currentColor">2</text>
+                      <line x1="6.5" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="1.8"/>
+                      <text x="1" y="20" font-size="6.5" font-weight="bold" fill="currentColor">3</text>
+                      <line x1="6.5" y1="18.5" x2="22" y2="18.5" stroke="currentColor" stroke-width="1.8"/>
+                    </svg>
+                  </div>
+                  <input type="text" id="cfgCep" value="21011130" placeholder="21011130" style="text-align: right; padding-right: 12px; font-weight: 500;">
+                </div>
+              </div>
+              <div class="form-group" style="flex: 0 0 140px; max-width: 140px;">
+                <label>Estado</label>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                  </div>
+                  <select id="cfgEstado">
+                    <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ" selected>RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="flex: 1 1 240px;">
+                <label>Cidade</label>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                  </div>
+                  <input type="text" id="cfgCidade" value="Rio de Janeiro">
+                </div>
+              </div>
+            </div>
+
+            <!-- Endereço -->
+            <div class="form-row">
+              <div class="form-group" style="flex: 1 1 100%;">
+                <label>Endereço (rua, avenida, etc)</label>
+                <input type="text" id="cfgEndereco" value="RUA OURIQUE">
+              </div>
+            </div>
+
+            <!-- Número, Complemento, Bairro -->
+            <div class="form-row">
+              <div class="form-group" style="flex: 0 0 130px; max-width: 130px;">
+                <label>Número</label>
+                <input type="text" id="cfgNumero" value="00261">
+              </div>
+              <div class="form-group" style="flex: 1 1 260px;">
+                <label>Complemento</label>
+                <input type="text" id="cfgComplemento" value="GALPÃO">
+              </div>
+              <div class="form-group" style="flex: 1 1 300px;">
+                <label>Bairro</label>
+                <input type="text" id="cfgBairro" value="PENHA CIRCULAR">
+              </div>
+            </div>
+
+            <div class="card-footer-action">
+              <button type="button" class="btn-egestor-save" data-action="save-config">Salvar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Dados fiscais -->
+        <div class="config-card">
+          <div class="config-card-head">Dados fiscais</div>
+          <div class="config-card-body">
+            <div class="form-row">
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>Principal atividade</label>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                  </div>
+                  <select id="cfgPrincipalAtividade">
+                    <option value="Comércio" selected>Comércio</option>
+                    <option value="Serviços">Serviços</option>
+                    <option value="Indústria">Indústria</option>
+                    <option value="Comércio e Serviços">Comércio e Serviços</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>Cód. Regime Tributário Serviços</label>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                  </div>
+                  <select id="cfgRegimeServicos">
+                    <option value="Microempresário e Empresa de Pequeno Porte" selected>Microempresário e Empresa de Pequeno Porte</option>
+                    <option value="Nenhum">Nenhum</option>
+                    <option value="Estimativa">Estimativa</option>
+                    <option value="Sociedade de Profissionais">Sociedade de Profissionais</option>
+                    <option value="Cooperativa">Cooperativa</option>
+                    <option value="Microempresário Individual (MEI)">Microempresário Individual (MEI)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>Cód. do Regime Tributário Produtos</label>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+                  </div>
+                  <select id="cfgRegimeProdutos">
+                    <option value="Simples Nacional" selected>Simples Nacional</option>
+                    <option value="Simples Nacional - excesso de sublimite">Simples Nacional - excesso de sublimite</option>
+                    <option value="Regime Normal">Regime Normal (Lucro Presumido / Real)</option>
+                    <option value="MEI">MEI</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="flex: 1 1 320px;">
+                <label>Alíquota do Simples Nacional</label>
+                <div class="input-with-icon">
+                  <div class="input-prefix-box" style="font-size:12px; font-weight:bold; color:#78909c;">%</div>
+                  <input type="text" id="cfgAliquotaSimples" value="4,00">
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer-action">
+              <button type="button" class="btn-egestor-save" data-action="save-config">Salvar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Dados para impressão (Sem modificação de logomarca, apenas edição do cabeçalho) -->
+        <div class="config-card">
+          <div class="config-card-head">Dados para impressão</div>
+          <div class="config-card-body">
+            <div class="form-row">
+              <div class="form-group" style="flex: 1 1 100%;">
+                <label>Cabeçalho</label>
+                <textarea id="cfgCabecalho" rows="4">PIREMAXX PNEUS
+Rua Ourique 261 - Penha Circular
+Telefones: (21) 3881-1891 / (21) 97015-0852 / (21) 99103-4591
+E-mail: contato@piremaxx.com.br</textarea>
+              </div>
+            </div>
+
+            <div class="form-row" style="margin-top: 10px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:#496572; cursor:pointer;">
+                <input type="checkbox" id="cfgPrefixoSufixoRelatorios" checked style="width:16px; height:16px; accent-color:#00d982;">
+                Mostrar prefixos e sufixos (R$ e %) em relatórios
+              </label>
+            </div>
+
+            <div class="card-footer-action">
+              <button type="button" class="btn-egestor-save" data-action="save-config">Salvar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Painel de Usuários e Permissões (Existente) -->
+      <section id="panelUsuarios" class="panel" style="display:none;">
         <div class="toolbar">
           <div class="toolbar-left">
             <button type="button" class="new" id="btnNewUser">⊞ Novo usuário</button>
@@ -1234,9 +1761,320 @@
         input.focus();
       });
 
-      renderTable();
-      if (location.hash === '#conta') setTimeout(window.openAccount, 30);
-      if (location.hash === '#novo') setTimeout(function(){ openUserModal(null); }, 30);
+      function switchCategory(cat) {
+        if (cat !== 'geral') {
+          showToast('Esta aba estará ativa em breve.');
+          return;
+        }
+        document.querySelectorAll('.categories button').forEach(function(btn){
+          btn.classList.toggle('active', btn.dataset.cat === 'geral');
+        });
+        var panelGeral = document.getElementById('panelGeral');
+        var panelUsuarios = document.getElementById('panelUsuarios');
+        var mainTitle = document.getElementById('configMainTitle');
+        if (panelGeral) panelGeral.style.display = 'block';
+        if (panelUsuarios) panelUsuarios.style.display = 'none';
+        if (mainTitle) mainTitle.textContent = 'Configurações';
+      }
+
+      document.querySelector('.categories')?.addEventListener('click', function(e){
+        var btn = e.target.closest('button[data-cat]');
+        if (!btn) return;
+        switchCategory(btn.dataset.cat);
+      });
+
+      document.getElementById('btnTutorials')?.addEventListener('click', function(){
+        alert('Configurações Gerais do Sistema:\n\n• Dados da Empresa: Razão social, CNPJ, telefones, e-mails e endereço.\n• Dados Fiscais: Atividade, regimes e alíquota.\n• Impressão: Cabeçalho personalizado para pedidos de venda e relatórios.\n\nClique em "Salvar" no final de qualquer seção para gravar as alterações.');
+      });
+      document.getElementById('topActionBtn')?.addEventListener('click', function(){
+        showToast('Esta opção estará ativa em breve.');
+      });
+
+      // Configuração Geral (Padrão eGestor)
+      var generalConfig = {
+        cnpj: '39290148000143',
+        razaoSocial: 'DORACI NOGUEIRA FILHO LTDA',
+        nomeFantasia: 'DNFX - COMERCIO DE PNEUS',
+        inscricaoEstadual: '11846840',
+        inscricaoMunicipal: '',
+        cnaePrincipal: '4530702',
+        telefones: ['21970150852', '2138811891', '21991034591'],
+        emails: ['diego.miranda@piremaxx.com.br', 'contato@piremaxx.com.br'],
+        cep: '21011130',
+        estado: 'RJ',
+        cidade: 'Rio de Janeiro',
+        endereco: 'RUA OURIQUE',
+        numero: '00261',
+        complemento: 'GALPÃO',
+        bairro: 'PENHA CIRCULAR',
+        principalAtividade: 'Comércio',
+        regimeServicos: 'Microempresário e Empresa de Pequeno Porte',
+        regimeProdutos: 'Simples Nacional',
+        aliquotaSimples: '4,00',
+        cabecalho: 'PIREMAXX PNEUS\nRua Ourique 261 - Penha Circular\nTelefones: (21) 3881-1891 / (21) 97015-0852 / (21) 99103-4591\nE-mail: contato@piremaxx.com.br',
+        prefixoSufixoRelatorios: true
+      };
+
+      function renderPhoneChips() {
+        var list = document.getElementById('cfgTelefonesList');
+        if (!list) return;
+        list.innerHTML = (generalConfig.telefones || []).map(function(t, idx){
+          return '<span class="chip-badge">' + escapeHtml(t) + ' <button type="button" data-del-phone="' + idx + '" title="Excluir telefone">x</button></span>';
+        }).join('');
+      }
+
+      function renderEmailChips() {
+        var list = document.getElementById('cfgEmailsList');
+        if (!list) return;
+        list.innerHTML = (generalConfig.emails || []).map(function(m, idx){
+          return '<span class="chip-badge">' + escapeHtml(m) + ' <button type="button" data-del-email="' + idx + '" title="Excluir e-mail">x</button></span>';
+        }).join('');
+      }
+
+      function addPhoneFromInput() {
+        var input = document.getElementById('cfgTelefoneInput');
+        if (!input) return;
+        var val = input.value.trim().replace(/[^\d()+\-\s]/g, '');
+        if (val) {
+          generalConfig.telefones = generalConfig.telefones || [];
+          generalConfig.telefones.push(val);
+          renderPhoneChips();
+          input.value = '';
+          input.focus();
+        }
+      }
+
+      function addEmailFromInput() {
+        var input = document.getElementById('cfgEmailInput');
+        if (!input) return;
+        var val = input.value.trim().toLowerCase();
+        if (val) {
+          generalConfig.emails = generalConfig.emails || [];
+          generalConfig.emails.push(val);
+          renderEmailChips();
+          input.value = '';
+          input.focus();
+        }
+      }
+
+      function loadGeneralConfig() {
+        try {
+          var raw = localStorage.getItem('piremaxx_config_geral');
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            generalConfig = Object.assign({}, generalConfig, parsed);
+          }
+        } catch(e) {}
+
+        if (document.getElementById('cfgCnpj')) document.getElementById('cfgCnpj').value = generalConfig.cnpj || '';
+        if (document.getElementById('cfgRazaoSocial')) document.getElementById('cfgRazaoSocial').value = generalConfig.razaoSocial || '';
+        if (document.getElementById('cfgNomeFantasia')) document.getElementById('cfgNomeFantasia').value = generalConfig.nomeFantasia || '';
+        if (document.getElementById('cfgInscricaoEstadual')) document.getElementById('cfgInscricaoEstadual').value = generalConfig.inscricaoEstadual || '';
+        if (document.getElementById('cfgInscricaoMunicipal')) document.getElementById('cfgInscricaoMunicipal').value = generalConfig.inscricaoMunicipal || '';
+        if (document.getElementById('cfgCnaePrincipal')) document.getElementById('cfgCnaePrincipal').value = generalConfig.cnaePrincipal || '';
+        if (document.getElementById('cfgCep')) document.getElementById('cfgCep').value = generalConfig.cep || '';
+        if (document.getElementById('cfgEstado')) document.getElementById('cfgEstado').value = generalConfig.estado || 'RJ';
+        if (document.getElementById('cfgCidade')) document.getElementById('cfgCidade').value = generalConfig.cidade || '';
+        if (document.getElementById('cfgEndereco')) document.getElementById('cfgEndereco').value = generalConfig.endereco || '';
+        if (document.getElementById('cfgNumero')) document.getElementById('cfgNumero').value = generalConfig.numero || '';
+        if (document.getElementById('cfgComplemento')) document.getElementById('cfgComplemento').value = generalConfig.complemento || '';
+        if (document.getElementById('cfgBairro')) document.getElementById('cfgBairro').value = generalConfig.bairro || '';
+        if (document.getElementById('cfgPrincipalAtividade')) document.getElementById('cfgPrincipalAtividade').value = generalConfig.principalAtividade || 'Comércio';
+        if (document.getElementById('cfgRegimeServicos')) document.getElementById('cfgRegimeServicos').value = generalConfig.regimeServicos || 'Microempresário e Empresa de Pequeno Porte';
+        if (document.getElementById('cfgRegimeProdutos')) document.getElementById('cfgRegimeProdutos').value = generalConfig.regimeProdutos || 'Simples Nacional';
+        if (document.getElementById('cfgAliquotaSimples')) document.getElementById('cfgAliquotaSimples').value = generalConfig.aliquotaSimples || '4,00';
+        if (document.getElementById('cfgCabecalho')) document.getElementById('cfgCabecalho').value = generalConfig.cabecalho || '';
+        if (document.getElementById('cfgPrefixoSufixoRelatorios')) document.getElementById('cfgPrefixoSufixoRelatorios').checked = generalConfig.prefixoSufixoRelatorios !== false;
+
+        renderPhoneChips();
+        renderEmailChips();
+      }
+
+      function saveGeneralConfig() {
+        generalConfig.cnpj = (document.getElementById('cfgCnpj')?.value || '').trim();
+        generalConfig.razaoSocial = (document.getElementById('cfgRazaoSocial')?.value || '').trim();
+        generalConfig.nomeFantasia = (document.getElementById('cfgNomeFantasia')?.value || '').trim();
+        generalConfig.inscricaoEstadual = (document.getElementById('cfgInscricaoEstadual')?.value || '').trim();
+        generalConfig.inscricaoMunicipal = (document.getElementById('cfgInscricaoMunicipal')?.value || '').trim();
+        generalConfig.cnaePrincipal = (document.getElementById('cfgCnaePrincipal')?.value || '').trim();
+        generalConfig.cep = (document.getElementById('cfgCep')?.value || '').trim();
+        generalConfig.estado = (document.getElementById('cfgEstado')?.value || 'RJ').trim();
+        generalConfig.cidade = (document.getElementById('cfgCidade')?.value || '').trim();
+        generalConfig.endereco = (document.getElementById('cfgEndereco')?.value || '').trim();
+        generalConfig.numero = (document.getElementById('cfgNumero')?.value || '').trim();
+        generalConfig.complemento = (document.getElementById('cfgComplemento')?.value || '').trim();
+        generalConfig.bairro = (document.getElementById('cfgBairro')?.value || '').trim();
+        generalConfig.principalAtividade = (document.getElementById('cfgPrincipalAtividade')?.value || 'Comércio').trim();
+        generalConfig.regimeServicos = (document.getElementById('cfgRegimeServicos')?.value || '').trim();
+        generalConfig.regimeProdutos = (document.getElementById('cfgRegimeProdutos')?.value || 'Simples Nacional').trim();
+        generalConfig.aliquotaSimples = (document.getElementById('cfgAliquotaSimples')?.value || '4,00').trim();
+        generalConfig.cabecalho = (document.getElementById('cfgCabecalho')?.value || '').trim();
+        generalConfig.prefixoSufixoRelatorios = document.getElementById('cfgPrefixoSufixoRelatorios') ? document.getElementById('cfgPrefixoSufixoRelatorios').checked : true;
+
+        var jsonStr = JSON.stringify(generalConfig);
+        localStorage.setItem('piremaxx_config_geral', jsonStr);
+
+        try {
+          fetch('/api/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: 'piremaxx_config_geral', data: jsonStr })
+          });
+        } catch(e) {}
+
+        showToast('Configurações salvas com sucesso!');
+      }
+
+      document.addEventListener('click', function(e){
+        var saveBtn = e.target.closest('[data-action="save-config"]');
+        if (saveBtn) {
+          e.preventDefault();
+          saveGeneralConfig();
+        }
+      });
+
+      // Telefones handlers
+      document.getElementById('cfgTelefonesContainer')?.addEventListener('click', function(e){
+        var delBtn = e.target.closest('[data-del-phone]');
+        if (delBtn) {
+          var idx = Number(delBtn.dataset.delPhone);
+          generalConfig.telefones.splice(idx, 1);
+          renderPhoneChips();
+        }
+      });
+      document.getElementById('btnAddPhone')?.addEventListener('click', addPhoneFromInput);
+      document.getElementById('cfgTelefoneInput')?.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ',' || e.key === 'Tab') {
+          if (this.value.trim()) {
+            e.preventDefault();
+            addPhoneFromInput();
+          }
+        }
+      });
+
+      // E-mails handlers
+      document.getElementById('cfgEmailsContainer')?.addEventListener('click', function(e){
+        var delBtn = e.target.closest('[data-del-email]');
+        if (delBtn) {
+          var idx = Number(delBtn.dataset.delEmail);
+          generalConfig.emails.splice(idx, 1);
+          renderEmailChips();
+        }
+      });
+      document.getElementById('btnAddEmail')?.addEventListener('click', addEmailFromInput);
+      document.getElementById('cfgEmailInput')?.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ',' || e.key === 'Tab') {
+          if (this.value.trim()) {
+            e.preventDefault();
+            addEmailFromInput();
+          }
+        }
+      });
+
+      // Busca CEP Correios (Mesma lógica de cadastro de novo fornecedor / novo-cliente.html)
+      var cepInput = document.getElementById('cfgCep');
+      var btnBuscarCep = document.getElementById('btnBuscarCep');
+      async function doSearchCep() {
+        if (!cepInput || !btnBuscarCep) return;
+        var value = cepInput.value.replace(/\D/g, '');
+        if (value.length !== 8) return;
+        btnBuscarCep.disabled = true;
+        btnBuscarCep.textContent = 'Buscando...';
+        try {
+          var r = await fetch('https://viacep.com.br/ws/' + value + '/json/');
+          var d = await r.json();
+          if (d.erro) {
+            btnBuscarCep.textContent = 'CEP não encontrado';
+            return;
+          }
+          if (document.getElementById('cfgEstado')) document.getElementById('cfgEstado').value = d.uf || '';
+          if (document.getElementById('cfgCidade')) document.getElementById('cfgCidade').value = d.localidade || '';
+          if (document.getElementById('cfgEndereco')) document.getElementById('cfgEndereco').value = (d.logradouro || '').toUpperCase();
+          if (document.getElementById('cfgBairro')) document.getElementById('cfgBairro').value = (d.bairro || '').toUpperCase();
+          btnBuscarCep.textContent = 'Endereço preenchido';
+        } catch(e) {
+          btnBuscarCep.textContent = 'Consultar CEP';
+        } finally {
+          btnBuscarCep.disabled = false;
+          setTimeout(function(){
+            if (btnBuscarCep) btnBuscarCep.textContent = 'Buscar nos Correios';
+          }, 1800);
+        }
+      }
+      if (btnBuscarCep) btnBuscarCep.onclick = doSearchCep;
+      if (cepInput) {
+        cepInput.addEventListener('blur', doSearchCep);
+        cepInput.addEventListener('keydown', function(e){
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            doSearchCep();
+          }
+        });
+      }
+
+      // Autopreencher CNPJ (Mesma lógica de cadastro de novo fornecedor / novo-cliente.html)
+      var cnpjInput = document.getElementById('cfgCnpj');
+      var btnAutopreencherCnpj = document.getElementById('btnAutopreencherCnpj');
+      async function doAutopreencherCnpj(showAlert) {
+        if (!cnpjInput || !btnAutopreencherCnpj) return;
+        var digits = cnpjInput.value.replace(/\D/g, '');
+        if (digits.length !== 14) {
+          if (showAlert) alert('Informe um CNPJ válido com 14 dígitos.');
+          return;
+        }
+        btnAutopreencherCnpj.disabled = true;
+        btnAutopreencherCnpj.textContent = 'Consultando...';
+        try {
+          var response = await fetch('https://brasilapi.com.br/api/cnpj/v1/' + digits);
+          if (!response.ok) throw new Error('CNPJ não encontrado');
+          var data = await response.json();
+
+          if (document.getElementById('cfgRazaoSocial')) document.getElementById('cfgRazaoSocial').value = data.razao_social || '';
+          if (document.getElementById('cfgNomeFantasia')) document.getElementById('cfgNomeFantasia').value = data.nome_fantasia || '';
+          if (document.getElementById('cfgCnaePrincipal') && data.cnae_fiscal) document.getElementById('cfgCnaePrincipal').value = data.cnae_fiscal;
+
+          var tel = data.ddd_telefone_1 || data.ddd_telefone_2 || '';
+          if (tel) {
+            var cleanTel = tel.replace(/\D/g, '');
+            if (cleanTel && !generalConfig.telefones.includes(cleanTel)) {
+              generalConfig.telefones.push(cleanTel);
+              renderPhoneChips();
+            }
+          }
+
+          var em = (data.email || '').trim().toLowerCase();
+          if (em && !generalConfig.emails.includes(em)) {
+            generalConfig.emails.push(em);
+            renderEmailChips();
+          }
+
+          if (cepInput && data.cep) cepInput.value = data.cep;
+          if (document.getElementById('cfgEndereco') && data.logradouro) document.getElementById('cfgEndereco').value = data.logradouro.toUpperCase();
+          if (document.getElementById('cfgNumero') && data.numero) document.getElementById('cfgNumero').value = data.numero;
+          if (document.getElementById('cfgComplemento') && data.complemento) document.getElementById('cfgComplemento').value = data.complemento.toUpperCase();
+          if (document.getElementById('cfgBairro') && data.bairro) document.getElementById('cfgBairro').value = data.bairro.toUpperCase();
+          if (document.getElementById('cfgEstado') && data.uf) document.getElementById('cfgEstado').value = data.uf.toUpperCase();
+          if (document.getElementById('cfgCidade') && data.municipio) document.getElementById('cfgCidade').value = data.municipio;
+
+          if (showAlert) alert('Dados do CNPJ preenchidos com sucesso.');
+        } catch(e) {
+          if (showAlert) alert('Não foi possível consultar este CNPJ. Verifique os números e tente novamente.');
+        } finally {
+          btnAutopreencherCnpj.disabled = false;
+          btnAutopreencherCnpj.textContent = 'Autopreencher';
+        }
+      }
+      if (btnAutopreencherCnpj) btnAutopreencherCnpj.onclick = function(){ doAutopreencherCnpj(true); };
+      if (cnpjInput) {
+        cnpjInput.addEventListener('keydown', function(e){
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            doAutopreencherCnpj(true);
+          }
+        });
+      }
+
+      loadGeneralConfig();
     })();
   </script>
 </body>

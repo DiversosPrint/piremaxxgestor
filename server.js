@@ -53,7 +53,7 @@ function buildCanonicalSidebar(pageName) {
   const links = menuItems.map(x =>
     `<a class="${x[4]} ${x[0] === active ? 'active' : ''}" href="${x[2]}" data-menu-key="${x[0]}"><img src="public/icons/${x[3]}" alt=""><b>${x[1]}</b></a>`
   ).join('');
-  return `<aside class="sidebar shared-sidebar" data-rendered="1"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav>${links}<a href="#" data-menu-key="suporte"><span>❔</span><b>Suporte online</b></a></nav></aside>`;
+  return `<aside class="sidebar shared-sidebar" data-rendered="1"><div class="brand"><strong>egestor<span>+</span></strong><small>Plano profissional</small></div><nav>${links}<a href="#" data-menu-key="backup" class="admin-only-feature"><span>💾</span><b>Backup / Dados</b></a><a href="#" data-menu-key="suporte"><span>❔</span><b>Suporte online</b></a></nav></aside>`;
 }
 
 const criticalFirstPaintCSS = `<style id="standard-layout-first-paint">.hidden{display:none!important}@media screen and (min-width: 769px){body .sidebar.shared-sidebar,body .sidebar{position:fixed!important;top:0!important;left:0!important;width:143px!important;min-width:143px!important;height:100vh!important;min-height:100vh!important;z-index:90!important;background:#344952!important}body .sidebar.shared-sidebar .brand,body .sidebar .brand{display:block!important;visibility:visible!important;width:143px!important;height:49px!important;min-height:49px!important;background-color:#eee!important;background-image:url("public/logo.webp")!important;background-position:center center!important;background-repeat:no-repeat!important;background-size:auto 26px!important;font-size:0!important;color:transparent!important;padding:0!important;margin:0!important}body .topbar .brand-mini,body .products-topbar .brand-mini{display:block!important;width:133px!important;min-width:133px!important;height:49px!important;min-height:49px!important;background-image:url("public/logo.png")!important;background-position:center center!important;background-repeat:no-repeat!important;background-size:auto 26px!important;font-size:0!important;color:transparent!important}body .sidebar.shared-sidebar nav a,body .sidebar nav a{height:31px!important;min-height:31px!important;display:flex!important;align-items:center!important;padding:9px 13px!important;color:#fff!important;text-decoration:none!important;font-size:12px!important;line-height:13px!important}body .sidebar.shared-sidebar nav a>img,body .sidebar nav a>img{width:16px!important;height:16px!important;max-width:16px!important;max-height:16px!important;object-fit:contain!important;margin-right:8px!important}body .sidebar.shared-sidebar nav a>span,body .sidebar nav a>span{width:16px!important;margin-right:8px!important;text-align:center!important}body .sidebar.shared-sidebar nav a b,body .sidebar nav a b{margin-left:0!important}body .sidebar.shared-sidebar nav a.active,body .sidebar.shared-sidebar nav a:hover,body .sidebar nav a.active,body .sidebar nav a:hover{background:#263840!important}body main{margin-left:143px!important;width:calc(100% - 143px)!important;padding:0!important;padding-top:98px!important}body main>.topbar,body main>.products-topbar{position:fixed!important;left:143px!important;top:0!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;padding:0 10px!important;z-index:85!important;background:#eee!important;display:flex!important;align-items:center!important}body main>.titlebar,body main>.clients-title,body main>.purchase-header,body main>.dashboard-title,body main>.finance-title,body main>.fleet-title,body main>.products-title,body main>.reports-title,body main>.config-title{position:fixed!important;left:143px!important;top:49px!important;width:calc(100% - 143px)!important;height:49px!important;min-height:49px!important;z-index:80!important;background-color:#5e7d89!important;background-image:none!important;opacity:1!important}body .finance-form-overlay,body .transfer-form-overlay,body .recurrence-form-overlay,body .receipt-form-overlay,body .receipt-history-overlay,body .conciliation-upload-overlay,body .new-purchase,body .stock-adjust-modal,body .account-modal{left:143px!important;top:49px!important;right:0!important;bottom:0!important;width:calc(100% - 143px)!important;height:calc(100vh - 49px)!important;z-index:82!important}body .client-tabs{display:flex!important;align-items:flex-start!important;height:38px!important;min-height:38px!important;border-bottom:1px solid #20a9a8!important;margin:0!important}body .client-tabs button{height:38px!important;min-height:38px!important;box-sizing:border-box!important;padding:10px 16px!important;margin:0 4px 0 0!important;font-size:12px!important;line-height:18px!important;border-radius:4px 4px 0 0!important}}body .sales-tab-icon,body .finance-tab-icon,body .purchase-tab-icon,body .client-tabs button img,body .product-tabs button img{width:15px!important;height:15px!important;max-width:15px!important;max-height:15px!important;object-fit:contain!important;flex:0 0 15px!important}body .local-action-icon,body .finance-action-icon,body .purchase-action-icon,body .toolbar-icon{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important;object-fit:contain!important}</style>`;
@@ -75,6 +75,33 @@ function writeServerDB(data) {
 
 const server = http.createServer((req, res) => {
   const requested = decodeURIComponent((req.url || '/').split('?')[0]);
+
+  if (requested === '/api/next-protocol') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+    const db = readServerDB();
+    let max = 0;
+    try {
+      const sales = JSON.parse(db.localSales || '[]');
+      if (Array.isArray(sales)) {
+        sales.forEach(s => {
+          const num = Number(s.code);
+          if (!isNaN(num) && num > max) max = num;
+        });
+      }
+    } catch(e) {}
+    if (max < 3477) max = 3477;
+    const nextCode = String(max + 1);
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify({ ok: true, nextCode: nextCode, maxCode: max }));
+    return;
+  }
 
   if (requested === '/api/storage') {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -113,7 +140,7 @@ const server = http.createServer((req, res) => {
     }
   }
 
-  const relative = requested === '/' ? '/index.html' : requested;
+  const relative = requested === '/' ? '/login.html' : requested;
   const file = path.resolve(root, `.${relative}`);
 
   if (!file.startsWith(root + path.sep) && file !== root) {
@@ -140,11 +167,17 @@ const server = http.createServer((req, res) => {
           return;
         }
         let body = html;
-        if (baseName !== 'login.html') {
+        if (!['login.html', 'venda-pdf.html', 'offline.html'].includes(baseName) && !body.includes('auth-guard.js')) {
+          // Controle de sessão (login obrigatório, bloqueio por inatividade e aviso de backup)
+          body = body.replace(/<head[^>]*>/i, (tag) => `${tag}<script src="/auth-guard.js"></script>`);
+        }
+        if (baseName !== 'login.html' && baseName !== 'venda-pdf.html') {
           body = body.replace(/<aside class="sidebar[^"]*">[\s\S]*?<\/aside>/i, buildCanonicalSidebar(baseName));
         }
-        const pwaTags = `${criticalFirstPaintCSS}<link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/mobile.css"><meta name="theme-color" content="#132e68"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><script src="/pwa.js" defer></script>`;
-        body = body.includes('pwa.js') ? body : body.replace('</head>', `${pwaTags}</head>`);
+        if (baseName !== 'venda-pdf.html') {
+          const pwaTags = `${criticalFirstPaintCSS}<link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/mobile.css"><meta name="theme-color" content="#132e68"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><script src="/pwa.js" defer></script>`;
+          body = body.includes('pwa.js') ? body : body.replace('</head>', `${pwaTags}</head>`);
+        }
         res.writeHead(200, { 'Content-Type': types['.html'], 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0' });
         res.end(body);
       });
