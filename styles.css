@@ -788,18 +788,6 @@ html body main>.topbar .brand-mini small{display:none!important}
 html body main>.topbar:before{
   content:none!important;
   display:none!important;
-  position:absolute!important;
-  left:50%!important;
-  top:-4px!important;
-  width:120px!important;
-  height:58px!important;
-  transform:translateX(-50%)!important;
-  background-image:url('public/images/animado.png')!important;
-  background-repeat:no-repeat!important;
-  background-position:center!important;
-  background-size:120px auto!important;
-  z-index:2!important;
-  pointer-events:none!important;
 }
 html body main>.topbar .search,
 html body main>.topbar .user{position:relative!important;z-index:3!important}
@@ -840,16 +828,7 @@ html body main>.topbar .brand-mini:after,
 html body main>.products-topbar .brand-mini:after{content:none!important;display:none!important}
 html body .topbar .topbar-mascot,
 html body .products-topbar .topbar-mascot{
-  display:block!important;
-  width:68px!important;
-  min-width:68px!important;
-  height:58px!important;
-  flex:0 0 68px!important;
-  margin:-4px 0 0 2px!important;
-  background:url('public/images/animado.png') center center/contain no-repeat!important;
-  filter:drop-shadow(0 2px 5px rgba(0,0,0,.38))!important;
-  pointer-events:none!important;
-  z-index:4!important;
+  display:none!important;
 }
 html body main>.topbar .search,
 html body main>.products-topbar .products-search,

@@ -4,7 +4,7 @@
   "short_name": "Piremaxx",
   "description": "Sistema Completo de Gestão Comercial Piremaxx",
   "lang": "pt-BR",
-  "start_url": "/index.html",
+  "start_url": "/login.html",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],

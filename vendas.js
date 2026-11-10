@@ -4,7 +4,9 @@ let items=[{name:'',type:'Produto',price:0,qty:0}],parts=[];const products=(()=>
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const total=()=>items.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||0),0);
 function generateNextProtocolCode(){
   const saved=JSON.parse(localStorage.getItem('localSales')||'[]');
-  return String(Math.max(0,...sales.map(r=>Number(r[0])||0),...saved.map(s=>Number(s.code)||0))+1);
+  let max=Math.max(0,...sales.map(r=>Number(r[0])||0),...saved.map(s=>Number(s.code)||0));
+  if(max<3477) max=3477;
+  return String(max+1);
 }
 function adjustProductStockSingle(itemCode,itemName,deltaQty){
   const delta=Number(deltaQty)||0;
@@ -153,11 +155,40 @@ function ensureDeletedSalesNormalized(){
     return delSet;
   }catch(e){return new Set()}
 }
-ensureDeletedSalesNormalized();
-if(window.importedSales)window.importedSales.forEach(s=>{const row=[String(s.code),s.client,s.vendor,s.date?.split('-').reverse().join('/')||'',s.type,money(s.total)];const index=sales.findIndex(r=>String(r[0])===String(s.code));if(index>=0)sales[index]=row;else sales.push(row)});
-{const deletedSaleSet=ensureDeletedSalesNormalized();for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
-const importedCodes=new Set((window.importedSales||[]).map(s=>String(s.code)));const storedSales=JSON.parse(localStorage.getItem('localSales')||'[]');const activeDeletedInit=ensureDeletedSalesNormalized();const localSavedSales=storedSales.filter(s=>(!importedCodes.has(String(s.code))||s.source==='userOverride')&&!activeDeletedInit.has(String(s.code)));if(localSavedSales.length!==storedSales.length)localStorage.setItem('localSales',JSON.stringify(localSavedSales));let localSalesChanged=false;localSavedSales.slice().reverse().forEach(s=>{if(s.vendor==='Sim'||!s.vendor){s.vendor='Diego Miranda';localSalesChanged=true}const formatted=[String(s.code),s.client,s.vendor,(s.date||'').split('-').reverse().join('/'),s.type||'Venda',money(s.total)];const existingIdx=sales.findIndex(r=>String(r[0])===String(s.code));if(existingIdx>=0)sales[existingIdx]=formatted;else sales.unshift(formatted)});if(localSalesChanged)localStorage.setItem('localSales',JSON.stringify(localSavedSales));{const deletedSaleSet=ensureDeletedSalesNormalized();for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
-{const deletedSaleSet=ensureDeletedSalesNormalized();for(let i=sales.length-1;i>=0;i--){if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1)}}document.getElementById('saleRows').innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+function reloadSalesFromStorage(){
+  const deletedSaleSet=ensureDeletedSalesNormalized();
+  sales.length=0;
+  if(window.importedSales){
+    window.importedSales.forEach(s=>{
+      const code=String(s.code);
+      if(!deletedSaleSet.has(code)){
+        sales.push([code,s.client,s.vendor,s.date?.split('-').reverse().join('/')||'',s.type,money(s.total)]);
+      }
+    });
+  }
+  const importedCodes=new Set((window.importedSales||[]).map(s=>String(s.code)));
+  let storedSales=[];
+  try{storedSales=JSON.parse(localStorage.getItem('localSales')||'[]')}catch(e){storedSales=[]}
+  const localSavedSales=storedSales.filter(s=>(!importedCodes.has(String(s.code))||s.source==='userOverride')&&!deletedSaleSet.has(String(s.code)));
+  localSavedSales.slice().reverse().forEach(s=>{
+    if(s.vendor==='Sim'||!s.vendor){s.vendor='Diego Miranda';}
+    const formatted=[String(s.code),s.client,s.vendor,(s.date||'').split('-').reverse().join('/'),s.type||'Venda',money(s.total)];
+    const existingIdx=sales.findIndex(r=>String(r[0])===String(s.code));
+    if(existingIdx>=0)sales[existingIdx]=formatted;else sales.unshift(formatted);
+  });
+  for(let i=sales.length-1;i>=0;i--){
+    if(deletedSaleSet.has(String(sales[i][0])))sales.splice(i,1);
+  }
+  const tbody=document.getElementById('saleRows');
+  if(tbody){
+    tbody.innerHTML=sales.map(r=>'<tr><td><input type="checkbox" class="sale-select"></td>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+  }
+  const currentMode=localStorage.getItem('activeSalesTab')==='quotes'?'quotes':'sales';
+  if(typeof filterSalesRows==='function')filterSalesRows(currentMode);
+  if(typeof window.setSalesPaginationMode==='function')window.setSalesPaginationMode(currentMode,true);
+}
+window.reloadSalesFromStorage=reloadSalesFromStorage;
+reloadSalesFromStorage();
 function recalcPartsFromCart(){
   if(!parts||!parts.length){
     parts=[{days:0,value:total(),edited:false}];
@@ -318,6 +349,22 @@ function showSale(forceNew){
   if(forceNew||!editingCode){
     isNewRecord=true;
     editingCode=generateNextProtocolCode();
+    if(navigator.onLine && location.protocol!=='file:'){
+      fetch('/api/next-protocol', { cache: 'no-store' })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){
+          if(d && d.nextCode && isNewRecord){
+            const srvNum=Number(d.nextCode);
+            const curNum=Number(editingCode);
+            if(!isNaN(srvNum) && srvNum > curNum){
+              editingCode=String(srvNum);
+              const inp=document.getElementById('saleProtocolInput');
+              if(inp) inp.value=editingCode;
+              if(typeof syncSaleHeader==='function') syncSaleHeader();
+            }
+          }
+        }).catch(function(){});
+    }
     items=[{name:'',type:'Produto',price:0,qty:0}];
     parts=[];
     const client=document.getElementById('client');if(client)client.value='';
@@ -444,7 +491,8 @@ function saveSale(){
     parts:partsData,
     financial:financialData,
     source:(window.importedSales||[]).some(s=>String(s.code)===String(nextCode))?'userOverride':'local',
-    createdAt:previousSale?.createdAt||new Date().toISOString()
+    createdAt:previousSale?.createdAt||new Date().toISOString(),
+    isPendingSync:!navigator.onLine
   };
 
   // Item 10: Sincroniza o estoque de produtos com a venda
@@ -913,7 +961,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(salesTab)salesTab.innerHTML='<img class="tab-action-icon" src="public/icons/icons8-buy-48.png" alt=""> VENDAS';
     if(returnsTab)returnsTab.innerHTML='<span class="tab-undo-icon">↩</span> DEVOLUÇÕES';
   });
-let returnWizardState={step:1,sale:null,products:[],keywords:'',notes:'',finance:'none'};
+let returnWizardState={step:1,sale:null,products:[],keywords:'',notes:'',finance:'receivables'};
 function returnMoney(value){return typeof money==='function'?money(Number(value)||0):'R$ '+(Number(value)||0).toFixed(2).replace('.',',')}
 function returnSaleTotal(value){if(typeof value==='number')return value;return Number(String(value||'').replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'))||0}
 const returnReferenceSales={
@@ -951,7 +999,7 @@ function returnProducts(sale){
   return[{code:'1',item:'175/70/r13',originalQty:10,total:Number(sale?.total)||0,returnQty:0}]
 }
 function returnWizardRoot(){let root=document.getElementById('returnWizard');if(!root){root=document.createElement('section');root.id='returnWizard';root.className='return-wizard hidden';document.querySelector('main')?.append(root)}return root}
-function showReturn(){document.querySelector('.sales-content')?.classList.add('hidden');document.getElementById('newSale')?.classList.add('hidden');const root=returnWizardRoot();root.classList.remove('hidden');returnWizardState={step:1,sale:null,products:[],keywords:'',notes:'',finance:'none'};renderReturnStep1()}
+function showReturn(){document.querySelector('.sales-content')?.classList.add('hidden');document.getElementById('newSale')?.classList.add('hidden');const root=returnWizardRoot();root.classList.remove('hidden');returnWizardState={step:1,sale:null,products:[],keywords:'',notes:'',finance:'receivables'};renderReturnStep1()}
 function closeReturnWizard(){document.getElementById('returnWizard')?.classList.add('hidden');document.querySelector('.sales-content')?.classList.remove('hidden')}
 function returnHeader(){return'<div class="return-header"><strong>Nova devolução</strong><button type="button" class="return-close">×</button></div>'}
 function renderReturnStep1(){const root=returnWizardRoot();root.innerHTML=returnHeader()+'<div class="return-panel return-step-one"><label>Informe o código da venda para buscar os dados</label><div class="return-search-line"><span class="return-input-icon">▤</span><input class="return-code-input" autocomplete="off"><button type="button" class="return-search-button">Buscar</button></div></div><div class="return-actions"><button type="button" class="return-next">Próximo passo »</button><button type="button" class="return-back">Voltar</button></div>';wireReturnStep1(root)}
@@ -962,20 +1010,39 @@ function renderReturnStep2(){const root=returnWizardRoot(),s=returnWizardState.s
 function wireReturnStep2(root){root.querySelector('.return-close').onclick=closeReturnWizard;root.querySelector('.return-back').onclick=renderReturnStep1;root.querySelector('.return-search-button').onclick=searchReturnSale;root.querySelector('.return-code-input').onkeydown=function(e){if(e.key==='Enter')searchReturnSale()};root.querySelectorAll('.return-product-row').forEach(row=>{const i=Number(row.dataset.index),input=row.querySelector('input[type=number]'),all=row.querySelector('.return-all input');const update=function(){let qty=Math.max(0,Math.min(returnWizardState.products[i].originalQty,Number(input.value)||0));returnWizardState.products[i].returnQty=qty;input.value=qty||'';all.checked=qty===returnWizardState.products[i].originalQty&&qty>0;row.classList.toggle('return-selected',qty>0);row.querySelector('.return-proportional').textContent=returnMoney((returnWizardState.products[i].total/(returnWizardState.products[i].originalQty||1))*qty)};input.oninput=update;all.onchange=function(){input.value=this.checked?returnWizardState.products[i].originalQty:'';update()}});root.querySelector('.return-next').onclick=function(){if(!returnWizardState.products.some(x=>(x.returnQty||0)>0)){appMessage('Informe a quantidade que será devolvida.');return}renderReturnStep3()}}
 function returnTotal(){return returnWizardState.products.reduce((sum,p)=>sum+(p.total/(p.originalQty||1))*(p.returnQty||0),0)}
 function returnFinanceEffect(sale,entry){
-  const amount=Number(entry.total)||0,mode=entry.finance||'none',id=entry.code,now=new Date().toISOString();
+  const amount=Number(entry.total)||0,mode=entry.finance||'receivables',id=entry.code,now=new Date().toISOString();
   if(!amount||mode==='none')return{mode:'none',label:'Nenhuma alteração financeira',amount:0};
   if(mode==='receivables'){
     const adjustments=JSON.parse(localStorage.getItem('returnReceivableAdjustments')||'[]');
-    adjustments.unshift({id,saleCode:String(sale.code),amount,createdAt:now,description:'Devolução de venda'});
+    adjustments.unshift({id,saleCode:String(sale.code),amount,createdAt:now,description:'Devolução de venda #'+sale.code});
     localStorage.setItem('returnReceivableAdjustments',JSON.stringify(adjustments));
     const saved=JSON.parse(localStorage.getItem('localSales')||'[]'),localSale=saved.find(x=>String(x.code)===String(sale.code));
     if(localSale){
       let remaining=amount,rows=Array.isArray(localSale.financial)&&localSale.financial.length?localSale.financial:Array.isArray(localSale.parts)?localSale.parts:[];
-      rows.slice().reverse().forEach(row=>{if(remaining<=0||String(row.status||'').toLowerCase()==='recebido')return;const value=returnSaleTotal(row.value),reduction=Math.min(value,remaining);row.value=Number((value-reduction).toFixed(2));remaining-=reduction});
-      localSale.financial=rows;localSale.parts=rows;localSale.receivableReduction=(Number(localSale.receivableReduction)||0)+amount;localStorage.setItem('localSales',JSON.stringify(saved));
+      rows.slice().reverse().forEach(row=>{
+        if(remaining<=0)return;
+        const st=String(row.status||'').toLowerCase().trim();
+        if(st==='recebido'||st.includes('cancelada'))return;
+        const value=returnSaleTotal(row.value);
+        if(value<=0)return;
+        if(remaining>=value){
+          remaining=Number((remaining-value).toFixed(2));
+          row.value=0;
+          row.status='Cancelada (Devolução)';
+        }else{
+          row.value=Number((value-remaining).toFixed(2));
+          remaining=0;
+        }
+      });
+      localSale.financial=rows;
+      localSale.parts=rows;
+      localSale.receivableReduction=(Number(localSale.receivableReduction)||0)+amount;
+      const newTotal=rows.filter(r=>!String(r.status||'').toLowerCase().includes('cancelada')).reduce((s,r)=>s+(Number(r.value)||0),0);
+      localSale.total=Number(newTotal.toFixed(2));
+      localStorage.setItem('localSales',JSON.stringify(saved));
       syncReceivablesForSale(localSale);
     }
-    return{mode,label:'Recebimentos da venda reduzidos',amount};
+    return{mode,label:'Parcelas em aberto abatidas automaticamente',amount};
   }
   const transactions=JSON.parse(localStorage.getItem('localCashTransactions')||'[]');
   transactions.unshift({id,type:'deduction',category:'Devoluções de vendas',description:'Dedução referente à devolução da venda '+sale.code,saleCode:String(sale.code),amount:-amount,createdAt:now});
@@ -983,7 +1050,7 @@ function returnFinanceEffect(sale,entry){
   const balance=(Number(localStorage.getItem('localCashBalance')||0)-amount);localStorage.setItem('localCashBalance',String(balance));
   return{mode:'deduction',label:'Dedução lançada no caixa',amount};
 }
-function renderReturnStep3(){const root=returnWizardRoot(),s=returnWizardState.sale,total=returnTotal();root.innerHTML=returnHeader()+'<div class="return-panel return-step-three">'+returnSaleInfo()+'<div class="return-product-head"><span>Cód</span><span>Item</span><span>Quant atual</span><span>Quant devol.</span><span>Quant restante</span><span>Valor da devol.</span></div><div class="return-product-list">'+returnWizardState.products.filter(p=>(p.returnQty||0)>0).map(p=>'<div class="return-product-row return-confirm-row"><span>'+p.code+'</span><span>'+p.item+'</span><span>'+p.originalQty+'</span><span>'+p.returnQty+'</span><span>'+(p.originalQty-p.returnQty)+'</span><label class="return-value"><span>$</span><input type="text" value="'+returnMoney((p.total/(p.originalQty||1))*p.returnQty).replace(/^R\$\s*/,'').replace(/^R\$\u00a0*/,'')+'" readonly></label></div>').join('')+'</div><div class="return-detail-fields"><label>Palavras-chave<div class="return-field-with-icon"><span>▰</span><input class="return-keywords" value="'+returnWizardState.keywords+'"></div></label><label>Observações<textarea class="return-notes">'+returnWizardState.notes+'</textarea></label><div class="return-total"><b>Valor total da devolução:</b><strong>'+returnMoney(total)+'</strong></div></div><h2>Financeiro</h2><div class="return-finance"><label><input type="radio" name="returnFinance" value="none" '+(returnWizardState.finance==='none'?'checked':'')+'> Não alterar valores financeiros</label><label><input type="radio" name="returnFinance" value="receivables" '+(returnWizardState.finance==='receivables'?'checked':'')+'> Alterar recebimentos da venda</label><label><input type="radio" name="returnFinance" value="deduction" '+(returnWizardState.finance==='deduction'?'checked':'')+'> Criar dedução (lançamento em Pagamentos)</label></div></div><div class="return-actions"><button type="button" class="return-confirm">Confirmar devolução</button><button type="button" class="return-back">Voltar</button></div>';wireReturnStep3(root)}
+function renderReturnStep3(){const root=returnWizardRoot(),s=returnWizardState.sale,total=returnTotal();root.innerHTML=returnHeader()+'<div class="return-panel return-step-three">'+returnSaleInfo()+'<div class="return-product-head"><span>Cód</span><span>Item</span><span>Quant atual</span><span>Quant devol.</span><span>Quant restante</span><span>Valor da devol.</span></div><div class="return-product-list">'+returnWizardState.products.filter(p=>(p.returnQty||0)>0).map(p=>'<div class="return-product-row return-confirm-row"><span>'+p.code+'</span><span>'+p.item+'</span><span>'+p.originalQty+'</span><span>'+p.returnQty+'</span><span>'+(p.originalQty-p.returnQty)+'</span><label class="return-value"><span>$</span><input type="text" value="'+returnMoney((p.total/(p.originalQty||1))*p.returnQty).replace(/^R\$\s*/,'').replace(/^R\$\u00a0*/,'')+'" readonly></label></div>').join('')+'</div><div class="return-detail-fields"><label>Palavras-chave<div class="return-field-with-icon"><span>▰</span><input class="return-keywords" value="'+returnWizardState.keywords+'"></div></label><label>Observações<textarea class="return-notes">'+returnWizardState.notes+'</textarea></label><div class="return-total"><b>Valor total da devolução:</b><strong>'+returnMoney(total)+'</strong></div></div><h2>Financeiro</h2><div class="return-finance"><label><input type="radio" name="returnFinance" value="receivables" '+(returnWizardState.finance==='receivables'?'checked':'')+'> <b>Alterar recebimentos da venda</b> (abater automaticamente das parcelas em aberto)</label><label><input type="radio" name="returnFinance" value="deduction" '+(returnWizardState.finance==='deduction'?'checked':'')+'> Criar dedução (lançamento em Pagamentos)</label><label><input type="radio" name="returnFinance" value="none" '+(returnWizardState.finance==='none'?'checked':'')+'> Não alterar valores financeiros</label></div></div><div class="return-actions"><button type="button" class="return-confirm">Confirmar devolução</button><button type="button" class="return-back">Voltar</button></div>';wireReturnStep3(root)}
 function wireReturnStep3(root){root.querySelector('.return-close').onclick=closeReturnWizard;root.querySelector('.return-back').onclick=function(){if(returnWizardState.savedReturnCode){closeReturnWizard();if(typeof window.showReturnsTab==='function')window.showReturnsTab()}else{renderReturnStep2()}};root.querySelector('.return-keywords').oninput=e=>returnWizardState.keywords=e.target.value;root.querySelector('.return-notes').oninput=e=>returnWizardState.notes=e.target.value;root.querySelectorAll('input[name=returnFinance]').forEach(x=>x.onchange=()=>returnWizardState.finance=x.value);root.querySelector('.return-confirm').onclick=confirmReturn}
 function confirmReturn(){
   const s=returnWizardState.sale,retVal=returnTotal(),savedReturns=JSON.parse(localStorage.getItem('localReturns')||'[]');

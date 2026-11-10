@@ -276,6 +276,23 @@
 
   <script>
     (function(){
+      // Época dos dados: ao reimportar planilhas, descarta uma única vez os dados locais antigos
+      // deste navegador (clientes, fornecedores, produtos, vendas e derivados).
+      try {
+        var EPOCH = 'planilhas-2026-11-09';
+        if (localStorage.getItem('piremaxx_data_epoch') !== EPOCH) {
+          ['localSales','localReturns','returnReceivableAdjustments','deletedSaleCodes','deletedSalesCodes','deletedSales',
+           'localProducts','deletedProductCodes','archivedProductCodes','localServices','deletedServiceCodes',
+           'piremaxx_fornecedores','deletedContactCodes','piremaxx_contas_receber'].forEach(function(k){ localStorage.removeItem(k); });
+          try {
+            var keep = JSON.parse(localStorage.getItem('piremaxx_contatos') || '[]').filter(function(c){
+              return !(Array.isArray(c.tipos) ? c.tipos : []).some(function(t){ return t === 'cliente' || t === 'fornecedor'; });
+            });
+            localStorage.setItem('piremaxx_contatos', JSON.stringify(keep));
+          } catch(e) { localStorage.removeItem('piremaxx_contatos'); }
+          localStorage.setItem('piremaxx_data_epoch', EPOCH);
+        }
+      } catch(e) {}
       var DEFAULT_USERS = [
         {
           id: 5,
@@ -379,6 +396,19 @@
         alertBox.className = 'login-alert ' + (type || 'error');
       }
 
+      // Avisos exibidos ao chegar na tela de login (inatividade / sistema fechado sem backup)
+      (function(){
+        var motivo = '';
+        try { motivo = new URLSearchParams(location.search).get('motivo') || ''; } catch(e) {}
+        var closed = false;
+        try { closed = localStorage.getItem('piremaxx_closed_notice') === '1'; } catch(e) {}
+        var texts = [];
+        if (motivo === 'inatividade') texts.push('Sessão encerrada após 5 minutos de inatividade. Entre novamente para continuar.');
+        if (closed || motivo === 'inatividade') texts.push('Lembrete: faça o backup dos dados periodicamente (menu do usuário > Backup e Restauração).');
+        if (texts.length) showMessage(texts.join(' '), 'success');
+        try { localStorage.removeItem('piremaxx_closed_notice'); } catch(e) {}
+      })();
+
       // Render quick login chips
       if (quickList) {
         quickList.innerHTML = users.filter(function(u){ return u.ativo !== false; }).map(function(u){
@@ -470,6 +500,11 @@
           loggedAt: new Date().toISOString()
         };
         localStorage.setItem('piremaxx_sessao', JSON.stringify(session));
+        try {
+          sessionStorage.setItem('piremaxx_tab_auth', '1');
+          localStorage.setItem('piremaxx_last_activity', String(Date.now()));
+          localStorage.removeItem('piremaxx_closed_notice');
+        } catch(err) {}
 
         // Registra no histórico de auditoria
         try {

@@ -131,6 +131,7 @@
   function injectBottomNav() {
     if (document.querySelector('.pwa-bottom-nav')) return;
     if (document.body.classList.contains('login-page')) return;
+    if (location.pathname.indexOf('venda-pdf') !== -1 || document.querySelector('.sheet-wrap')) return;
     var nav = document.createElement('nav');
     nav.className = 'pwa-bottom-nav';
     nav.setAttribute('aria-label', 'Navegação rápida PWA');
