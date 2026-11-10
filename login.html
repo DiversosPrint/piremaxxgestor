@@ -396,18 +396,8 @@
         alertBox.className = 'login-alert ' + (type || 'error');
       }
 
-      // Avisos exibidos ao chegar na tela de login (inatividade / sistema fechado sem backup)
-      (function(){
-        var motivo = '';
-        try { motivo = new URLSearchParams(location.search).get('motivo') || ''; } catch(e) {}
-        var closed = false;
-        try { closed = localStorage.getItem('piremaxx_closed_notice') === '1'; } catch(e) {}
-        var texts = [];
-        if (motivo === 'inatividade') texts.push('Sessão encerrada após 5 minutos de inatividade. Entre novamente para continuar.');
-        if (closed || motivo === 'inatividade') texts.push('Lembrete: faça o backup dos dados periodicamente (menu do usuário > Backup e Restauração).');
-        if (texts.length) showMessage(texts.join(' '), 'success');
-        try { localStorage.removeItem('piremaxx_closed_notice'); } catch(e) {}
-      })();
+      // Remove aviso antigo de sessão fechada sem exibir mensagem na tela de login.
+      try { localStorage.removeItem('piremaxx_closed_notice'); } catch(e) {}
 
       // Render quick login chips
       if (quickList) {

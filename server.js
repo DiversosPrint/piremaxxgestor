@@ -103,6 +103,32 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (requested === '/api/finance-page') {
+    const params = new URL(req.url, 'http://localhost').searchParams;
+    const key = params.get('kind') === 'payables' ? 'piremaxx_contas_pagar' : 'piremaxx_contas_receber';
+    const page = Math.max(1, Number.parseInt(params.get('page') || '1', 10) || 1);
+    const allowedPageSizes = [10, 20, 30, 40, 50, 100];
+    const requestedPageSize = Number.parseInt(params.get('pageSize') || '10', 10);
+    const pageSize = allowedPageSizes.includes(requestedPageSize) ? requestedPageSize : 10;
+    const dateKey = value => {
+      const s = String(value || '').trim();
+      let m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+      m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      return m ? `${m[1]}-${m[2]}-${m[3]}` : '';
+    };
+    const db = readServerDB();
+    let records = [];
+    try { records = JSON.parse(db[key] || '[]'); } catch (e) {}
+    if (!Array.isArray(records)) records = [];
+    records = records.filter(item => dateKey(item.date || item.dueDate || item.vencimento) >= '2026-08-01')
+      .sort((a, b) => dateKey(b.date || b.dueDate || b.vencimento).localeCompare(dateKey(a.date || a.dueDate || a.vencimento)));
+    const total = records.length;
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify({ items: records.slice((page - 1) * pageSize, page * pageSize), total, page, pageSize, pages: Math.max(1, Math.ceil(total / pageSize)) }));
+    return;
+  }
+
   if (requested === '/api/storage') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
