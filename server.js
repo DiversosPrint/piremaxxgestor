@@ -44,7 +44,7 @@ function getActiveMenuKey(pageName) {
   if (p === 'clientes.html' || p === 'novo-cliente.html' || p === 'novo-comprador.html') return 'clientes';
   if (p === 'produtos.html' || p === 'novo-produto.html' || p === 'novo-servico.html') return 'produtos';
   if (p === 'relatorios.html') return 'relatorios';
-  if (p === 'configuracoes.html' || p === 'usuarios.html') return 'configuracoes';
+  if (p === 'configuracoes.html' || p === 'usuarios.html' || p === 'conta-usuarios.html') return 'configuracoes';
   return 'home';
 }
 

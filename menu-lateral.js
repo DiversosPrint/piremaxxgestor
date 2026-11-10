@@ -3618,6 +3618,20 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
 
   window.openBackupModal = openBackupModal;
 
+  // A conta e a administração de usuários usam uma tela própria. A aba
+  // Configurações do painel lateral continua apontando para configuracoes.html.
+  function redirectUserMenuLinks() {
+    document.querySelectorAll('.user-menu a').forEach(function(link) {
+      var label = (link.textContent || '').trim().toLowerCase();
+      if (label.indexOf('minha conta') !== -1) link.href = 'conta-usuarios.html#conta';
+      if (label.indexOf('usuários e permissões') !== -1) link.href = 'conta-usuarios.html';
+      if (label.indexOf('novo usuário') !== -1) link.href = 'conta-usuarios.html#novo';
+      if (label === 'configurações') link.href = 'conta-usuarios.html';
+    });
+  }
+  redirectUserMenuLinks();
+  setTimeout(redirectUserMenuLinks, 0);
+
   document.addEventListener('click', function(e) {
     const backupTarget = e.target.closest('[data-menu-key="backup"], [data-action="open-backup-modal"], #menuBtnBackup');
     if (backupTarget) {
