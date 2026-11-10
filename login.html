@@ -279,11 +279,11 @@
       // Época dos dados: ao reimportar planilhas, descarta uma única vez os dados locais antigos
       // deste navegador (clientes, fornecedores, produtos, vendas e derivados).
       try {
-        var EPOCH = 'planilhas-2026-11-09';
+        var EPOCH = 'planilhas-2026-11-09-v2';
         if (localStorage.getItem('piremaxx_data_epoch') !== EPOCH) {
           ['localSales','localReturns','returnReceivableAdjustments','deletedSaleCodes','deletedSalesCodes','deletedSales',
            'localProducts','deletedProductCodes','archivedProductCodes','localServices','deletedServiceCodes',
-           'piremaxx_fornecedores','deletedContactCodes','piremaxx_contas_receber'].forEach(function(k){ localStorage.removeItem(k); });
+           'piremaxx_fornecedores','deletedContactCodes','piremaxx_contas_receber','piremaxx_usuarios'].forEach(function(k){ localStorage.removeItem(k); });
           try {
             var keep = JSON.parse(localStorage.getItem('piremaxx_contatos') || '[]').filter(function(c){
               return !(Array.isArray(c.tipos) ? c.tipos : []).some(function(t){ return t === 'cliente' || t === 'fornecedor'; });
@@ -297,7 +297,7 @@
         {
           id: 5,
           nome: 'ODIMAN COSTA',
-          email: 'adoraroro@gmail.com',
+          email: 'adorarpro@gmail.com',
           login: 'odiman',
           senha: '123456',
           palavrasChave: 'ODIMAN COSTA ADMIN',

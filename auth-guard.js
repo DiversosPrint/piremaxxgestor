@@ -153,14 +153,14 @@
     });
   }
   window.addEventListener('beforeunload', function (e) {
-    if (!hasNavigationApi || internalNav || leaving) return;
+    if (internalNav || leaving) return;
     var msg = 'Lembre-se de fazer o backup dos dados antes de fechar o sistema.';
     e.preventDefault();
     e.returnValue = msg;
     return msg;
   });
   window.addEventListener('pagehide', function (e) {
-    if (e.persisted || !hasNavigationApi || internalNav || leaving) return;
+    if (e.persisted || internalNav || leaving) return;
     try { localStorage.setItem(CLOSED_KEY, '1'); } catch (err) {}
   });
 })();
