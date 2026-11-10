@@ -2650,7 +2650,7 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
   normalizePiremaxxDeletedSales();
   syncSupplierMirror();
 
-  if (location.protocol !== 'file:') {
+  if (location.protocol !== 'file:' && !/financeiro(?:-pagamentos)?\.html$/i.test(location.pathname)) {
     fetch('/api/storage', { cache: 'no-store' })
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(serverDB) {
