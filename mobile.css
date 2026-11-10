@@ -1389,3 +1389,16 @@
     display: none !important;
   }
 }
+
+@media print {
+  .mobile-menu-toggle,
+  .mobile-menu-backdrop,
+  .mobile-drawer,
+  .pwa-bottom-nav,
+  .pwa-install-banner,
+  #pwaInstallBanner {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
