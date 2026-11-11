@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
   var editKey=params.get('edit');
   var rawTipo=(params.get('tipo')||'').toLowerCase();
   var allContacts=[];
-  try{allContacts=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(e){allContacts=[]}
+  try{allContacts=JSON.parse(localStorage.getItem(rawTipo==='comprador'?'piremaxx_clientes_compras':'piremaxx_contatos')||'[]')}catch(e){allContacts=[]}
   var existing=editKey&&allContacts.find(function(x){return String(x.nome).trim()===String(editKey).trim()||String(x.id)===String(editKey)});
   var tipo=['cliente','comprador','fornecedor','transportador','vendedor'].includes(rawTipo)?rawTipo:(existing&&Array.isArray(existing.tipos)&&existing.tipos[0]?existing.tipos[0]:'cliente');
 
@@ -128,8 +128,9 @@ document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
         alert('Informe o Nome / Razão Social.');
         return;
       }
+      var storageKey=tipo==='comprador'?'piremaxx_clientes_compras':'piremaxx_contatos';
       var all=[];
-      try{all=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]')}catch(err){all=[]}
+      try{all=JSON.parse(localStorage.getItem(storageKey)||'[]')}catch(err){all=[]}
       var old=editKey&&all.find(function(item){return String(item.nome).trim()===String(editKey).trim()||String(item.id)===String(editKey)});
       var types=old&&Array.isArray(old.tipos)&&old.tipos.length?(old.tipos.includes(tipo)?old.tipos:[tipo].concat(old.tipos)):[tipo];
       var entregas=[].slice.call(document.querySelectorAll('.delivery-form')).map(function(f){
@@ -152,7 +153,7 @@ document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
         entregas:entregas
       };
       all=old?all.map(function(item){return String(item.id)===String(old.id)?record:item}):all.concat(record);
-      localStorage.setItem('piremaxx_contatos',JSON.stringify(all));
+      localStorage.setItem(storageKey,JSON.stringify(all));
       if(window.piremaxxAudit){
         window.piremaxxAudit.log({
           module:'Contatos',
@@ -181,7 +182,8 @@ document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){
 function fillImportedClient(){setTimeout(function(){
   const key=new URLSearchParams(location.search).get('edit');
   if(!key)return;
-  const local=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]');
+  const purchaseMode=new URLSearchParams(location.search).get('tipo')==='comprador';
+  const local=JSON.parse(localStorage.getItem(purchaseMode?'piremaxx_clientes_compras':'piremaxx_contatos')||'[]');
   const localRecord=local.find(x=>String(x.id)===String(key)||String(x.nome).trim()===String(key).trim());
   const imported=(window.importedContacts||window.cloneData?.contacts||[]).find(x=>String(x.code)===String(key)||String(x.name).trim()===String(key).trim());
   if(!imported&&!localRecord)return;
@@ -207,8 +209,8 @@ function fillImportedClient(){setTimeout(function(){
     const read=id=>{const o={};document.querySelectorAll('#'+id+' .field').forEach(f=>{const k=f.textContent.trim().split(/\n/)[0].trim(),c=f.querySelector('input,select,textarea');if(k&&c)o[k]=c.value});return o};
     const dados=read('dados'),endereco=read('endereco'),adicionais=read('adicionais'),tipos=[...document.querySelectorAll('.contact-types input:checked')].map(x=>x.value),nome=dados['Nome / Razão Social']||r.nome;
     if(!nome){alert('Informe o Nome / Razão Social.');return}if(!tipos.length){alert('Selecione pelo menos um tipo de contato.');return}
-    const now=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]'),obj={...r,id:r.id||Date.now(),nome,tipos,telefone:dados['Telefone(s)']||'',dados,endereco,adicionais};
-    localStorage.setItem('piremaxx_contatos',JSON.stringify(now.some(x=>String(x.id)===String(obj.id))?now.map(x=>String(x.id)===String(obj.id)?obj:x):[...now,obj]));location.href='clientes.html#clientes';
+    const storageKey=purchaseMode?'piremaxx_clientes_compras':'piremaxx_contatos',now=JSON.parse(localStorage.getItem(storageKey)||'[]'),obj={...r,id:r.id||Date.now(),nome,tipos,telefone:dados['Telefone(s)']||'',dados,endereco,adicionais};
+    localStorage.setItem(storageKey,JSON.stringify(now.some(x=>String(x.id)===String(obj.id))?now.map(x=>String(x.id)===String(obj.id)?obj:x):[...now,obj]));location.href='clientes.html#'+(purchaseMode?'compradores':'clientes');
   };
 },0)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fillImportedClient);else fillImportedClient();
