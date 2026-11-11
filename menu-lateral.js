@@ -813,7 +813,12 @@
       button.classList.add('active');
       const body=table.querySelector('tbody');
       const deleted=new Set(JSON.parse(localStorage.getItem('deletedContactCodes')||'[]').map(String));
-      const records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(item){return Array.isArray(item.tipos)&&item.tipos.includes('comprador')&&!deleted.has(String(item.id))&&!deleted.has(String(item.nome||'').trim())});
+      let records=[];
+      try{records=JSON.parse(localStorage.getItem('piremaxx_compradores')||'[]')}catch(e){records=[]}
+      if(!records.length){
+        records=JSON.parse(localStorage.getItem('piremaxx_contatos')||'[]').filter(function(item){return Array.isArray(item.tipos)&&item.tipos.includes('comprador')});
+      }
+      records=records.filter(function(item){return !deleted.has(String(item.id))&&!deleted.has(String(item.nome||'').trim())});
       if(body)body.innerHTML=records.length?records.map(function(item){return '<tr><td><input type="checkbox" class="client-select" data-code="'+String(item.id||'')+'" data-name="'+String(item.nome||'').replace(/"/g,'&quot;')+'"></td><td>'+String(item.id||'')+'</td><td>'+String(item.nome||'')+'</td><td>'+String(item.telefone||'')+'</td><td></td><td>'+String(item.cidade||'')+(item.uf?'/'+String(item.uf):'')+'</td></tr>'}).join(''):'<tr><td colspan="7" class="empty">Nenhum comprador encontrado.</td></tr>';
       if(window.installClientCheckboxes)window.installClientCheckboxes();
       const search=document.querySelector('.client-search input');
@@ -2173,6 +2178,11 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
       nativeWindowOpen.call(window, openPdfUrl, '_blank');
     };
 
+    if(typeof opts.onPdf === 'function'){
+      btnDownloadPdf.onclick = function(){ opts.onPdf(); };
+      btnSharePdf.onclick = function(){ opts.onPdf(); };
+    }
+
     overlay.querySelector('.wa-btn-send').onclick = function(){
       const rawPhone = (phoneInput.value || '').replace(/\D/g, '');
       const text = (msgBox.innerText || msgBox.textContent || '').trim();
@@ -2421,6 +2431,9 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
 (function(){
   const SYNC_KEYS = [
     'piremaxx_contatos',
+    'piremaxx_clientes_compras',
+    'piremaxx_compradores',
+    'piremaxx_medidas_compras',
     'piremaxx_fornecedores',
     'deletedContactCodes',
     'localSales',
@@ -2432,6 +2445,8 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
     'localServices',
     'deletedServiceCodes',
     'piremaxx_compras',
+    'piremaxx_coletas',
+    'deletedCollectionCodes',
     'piremaxx_contas_receber',
     'piremaxx_contas_pagar',
     'localCashBalance',
@@ -2802,12 +2817,19 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
             } catch (e) {}
             return;
           }
+          if (k === 'piremaxx_compradores' && serverVal === '[]') {
+            if (localVal && localVal !== '[]') {
+              origSetItem(k, '[]');
+              updatedAny = true;
+            }
+            return;
+          }
           if (serverVal && (!localVal || localVal === '[]' || localVal === '{}')) {
             origSetItem(k, serverVal);
             updatedAny = true;
           } else if (localVal && localVal !== '[]' && localVal !== '{}' && !serverVal) {
             toPush[k] = localVal;
-          } else if (serverVal && localVal && (k === 'piremaxx_contatos' || k === 'piremaxx_fornecedores')) {
+          } else if (serverVal && localVal && (k === 'piremaxx_contatos' || k === 'piremaxx_fornecedores' || k === 'piremaxx_clientes_compras' || k === 'piremaxx_compradores')) {
             try {
               const localArr = JSON.parse(localVal);
               const serverArr = JSON.parse(serverVal);
@@ -2834,6 +2856,37 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
                 }
               }
             } catch (e) {}
+          } else if (serverVal && localVal && k === 'piremaxx_coletas') {
+            try {
+              const localArr = JSON.parse(localVal);
+              const serverArr = JSON.parse(serverVal);
+              const deleted = new Set(JSON.parse(origGetItem('deletedCollectionCodes') || serverDB['deletedCollectionCodes'] || '[]').map(String));
+              if (Array.isArray(localArr) && Array.isArray(serverArr)) {
+                const map = new Map();
+                const put = function(item) {
+                  if (!item || item.code == null) return;
+                  const code = String(item.code).trim();
+                  if (!code || deleted.has(code)) return;
+                  const prev = map.get(code);
+                  if (!prev || String(item.updatedAt || '') >= String(prev.updatedAt || '')) {
+                    map.set(code, item);
+                  }
+                };
+                serverArr.forEach(put);
+                localArr.forEach(put);
+                const merged = Array.from(map.values()).sort(function(a, b) {
+                  return String(b.updatedAt || b.date || '').localeCompare(String(a.updatedAt || a.date || ''));
+                });
+                const mergedStr = JSON.stringify(merged);
+                if (localVal !== mergedStr) {
+                  origSetItem('piremaxx_coletas', mergedStr);
+                  updatedAny = true;
+                }
+                if (serverVal !== mergedStr) {
+                  toPush['piremaxx_coletas'] = mergedStr;
+                }
+              }
+            } catch (e) {}
           }
         });
         normalizePiremaxxDeletedSales();
@@ -2855,6 +2908,9 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
           }
           if (typeof window.reloadSalesFromStorage === 'function') {
             window.reloadSalesFromStorage();
+          }
+          if (typeof window.reloadCollectionsFromStorage === 'function') {
+            window.reloadCollectionsFromStorage();
           }
           if (typeof window.applyAvatarEverywhere === 'function') {
             window.applyAvatarEverywhere();
@@ -3268,6 +3324,9 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
   const BACKUP_STORAGE_KEYS = [
     'localSales',
     'piremaxx_contatos',
+    'piremaxx_clientes_compras',
+    'piremaxx_compradores',
+    'piremaxx_medidas_compras',
     'piremaxx_fornecedores',
     'deletedContactCodes',
     'localProducts',
@@ -3275,6 +3334,8 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
     'localServices',
     'deletedServiceCodes',
     'piremaxx_compras',
+    'piremaxx_coletas',
+    'deletedCollectionCodes',
     'piremaxx_contas_receber',
     'piremaxx_contas_pagar',
     'localCashBalance',

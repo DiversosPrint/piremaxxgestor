@@ -886,17 +886,29 @@
     padding: 12px 14px !important;
   }
 
-  /* Modal de Coletas Mobile */
+  /* Modal de Coletas / Visitas Mobile */
   html body .collection-modal {
-    padding: 8px !important;
-    align-items: center !important;
-    z-index: 235 !important;
+    padding: 0 !important;
+    align-items: stretch !important;
+    z-index: 250 !important;
   }
-  html body .collection-modal .collection-dialog {
-    max-height: 94vh !important;
+  html body .collection-modal .collection-dialog,
+  html body .collection-modal .visit-hub-dialog {
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
+  }
+  html body .collection-modal .visit-step-body {
+    padding: 12px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  html body .collection-modal .visit-app-footer {
+    padding: 10px 12px calc(12px + env(safe-area-inset-bottom, 0px)) !important;
   }
   html body .collection-modal .collection-form {
     overflow-y: auto !important;
