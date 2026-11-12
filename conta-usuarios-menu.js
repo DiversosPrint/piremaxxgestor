@@ -2190,11 +2190,25 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
         document.addEventListener('visibilitychange', markLaunched);
         window.addEventListener('pagehide', onHide, { once: true });
         window.addEventListener('blur', onHide, { once: true });
+        window.__piremaxxAllowExternalAppUntil = Date.now() + 6000;
         close();
-        window.location.href = nativeAppUrl;
+        const isAppleTouch = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const appLink = document.createElement('a');
+        appLink.href = nativeAppUrl;
+        if(!isAppleTouch){
+          appLink.target = '_blank';
+          appLink.rel = 'noopener noreferrer';
+        } else {
+          appLink.rel = 'noopener';
+        }
+        appLink.style.display = 'none';
+        document.body.appendChild(appLink);
+        appLink.click();
+        appLink.remove();
         setTimeout(function(){
           cleanup();
           if(!launchedApp && document.visibilityState === 'visible'){
+            window.__piremaxxAllowExternalAppUntil = Date.now() + 6000;
             const w = nativeWindowOpen.call(window, fallbackApiUrl, '_blank');
             if(!w) window.location.href = fallbackApiUrl;
           }

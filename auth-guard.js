@@ -145,22 +145,26 @@
   if (hasNavigationApi) {
     window.navigation.addEventListener('navigate', function (e) {
       try {
-        if (e.destination && String(e.destination.url).indexOf(location.origin) === 0) {
+        var destUrl = e.destination ? String(e.destination.url || '') : '';
+        if (destUrl.indexOf(location.origin) === 0 || (destUrl && !/^https?:/i.test(destUrl))) {
           internalNav = true;
           setTimeout(function () { internalNav = false; }, 4000);
         }
       } catch (err) {}
     });
   }
+  function externalAppSuppressed() {
+    try { return Number(window.__piremaxxAllowExternalAppUntil || 0) > Date.now(); } catch (err) { return false; }
+  }
   window.addEventListener('beforeunload', function (e) {
-    if (internalNav || leaving) return;
+    if (internalNav || leaving || externalAppSuppressed()) return;
     var msg = 'Lembre-se de fazer o backup dos dados antes de fechar o sistema.';
     e.preventDefault();
     e.returnValue = msg;
     return msg;
   });
   window.addEventListener('pagehide', function (e) {
-    if (e.persisted || internalNav || leaving) return;
+    if (e.persisted || internalNav || leaving || externalAppSuppressed()) return;
     try { localStorage.setItem(CLOSED_KEY, '1'); } catch (err) {}
   });
 })();
