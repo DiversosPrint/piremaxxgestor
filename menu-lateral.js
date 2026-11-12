@@ -2226,6 +2226,11 @@
     const openPdfUrl = opts.pdfUrl || buildPiremaxxPdfUrl(code, opts);
     const displayUrl = opts.displayUrl || openPdfUrl;
     const initialPhone = opts.phone != null ? String(opts.phone) : findContactPhone(opts.client || '');
+    const ua = navigator.userAgent || '';
+    const isMobileDevice = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini|Mobile/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const alertHtml = isMobileDevice
+      ? '<span>O envio abrirá diretamente o aplicativo do <strong>WhatsApp</strong> instalado no dispositivo.</span>'
+      : '<span>Você precisa estar conectado no <a href="https://web.whatsapp.com/" target="_blank" rel="noopener">WhatsApp Web</a>.</span>';
 
     const overlay = document.createElement('div');
     overlay.id = 'piremaxxWhatsAppOverlay';
@@ -2237,7 +2242,7 @@
         </div>
         <div class="wa-modal-body">
           <div class="wa-modal-alert">
-            <span>Você precisa estar conectado no <a href="https://web.whatsapp.com/" target="_blank" rel="noopener">WhatsApp Web</a>.</span>
+            ${alertHtml}
             <button type="button" class="wa-modal-alert-close" aria-label="Fechar aviso">×</button>
           </div>
           <label class="wa-modal-label">Mensagem <span class="wa-modal-help" title="Mensagem que será enviada para o cliente no WhatsApp">?</span></label>
@@ -2317,9 +2322,38 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
       if(rawPhone){
         phoneParam = rawPhone.startsWith('55') && rawPhone.length >= 12 ? rawPhone : ('55' + rawPhone);
       }
-      const waUrl = phoneParam
-        ? ('https://web.whatsapp.com/send?phone=' + phoneParam + '&text=' + encodeURIComponent(text))
-        : ('https://web.whatsapp.com/send?text=' + encodeURIComponent(text));
+      const query = (phoneParam ? ('phone=' + encodeURIComponent(phoneParam) + '&') : '') + 'text=' + encodeURIComponent(text);
+      if(isMobileDevice){
+        const nativeAppUrl = 'whatsapp://send?' + query;
+        const fallbackApiUrl = 'https://api.whatsapp.com/send?' + query;
+        let launchedApp = false;
+        const markLaunched = function(){
+          if(document.hidden || document.visibilityState === 'hidden') launchedApp = true;
+        };
+        const cleanup = function(){
+          document.removeEventListener('visibilitychange', markLaunched);
+          window.removeEventListener('pagehide', onHide);
+          window.removeEventListener('blur', onHide);
+        };
+        const onHide = function(){
+          launchedApp = true;
+          cleanup();
+        };
+        document.addEventListener('visibilitychange', markLaunched);
+        window.addEventListener('pagehide', onHide, { once: true });
+        window.addEventListener('blur', onHide, { once: true });
+        close();
+        window.location.href = nativeAppUrl;
+        setTimeout(function(){
+          cleanup();
+          if(!launchedApp && document.visibilityState === 'visible'){
+            const w = nativeWindowOpen.call(window, fallbackApiUrl, '_blank');
+            if(!w) window.location.href = fallbackApiUrl;
+          }
+        }, 1500);
+        return;
+      }
+      const waUrl = 'https://web.whatsapp.com/send?' + query;
       nativeWindowOpen.call(window, waUrl, '_blank');
       close();
     };
