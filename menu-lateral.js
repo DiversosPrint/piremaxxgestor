@@ -2380,12 +2380,22 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
       html, body {
         margin: 0 !important;
         padding: 0 !important;
-        min-height: 297mm;
         background: transparent !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         font-family: Arial, Helvetica, sans-serif !important;
         color: #1f2f3d !important;
+      }
+      @media screen {
+        html, body {
+          min-height: 297mm;
+        }
+      }
+      @media print {
+        html, body {
+          height: auto !important;
+          min-height: 0 !important;
+        }
       }
       body {
         padding: 0 15mm !important;
@@ -2396,12 +2406,18 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
       body:has(> .page), body:has(> .product-sheet) {
         padding: 0 15mm !important;
       }
-      .page, .product-sheet {
+      .page, .product-sheet, .visit-page {
         padding: 0 !important;
         box-sizing: border-box !important;
         min-height: 0 !important;
         position: relative !important;
         z-index: 1 !important;
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+      .page + .page, .product-sheet + .product-sheet, .visit-page + .visit-page {
+        page-break-before: always !important;
+        break-before: page !important;
       }
       /* Moldura de impressão: o thead/tfoot se repete em TODAS as páginas, reservando o espaço do cabeçalho e rodapé do papel timbrado */
       table.pmx-print-frame { width: 100% !important; border-collapse: collapse !important; margin: 0 !important; border: 0 !important; }

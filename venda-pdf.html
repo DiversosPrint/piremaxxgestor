@@ -182,7 +182,11 @@
     pointer-events: none !important;
   }
   @media print {
-    html, body { background: #fff; }
+    html, body {
+      background: #fff;
+      height: auto !important;
+      min-height: 0 !important;
+    }
     .pdf-toolbar,
     .pwa-bottom-nav,
     .mobile-bottom-bar,
@@ -198,6 +202,9 @@
       margin: 0;
       max-width: none;
       box-shadow: none;
+      min-height: 0 !important;
+      height: auto !important;
+      overflow: visible !important;
       padding: 34mm 15mm 18mm 15mm;
     }
     .piremaxx-print-bg {
