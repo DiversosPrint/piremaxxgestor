@@ -1124,7 +1124,19 @@
 
           /* Container principal ocupando 100% da tela */
           html body main,
-          html body:has(.shared-sidebar) main {
+          html body.standard-layout main,
+          html body.finance-page main,
+          html body.fleet-page main,
+          html body.pix-page main,
+          html body.reports-page main,
+          html body:has(.shared-sidebar) main,
+          html body:has(.finance-page) main,
+          html body:has(.sales-content) main,
+          html body:has(.purchase-content) main,
+          html body:has(.clients) main,
+          html body.standard-layout:has(.sales-content) main,
+          html body.standard-layout:has(.purchase-content) main,
+          html body.standard-layout:has(.clients) main {
             margin-left:0!important;
             width:100%!important;
             max-width:100%!important;
@@ -1133,7 +1145,20 @@
 
           /* Topbar mobile / PWA fixa e enxuta */
           html body main>.topbar,
-          html body main>.products-topbar {
+          html body main>.products-topbar,
+          html body.standard-layout main>.topbar,
+          html body.standard-layout main>.products-topbar,
+          html body.finance-page main>.topbar,
+          html body.fleet-page main>.topbar,
+          html body.pix-page main>.topbar,
+          html body.reports-page main>.topbar,
+          html body:has(.sales-content) main>.topbar,
+          html body:has(.purchase-content) main>.topbar,
+          html body:has(.clients) main>.topbar,
+          html body:has(.finance-page) main>.topbar,
+          html body.standard-layout:has(.sales-content) main>.topbar,
+          html body.standard-layout:has(.purchase-content) main>.topbar,
+          html body.standard-layout:has(.clients) main>.topbar {
             position:sticky!important;
             top:0!important;
             left:0!important;
@@ -1156,8 +1181,17 @@
           }
           html body main>.topbar .brand-mini,
           html body main>.products-topbar .brand-mini,
+          html body main>.topbar .brand-mini.brand-mini,
+          html body main>.products-topbar .brand-mini.brand-mini,
           html body .topbar .brand-mini,
-          html body .products-topbar .brand-mini {
+          html body .products-topbar .brand-mini,
+          html body.standard-layout .topbar .brand-mini,
+          html body.standard-layout main>.topbar .brand-mini.brand-mini,
+          html body.finance-page .topbar .brand-mini,
+          html body.finance-page main>.topbar .brand-mini.brand-mini,
+          html body.fleet-page main>.topbar .brand-mini.brand-mini,
+          html body.pix-page main>.topbar .brand-mini.brand-mini,
+          html body.reports-page main>.topbar .brand-mini.brand-mini {
             width:96px!important;
             min-width:96px!important;
             max-width:96px!important;
@@ -1171,6 +1205,9 @@
           }
           html body main>.topbar.pwa-search-active .brand-mini,
           html body main>.products-topbar.pwa-search-active .brand-mini,
+          html body main>.topbar.pwa-search-active .brand-mini.brand-mini,
+          html body.standard-layout main>.topbar.pwa-search-active .brand-mini.brand-mini,
+          html body.finance-page main>.topbar.pwa-search-active .brand-mini.brand-mini,
           html body .topbar.pwa-search-active .brand-mini,
           html body .products-topbar.pwa-search-active .brand-mini {
             display:none!important;
@@ -1179,7 +1216,14 @@
           html body main>.products-topbar .products-search,
           html body main>.products-topbar .search,
           html body .topbar .search,
-          html body .products-topbar .products-search {
+          html body .products-topbar .products-search,
+          html body.standard-layout .topbar .search,
+          html body.standard-layout main>.topbar .search,
+          html body.finance-page .topbar .search,
+          html body.finance-page main>.topbar .search,
+          html body.fleet-page main>.topbar .search,
+          html body.pix-page main>.topbar .search,
+          html body.reports-page main>.topbar .search {
             flex:1 1 0!important;
             width:auto!important;
             min-width:0!important;
@@ -1286,9 +1330,15 @@
           html body main>.purchase-header,
           html body main>.dashboard-title,
           html body main>.finance-title,
+          html body.standard-layout main>.finance-title,
+          html body.finance-page main>.finance-title,
           html body main>.fleet-title,
+          html body.standard-layout main>.fleet-title,
+          html body.fleet-page main>.fleet-title,
           html body main>.products-title,
           html body main>.reports-title,
+          html body.standard-layout main>.reports-title,
+          html body.reports-page main>.reports-title,
           html body main>.config-title {
             position:relative!important;
             left:0!important;
@@ -1382,11 +1432,57 @@
             max-width:none!important;
             flex:1 1 100%!important;
           }
+          html body .finance-balance {
+            margin:2px 0!important;
+            padding:6px 10px!important;
+            flex:1 1 100%!important;
+            width:100%!important;
+            display:flex!important;
+            align-items:center!important;
+            justify-content:space-between!important;
+            gap:8px!important;
+            text-align:left!important;
+            box-sizing:border-box!important;
+          }
+          html body .finance-balance br { display:none!important; }
+          html body .finance-toolbar button,
+          html body .finance-toolbar .finance-month,
+          html body .finance-toolbar .finance-arrows {
+            height:32px!important;
+            min-height:32px!important;
+            display:inline-flex!important;
+            align-items:center!important;
+            justify-content:center!important;
+          }
+          html body .finance-toolbar > span {
+            font-size:12px!important;
+            font-weight:600!important;
+            color:#416276!important;
+            white-space:nowrap!important;
+          }
+          html body .finance-edit-options,
+          html body .finance-receive-menu {
+            min-width:0!important;
+            width:min(320px, calc(100vw - 36px))!important;
+            max-width:calc(100vw - 36px)!important;
+            left:0!important;
+          }
+          html body .finance-edit-options button,
+          html body .finance-receive-menu button {
+            width:100%!important;
+            height:auto!important;
+            min-height:32px!important;
+            white-space:normal!important;
+            line-height:1.35!important;
+            padding:8px 12px!important;
+            justify-content:flex-start!important;
+          }
 
           /* Tabelas com rolagem horizontal suave por toque */
           html body .sales-table-wrapper,
           html body .purchase-table-wrapper,
           html body .client-table-wrapper,
+          html body .finance-table-wrapper,
           html body .table-responsive,
           html body .clients,
           html body .sales-content,
@@ -1399,9 +1495,14 @@
             -webkit-overflow-scrolling:touch!important;
             max-width:100%!important;
           }
+          html body #finance-receivables:has(> .table-responsive),
+          html body #finance-other:has(.table-responsive) {
+            overflow-x:visible!important;
+          }
           html body .sales-table-wrapper,
           html body .purchase-table-wrapper,
           html body .client-table-wrapper,
+          html body .finance-table-wrapper,
           html body .table-responsive {
             display:block!important;
             width:100%!important;
@@ -1410,11 +1511,37 @@
           html body .sales-table,
           html body .client-table,
           html body .finance-table,
+          html body .finance-panel table,
           html body .purchase-table,
           html body .product-table,
           html body .user-table {
+            display:table!important;
             min-width:640px!important;
             width:100%!important;
+            table-layout:auto!important;
+            border-collapse:collapse!important;
+          }
+          html body .finance-panel table th,
+          html body .finance-panel table td {
+            display:table-cell!important;
+            padding:9px 10px!important;
+            font-size:12px!important;
+            line-height:1.35!important;
+            white-space:nowrap!important;
+            vertical-align:middle!important;
+          }
+          html body .finance-total,
+          html body .finance-payable-total,
+          html body .finance-payables-total,
+          html body .finance-transfers-total,
+          html body .finance-receipts-total,
+          html body .finance-footer {
+            min-width:0!important;
+            width:100%!important;
+            padding:10px 12px!important;
+            flex-wrap:wrap!important;
+            gap:8px!important;
+            box-sizing:border-box!important;
           }
 
           /* Indicadores (Dashboard) e Formulários adaptáveis */
@@ -3285,20 +3412,31 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
 
 // Envelopamento responsivo automático de tabelas no mobile para isolar a rolagem horizontal
 (function(){
+  const TABLE_SPECS = [
+    ['.sales-table', 'sales-table-wrapper'],
+    ['.purchase-table', 'purchase-table-wrapper'],
+    ['.client-table', 'client-table-wrapper'],
+    ['.finance-table', 'finance-table-wrapper'],
+    ['.finance-panel table', 'finance-table-wrapper']
+  ];
+  let wrapScheduled = false;
+
   function wrapMobileTables(){
     if(!window.matchMedia('(max-width: 768px)').matches) return;
-    const tableSelectors = ['.sales-table', '.purchase-table', '.client-table'];
-    tableSelectors.forEach(function(sel){
+    TABLE_SPECS.forEach(function(spec){
+      const sel = spec[0], wrapCls = spec[1];
       const tables = document.querySelectorAll(sel);
       tables.forEach(function(table){
-        if(!table || table.parentElement.classList.contains('table-responsive') || 
-           table.parentElement.classList.contains('sales-table-wrapper') ||
-           table.parentElement.classList.contains('purchase-table-wrapper') ||
-           table.parentElement.classList.contains('client-table-wrapper')) {
+        const parent = table && table.parentElement;
+        if(!parent || parent.classList.contains('table-responsive') ||
+           parent.classList.contains('sales-table-wrapper') ||
+           parent.classList.contains('purchase-table-wrapper') ||
+           parent.classList.contains('client-table-wrapper') ||
+           parent.classList.contains('finance-table-wrapper')) {
           return;
         }
         const wrapper = document.createElement('div');
-        wrapper.className = 'table-responsive ' + sel.replace('.', '') + '-wrapper';
+        wrapper.className = 'table-responsive ' + wrapCls;
         wrapper.style.cssText = 'width:100%!important;max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;box-sizing:border-box!important;margin:0 0 12px 0!important;';
         table.parentNode.insertBefore(wrapper, table);
         wrapper.appendChild(table);
@@ -3306,10 +3444,27 @@ Piremaxx Gestor: <a href="${escHtml(openPdfUrl)}" target="_blank" rel="noopener"
     });
   }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', wrapMobileTables);
-  } else {
+  function scheduleWrap(){
+    if(wrapScheduled) return;
+    wrapScheduled = true;
+    setTimeout(function(){
+      wrapScheduled = false;
+      wrapMobileTables();
+    }, 30);
+  }
+
+  function initWrapObserver(){
     wrapMobileTables();
+    const financePanel = document.querySelector('.finance-panel');
+    if(financePanel && typeof MutationObserver === 'function'){
+      new MutationObserver(scheduleWrap).observe(financePanel, { childList: true, subtree: true });
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initWrapObserver);
+  } else {
+    initWrapObserver();
   }
   window.addEventListener('resize', wrapMobileTables);
   setTimeout(wrapMobileTables, 150);

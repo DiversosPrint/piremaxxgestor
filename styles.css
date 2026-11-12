@@ -575,11 +575,18 @@ html body .toolbar-icon{
   /* Container Principal ocupando 100% da largura */
   html body main,
   html body.standard-layout main,
+  html body.finance-page main,
+  html body.fleet-page main,
+  html body.pix-page main,
+  html body.reports-page main,
   html body:has(.sales-content) main,
   html body:has(.purchase-content) main,
   html body:has(.clients) main,
   html body:has(.finance-page) main,
-  html body:has(.products-topbar) main {
+  html body:has(.products-topbar) main,
+  html body.standard-layout:has(.sales-content) main,
+  html body.standard-layout:has(.purchase-content) main,
+  html body.standard-layout:has(.clients) main {
     margin-left: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -589,10 +596,19 @@ html body .toolbar-icon{
   /* Topbar Mobile Fixa */
   html body main>.topbar,
   html body main>.products-topbar,
+  html body.standard-layout main>.topbar,
+  html body.standard-layout main>.products-topbar,
+  html body.finance-page main>.topbar,
+  html body.fleet-page main>.topbar,
+  html body.pix-page main>.topbar,
+  html body.reports-page main>.topbar,
   html body:has(.sales-content) main>.topbar,
   html body:has(.purchase-content) main>.topbar,
   html body:has(.clients) main>.topbar,
-  html body:has(.finance-page) main>.topbar {
+  html body:has(.finance-page) main>.topbar,
+  html body.standard-layout:has(.sales-content) main>.topbar,
+  html body.standard-layout:has(.purchase-content) main>.topbar,
+  html body.standard-layout:has(.clients) main>.topbar {
     position: sticky !important;
     left: 0 !important;
     top: 0 !important;

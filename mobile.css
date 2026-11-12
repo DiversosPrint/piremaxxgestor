@@ -110,11 +110,19 @@
   /* 2. CONTAINER PRINCIPAL: 100% da tela, sem margem de 143px */
   html body main,
   html body main.products-page,
+  html body.standard-layout main,
+  html body.finance-page main,
+  html body.fleet-page main,
+  html body.pix-page main,
+  html body.reports-page main,
   html body:has(.shared-sidebar) main,
   html body:has(.finance-page) main,
   html body:has(.sales-content) main,
   html body:has(.purchase-content) main,
-  html body:has(.clients) main {
+  html body:has(.clients) main,
+  html body.standard-layout:has(.sales-content) main,
+  html body.standard-layout:has(.purchase-content) main,
+  html body.standard-layout:has(.clients) main {
     display: block !important;
     margin: 0 !important;
     margin-left: 0 !important;
@@ -127,7 +135,20 @@
 
   /* 3. TOPBAR PWA APRIMORADA (Azul marinho com textura automotiva, busca expansível e avatar) */
   html body main > .topbar,
-  html body main > .products-topbar {
+  html body main > .products-topbar,
+  html body.standard-layout main > .topbar,
+  html body.standard-layout main > .products-topbar,
+  html body.finance-page main > .topbar,
+  html body.fleet-page main > .topbar,
+  html body.pix-page main > .topbar,
+  html body.reports-page main > .topbar,
+  html body:has(.sales-content) main > .topbar,
+  html body:has(.purchase-content) main > .topbar,
+  html body:has(.clients) main > .topbar,
+  html body:has(.finance-page) main > .topbar,
+  html body.standard-layout:has(.sales-content) main > .topbar,
+  html body.standard-layout:has(.purchase-content) main > .topbar,
+  html body.standard-layout:has(.clients) main > .topbar {
     position: sticky !important;
     top: 0 !important;
     left: 0 !important;
@@ -181,7 +202,16 @@
   }
 
   html body .topbar .brand-mini,
-  html body .products-topbar .brand-mini {
+  html body .products-topbar .brand-mini,
+  html body main > .topbar .brand-mini.brand-mini,
+  html body main > .products-topbar .brand-mini.brand-mini,
+  html body.standard-layout .topbar .brand-mini,
+  html body.standard-layout main > .topbar .brand-mini.brand-mini,
+  html body.finance-page .topbar .brand-mini,
+  html body.finance-page main > .topbar .brand-mini.brand-mini,
+  html body.fleet-page main > .topbar .brand-mini.brand-mini,
+  html body.pix-page main > .topbar .brand-mini.brand-mini,
+  html body.reports-page main > .topbar .brand-mini.brand-mini {
     display: block !important;
     flex: 0 0 104px !important;
     width: 104px !important;
@@ -200,12 +230,24 @@
 
   /* Quando o usuário toca na busca no PWA/Mobile, a barra ganha espaço total */
   html body .topbar.pwa-search-active .brand-mini,
-  html body .products-topbar.pwa-search-active .brand-mini {
+  html body .products-topbar.pwa-search-active .brand-mini,
+  html body main > .topbar.pwa-search-active .brand-mini.brand-mini,
+  html body.standard-layout main > .topbar.pwa-search-active .brand-mini.brand-mini,
+  html body.finance-page main > .topbar.pwa-search-active .brand-mini.brand-mini {
     display: none !important;
   }
 
   html body .topbar .search,
-  html body .products-topbar .products-search {
+  html body .products-topbar .products-search,
+  html body main > .topbar .search,
+  html body main > .products-topbar .products-search,
+  html body.standard-layout .topbar .search,
+  html body.standard-layout main > .topbar .search,
+  html body.finance-page .topbar .search,
+  html body.finance-page main > .topbar .search,
+  html body.fleet-page main > .topbar .search,
+  html body.pix-page main > .topbar .search,
+  html body.reports-page main > .topbar .search {
     flex: 1 1 auto !important;
     width: auto !important;
     min-width: 0 !important;
@@ -347,6 +389,16 @@
     font-size: 15px !important;
     z-index: 40 !important;
     box-sizing: border-box !important;
+  }
+  html body.standard-layout main > .titlebar,
+  html body.standard-layout main > .finance-title,
+  html body.finance-page main > .finance-title,
+  html body.fleet-page main > .fleet-title,
+  html body.reports-page main > .reports-title {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
   }
 
   html body .titlebar button,
@@ -500,14 +552,58 @@
   }
 
   html body .finance-balance {
-    margin-left: 0 !important;
-    flex: 1 1 auto !important;
+    margin: 2px 0 !important;
+    padding: 6px 10px !important;
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+  }
+  html body .finance-balance br {
+    display: none !important;
+  }
+  html body .finance-toolbar button,
+  html body .finance-toolbar .finance-month,
+  html body .finance-toolbar .finance-arrows {
+    height: 32px !important;
+    min-height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  html body .finance-toolbar > span {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #416276 !important;
+    white-space: nowrap !important;
+  }
+  html body .finance-edit-options,
+  html body .finance-receive-menu {
+    min-width: 0 !important;
+    width: min(320px, calc(100vw - 36px)) !important;
+    max-width: calc(100vw - 36px) !important;
+    left: 0 !important;
+  }
+  html body .finance-edit-options button,
+  html body .finance-receive-menu button {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 32px !important;
+    white-space: normal !important;
+    line-height: 1.35 !important;
+    padding: 8px 12px !important;
+    justify-content: flex-start !important;
   }
 
   /* 8. TABELAS PADRONIZADAS (Colunas reais preservadas com rolagem horizontal fluida) */
   html body .sales-table-wrapper,
   html body .purchase-table-wrapper,
   html body .client-table-wrapper,
+  html body .finance-table-wrapper,
   html body .table-responsive,
   html body .clients,
   html body .finance-panel,
@@ -526,6 +622,10 @@
     -webkit-overflow-scrolling: touch !important;
     box-sizing: border-box !important;
   }
+  html body #finance-receivables:has(> .table-responsive),
+  html body #finance-other:has(.table-responsive) {
+    overflow-x: visible !important;
+  }
   html body .satellite-panel {
     margin: 14px 0 24px !important;
     width: 100% !important;
@@ -539,6 +639,7 @@
 
   html body .sales-table,
   html body .finance-table,
+  html body .finance-panel table,
   html body .purchase-table,
   html body .client-table,
   html body .product-table,
@@ -553,6 +654,7 @@
   html body .sales-table-wrapper,
   html body .purchase-table-wrapper,
   html body .client-table-wrapper,
+  html body .finance-table-wrapper,
   html body .table-responsive {
     display: block !important;
     width: 100% !important;
@@ -565,6 +667,7 @@
 
   html body .sales-table thead,
   html body .finance-table thead,
+  html body .finance-panel table thead,
   html body .purchase-table thead,
   html body .client-table thead,
   html body .product-table thead,
@@ -575,6 +678,7 @@
 
   html body .sales-table tbody,
   html body .finance-table tbody,
+  html body .finance-panel table tbody,
   html body .purchase-table tbody,
   html body .client-table tbody,
   html body .product-table tbody,
@@ -585,6 +689,7 @@
 
   html body .sales-table tr,
   html body .finance-table tr,
+  html body .finance-panel table tr,
   html body .purchase-table tr,
   html body .client-table tr,
   html body .product-table tr,
@@ -598,6 +703,8 @@
   html body .sales-table td,
   html body .finance-table th,
   html body .finance-table td,
+  html body .finance-panel table th,
+  html body .finance-panel table td,
   html body .purchase-table th,
   html body .purchase-table td,
   html body .client-table th,
@@ -618,6 +725,7 @@
 
   html body .sales-table thead th:nth-child(2):after,
   html body .finance-table thead th:nth-child(2):after,
+  html body .finance-panel table thead th:nth-child(2):after,
   html body .purchase-table thead th:nth-child(2):after,
   html body .product-table thead th:nth-child(2):after,
   html body .service-table thead th:nth-child(2):after {
@@ -626,6 +734,9 @@
 
   html body .finance-total,
   html body .finance-payable-total,
+  html body .finance-payables-total,
+  html body .finance-transfers-total,
+  html body .finance-receipts-total,
   html body .finance-footer {
     min-width: 0 !important;
     width: 100% !important;
