@@ -1552,7 +1552,7 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
             var isDone=qty>0;
             var sub=stepKey==='descarte'
               ?'Sem valor financeiro (Descarte)'
-              :(money(unit)+(isDone?' • Subtotal: '+money(qty*unit):''));
+              :(money(unit)+(isDone?' • Subtotal: '+money(qty*unit):'')+(isDone&&entry&&entry.result&&entry.result!=='Aguardando'?' • '+entry.result:''));
             return '<div class="visit-measure-row'+(isDone?' is-done':'')+'" data-key="'+esc(key)+'" data-name="'+esc(m.descricao)+'" data-price="'+unit+'" data-rim="'+esc(m.rim||'')+'">' +
               '<div class="vm-main" role="button" tabindex="0">' +
                 '<div class="vm-icon-wrap">' +
@@ -1590,7 +1590,7 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
           };
 
           bodyEl.querySelector('#vm-add-custom').onclick=function(){
-            renderItemDetail(stepKey,{measure:'',unit:0,qty:1,isNew:true});
+            renderItemDetail(stepKey,{measure:'',unit:0,qty:1,result:stepKey==='descarte'?'Descarte':'Aguardando',isNew:true});
           };
 
           function setEntryQty(rowEl, newQty){
@@ -1621,6 +1621,7 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
                 measure:rowEl.dataset.name,
                 unit:stepKey==='descarte'?0:(existing?existing.unit:(Number(rowEl.dataset.price)||0)),
                 qty:existing?existing.qty:1,
+                result:existing&&existing.result?existing.result:(stepKey==='descarte'?'Descarte':'Aguardando'),
                 rim:rowEl.dataset.rim||'',
                 isNew:false
               });
@@ -1677,6 +1678,9 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
         subEl.textContent=isDescarte?'Descarte • Quantidade':'Quantidade e valor unitário';
         backBtn.onclick=function(){renderStepMeasures(stepKey,false)};
 
+        var currentResult=info.result||(isDescarte?'Descarte':'Aguardando');
+        var resultOptions=['Aguardando','Aprovada','Reprovada','Descarte'];
+
         bodyEl.innerHTML='<div class="visit-card-box visit-item-detail-card">' +
           '<div class="vid-header">' +
             '<img src="public/icons/pneusolo.webp" alt="" class="vid-tire">' +
@@ -1691,11 +1695,13 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
             '<label class="vf-label">Valor unitário R$<input id="vid-unit" inputmode="decimal" value="'+esc(formatBrInput(info.unit||0))+'"></label>' +
             '<div class="vid-total-row"><span>Valor total R$</span><strong id="vid-total">'+money((Number(info.qty)||1)*(Number(info.unit)||0))+'</strong></div>'
           )) +
+          '<label class="vf-label" style="margin-top:8px">Resultado da avaliação<select id="vid-result">'+options(resultOptions,currentResult)+'</select></label>' +
         '</div>';
 
         var qtyEl=bodyEl.querySelector('#vid-qty');
         var unitEl=bodyEl.querySelector('#vid-unit');
         var totalEl=bodyEl.querySelector('#vid-total');
+        var resEl=bodyEl.querySelector('#vid-result');
 
         function recalc(){
           if(!totalEl||!unitEl)return;
@@ -1728,11 +1734,12 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
             draft.entries[stepKey].delete(key);
           }else{
             var u=isDescarte?0:parseBrNumber(unitEl.value);
+            var itemResult=(resEl&&resEl.value)||currentResult||(isDescarte?'Descarte':'Aguardando');
             draft.entries[stepKey].set(key,{
               measure:mName,
               qty:q,
               unit:u,
-              result:'Aguardando',
+              result:itemResult,
               rim:info.rim||rimOfMeasure({descricao:mName})
             });
           }
@@ -1748,6 +1755,32 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
         subEl.textContent='Conferência de totais, pagamento e fechamento';
         backBtn.onclick=renderHub;
 
+        function detectUniformItemsResult(){
+          var seen=new Set();
+          ['1o','a6','vendaB'].forEach(function(sk){
+            draft.entries[sk].forEach(function(e){
+              if((Number(e.qty)||0)>0)seen.add(e.result||'Aguardando');
+            });
+          });
+          if(seen.size===1)return Array.from(seen)[0];
+          return 'CUSTOM';
+        }
+        function applyResultToAllItems(val){
+          if(!val||val==='CUSTOM')return;
+          ['1o','a6','vendaB'].forEach(function(sk){
+            draft.entries[sk].forEach(function(e){
+              e.result=val;
+            });
+          });
+        }
+        var currentBatchResult=detectUniformItemsResult();
+        var batchOptions=[
+          '<option value="CUSTOM"'+(currentBatchResult==='CUSTOM'?' selected':'')+'>Definido por item</option>',
+          '<option value="Aguardando"'+(currentBatchResult==='Aguardando'?' selected':'')+'>Aguardando (todos)</option>',
+          '<option value="Aprovada"'+(currentBatchResult==='Aprovada'?' selected':'')+'>Aprovada (todos)</option>',
+          '<option value="Reprovada"'+(currentBatchResult==='Reprovada'?' selected':'')+'>Reprovada (todos)</option>'
+        ].join('');
+
         bodyEl.innerHTML='<div class="visit-card-box">' +
           '<div class="vf-summary-grid">' +
             '<div class="vf-sum-row"><span>Total 1º R$</span><strong>'+money(sums.s1.total)+'</strong></div>' +
@@ -1760,16 +1793,36 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
             '<div class="vf-sum-row vf-sum-final"><span>Valor final R$</span><strong>'+money(sums.grandTotal)+'</strong></div>' +
           '</div>' +
           '<div class="vf-row-2" style="margin-top:14px">' +
-            '<label class="vf-label">Situação<select id="vf-fin-status">'+options(statuses,draft.status)+'</select></label>' +
+            '<label class="vf-label">Situação da visita<select id="vf-fin-status">'+options(statuses,draft.status)+'</select></label>' +
+            '<label class="vf-label">Resultado dos itens<select id="vf-fin-items-result">'+batchOptions+'</select></label>' +
             '<label class="vf-label">Vencimento<input id="vf-fin-due" type="date" value="'+esc(draft.dueDate)+'"></label>' +
             '<label class="vf-label">Forma de pagamento<select id="vf-fin-pay">'+options(paymentMethods,draft.paymentMethod)+'</select></label>' +
-            '<label class="vf-label">Plano de contas<select id="vf-fin-cat">'+options(categories,draft.category)+'</select></label>' +
           '</div>' +
+          '<label class="vf-label" style="margin-top:10px">Plano de contas<select id="vf-fin-cat">'+options(categories,draft.category)+'</select></label>' +
           '<label class="vf-label" style="margin-top:10px">Observações<textarea id="vf-fin-notes" placeholder="Observações gerais da visita...">'+esc(draft.notes)+'</textarea></label>' +
         '</div>';
 
+        var finStatusEl=bodyEl.querySelector('#vf-fin-status');
+        var finItemsResEl=bodyEl.querySelector('#vf-fin-items-result');
+        finStatusEl.onchange=function(){
+          var stVal=finStatusEl.value||'';
+          if(finItemsResEl.value==='Aguardando'){
+            if(stVal==='Aprovada'||stVal==='Comprada'){
+              finItemsResEl.value='Aprovada';
+              applyResultToAllItems('Aprovada');
+            }else if(stVal==='Reprovada'){
+              finItemsResEl.value='Reprovada';
+              applyResultToAllItems('Reprovada');
+            }
+          }
+        };
+        finItemsResEl.onchange=function(){
+          applyResultToAllItems(finItemsResEl.value);
+        };
+
         function commitFinal(){
-          draft.status=bodyEl.querySelector('#vf-fin-status').value||draft.status;
+          draft.status=finStatusEl.value||draft.status;
+          applyResultToAllItems(finItemsResEl.value);
           draft.dueDate=bodyEl.querySelector('#vf-fin-due').value||draft.dueDate;
           draft.paymentMethod=bodyEl.querySelector('#vf-fin-pay').value||draft.paymentMethod;
           draft.category=bodyEl.querySelector('#vf-fin-cat').value||draft.category;
@@ -1848,7 +1901,8 @@ html body:has(.purchase-content) .new-purchase { inset:0 0 0 143px!important; }
           var unit=isDescarte?0:parseBrNumber(it.unit);
           var subtotal=qty*unit;
           totalQty+=qty;
-          var resultClass=isDescarte?'badge-descarte':(String(it.result||'').toLowerCase().indexOf('aprov')!==-1?'badge-aprovada':(String(it.result||'').toLowerCase().indexOf('reprov')!==-1?'badge-reprovada':'badge-aguardando'));
+          var resLower=String(it.result||'').toLowerCase();
+          var resultClass=(isDescarte||resLower.indexOf('descart')!==-1)?'badge-descarte':(resLower.indexOf('aprov')!==-1?'badge-aprovada':(resLower.indexOf('reprov')!==-1?'badge-reprovada':'badge-aguardando'));
           var resultLabel=isDescarte?'Descarte':(it.result||'Aguardando');
           return '<tr>' +
             '<td style="text-align:center;">'+(idx+1)+'</td>' +
